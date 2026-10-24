@@ -58,3 +58,57 @@ a{color:#00ff88;text-decoration:none}
 <div class="footer">© BD Sports 2026 - Professional E-Sports Platform</div>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BD ESPORTS - Lucky Spin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#0a0a0a;color:white;min-height:100vh}
+.header{background:#d32f2f;padding:12px 15px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:900;font-size:22px;color:gold}
+.wallet-box{background:#222;border:1px solid gold;border-radius:20px;padding:6px 14px;display:flex;gap:10px}
+.main{padding:20px;text-align:center}
+.tournament-card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid gold;border-radius:15px;padding:20px;margin:15px 0;cursor:pointer}
+.btn-join{background:linear-gradient(to right,#ff512f,#dd2476);border:none;color:white;padding:12px 25px;border-radius:25px;font-weight:bold;margin-top:10px;width:100%}
+#spinModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:99999;display:flex;justify-content:center;align-items:center;flex-direction:column;padding:20px}
+.wheel-wrap{position:relative;width:340px;height:340px;max-width:90vw}
+.wheel-pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:36px;height:44px;background:#0d1130;border:3px solid gold;border-radius:50%;z-index:30}
+#wheelCanvas{width:100%;height:100%;border-radius:50%;border:5px solid #0d1130;box-shadow:0 0 0 3px gold}
+.center-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;background:#0a0e2e;border:3px solid gold;color:white;font-weight:900;cursor:pointer;z-index:20}
+.spin-action-btn{margin-top:28px;background:linear-gradient(to right,#a21caf,#f97316);border:2px solid #ffd78a;color:white;padding:14px 45px;border-radius:30px;font-size:18px;font-weight:bold;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="header"><div class="logo">BD ESPORTS</div><div class="wallet-box">💰 <span id="walletDisplay">0৳</span></div></div>
+<div class="main">
+<h2 style="color:gold;">BR Tournaments - Lucky Spin</h2>
+<p style="color:#aaa;font-size:13px;margin:10px 0;">1000৳, 50৳, 90৳, 10৳ জিতো!</p>
+<div class="tournament-card" onclick="openSpin('BR Solo',20)"><h3>🔥 BR Solo Tournament</h3><p>Entry: 20৳</p><button class="btn-join">Join & Spin Now</button></div>
+<div class="tournament-card" onclick="openAdmin()" style="border-color:red;"><h3 style="color:#ff5555;">👑 ADMIN - Winner Add</h3></div>
+<div style="margin-top:20px;background:#111;padding:15px;border-radius:10px;text-align:left;"><h4 style="color:gold;">📜 Wallet History</h4><div id="history" style="font-size:12px;margin-top:10px;"></div></div>
+</div>
+<div id="spinModal" style="display:none;"><button onclick="closeSpin()" style="position:absolute;top:15px;right:15px;width:40px;height:40px;background:white;border-radius:10px;border:none;font-size:22px;cursor:pointer;">✕</button><div class="wheel-wrap"><div class="wheel-pointer"></div><canvas id="wheelCanvas" width="340" height="340"></canvas><button class="center-btn" onclick="doSpin()">SPIN</button></div><button class="spin-action-btn" onclick="doSpin()">↻ স্পিন করুন</button><div id="spinResult" style="margin-top:16px;color:#ffe082;font-weight:bold;text-align:center;"></div></div>
+<div id="adminPanel" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:100000;justify-content:center;align-items:center;"><div style="background:#111;border:2px solid gold;border-radius:15px;padding:20px;width:90%;max-width:380px;"><h3 style="color:gold;text-align:center;">ADMIN</h3><input id="admPass" type="password" placeholder="Password" style="width:100%;padding:12px;margin:10px 0;border-radius:8px;background:#222;color:white;"><button onclick="checkAdmin()" style="width:100%;padding:12px;background:gold;color:black;border:none;border-radius:8px;font-weight:bold;">Login</button><div id="admMain" style="display:none;margin-top:15px;"><input id="winName" placeholder="Username" style="width:100%;padding:12px;margin:5px 0;border-radius:8px;background:#222;color:white;"><input id="winAmt" type="number" placeholder="Amount ex:1000" style="width:100%;padding:12px;margin:5px 0;border-radius:8px;background:#222;color:white;"><input id="winTour" placeholder="Tournament" style="width:100%;padding:12px;margin:5px 0;border-radius:8px;background:#222;color:white;"><button onclick="adminAdd()" style="width:100%;padding:12px;background:#00ff00;color:black;border:none;border-radius:8px;font-weight:bold;margin-top:10px;">💰 Wallet এ Add</button><button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%;padding:10px;background:#333;color:white;border:none;border-radius:8px;margin-top:10px;">Close</button></div></div></div>
+<script>
+function getWallet(){return parseInt(localStorage.getItem('wallet_balance')||'0');}
+function setWallet(v){localStorage.setItem('wallet_balance',v);document.getElementById('walletDisplay').innerText=v+'৳';updateHist();}
+function addHist(type,amt,name){let h=JSON.parse(localStorage.getItem('wallet_history')||'[]');h.unshift({type,amt,name,date:new Date().toLocaleString()});localStorage.setItem('wallet_history',JSON.stringify(h));updateHist();}
+function updateHist(){let h=JSON.parse(localStorage.getItem('wallet_history')||'[]');let el=document.getElementById('history');if(h.length==0)el.innerHTML='<span style="color:#666">No Transaction</span>';else el.innerHTML=h.slice(0,20).map(x=>`<div style="border-bottom:1px solid #222;padding:5px 0;"><b style="color:${x.type=='WIN'?'#0f0':'#f80'}">${x.type}</b> ${x.amt}৳ - ${x.name}<br><small style="color:#666">${x.date}</small></div>`).join('');}
+const simplePrizes=[{label:"1000৳",amount:1000},{label:"50৳",amount:50},{label:"90৳",amount:90},{label:"10৳",amount:10},{label:"100৳",amount:100},{label:"500৳",amount:500},{label:"20৳",amount:20},{label:"150৳",amount:150}];
+let usePrizes=simplePrizes;let colors=["#ff8c00","#9c27b0","#e91e63","#311b92","#ff6f00","#4caf50","#1a237e","#ff5722"];
+let canvas=document.getElementById('wheelCanvas');let ctx=canvas.getContext('2d');let isSpinning=false,rotation=0,currentFee=20,currentTour='';
+function drawWheel(){let cx=170,cy=170,r=162;let slice=2*Math.PI/usePrizes.length;ctx.clearRect(0,0,340,340);for(let i=0;i<usePrizes.length;i++){ctx.beginPath();ctx.fillStyle=colors[i%colors.length];ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,i*slice,(i+1)*slice);ctx.fill();ctx.strokeStyle='#ffd700';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(i*slice+slice/2);ctx.textAlign='right';ctx.fillStyle='white';ctx.font='bold 15px Arial';ctx.fillText(usePrizes[i].label,r-20,5);ctx.restore();}ctx.beginPath();ctx.fillStyle='#0a0e2e';ctx.arc(cx,cy,42,0,2*Math.PI);ctx.fill();ctx.strokeStyle='#ffd700';ctx.lineWidth=3;ctx.stroke();}
+drawWheel();
+function openSpin(tour,fee){currentTour=tour;currentFee=fee;if(getWallet()<fee){alert('Balance কম! '+fee+'৳ লাগবে! বর্তমান: '+getWallet()+'৳');return;}document.getElementById('spinModal').style.display='flex';document.getElementById('spinResult').innerText='';}
+function closeSpin(){document.getElementById('spinModal').style.display='none';}
+function doSpin(){if(isSpinning)return;isSpinning=true;let bal=getWallet();setWallet(bal-currentFee);addHist('SPIN',-currentFee,currentTour+' Entry');document.getElementById('spinResult').innerText='ঘুরছে...';let finalIndex;let r=Math.random();if(r<0.4)finalIndex=3;else if(r<0.65)finalIndex=6;else if(r<0.85)finalIndex=1;else if(r<0.93)finalIndex=2;else if(r<0.98)finalIndex=4;else finalIndex=0;let sliceDeg=360/usePrizes.length;let target=360*5+(360-(finalIndex*sliceDeg+sliceDeg/2));let start=null,dur=3800;function anim(t){if(!start)start=t;let p=(t-start)/dur;if(p>1)p=1;let ease=1-Math.pow(1-p,4);rotation=ease*target;canvas.style.transform=`rotate(${rotation}deg)`;if(p<1)requestAnimationFrame(anim);else{isSpinning=false;let won=usePrizes[finalIndex];let newBal=getWallet()+won.amount;setWallet(newBal);addHist('WIN',won.amount,'Spin Win - '+won.label);document.getElementById('spinResult').innerHTML=`🎉 আপনি জিতেছেন <br><span style="font-size:30px;color:#00ff00;">${won.label} (${won.amount}৳)</span><br>Wallet এ যোগ হয়েছে!`;setTimeout(()=>{alert(`আপনি ${won.amount}৳ জিতেছেন! নতুন Balance: ${newBal}৳`);closeSpin();},1500);}}requestAnimationFrame(anim);}
+function openAdmin(){document.getElementById('adminPanel').style.display='flex';}
+function checkAdmin(){let p=document.getElementById('admPass').value;if(p==='01756596482'||p==='admin123'){document.getElementById('admMain').style.display='block';}else alert('Wrong Password! 01756596482');}
+function adminAdd(){let name=document.getElementById('winName').value.trim();let amt=parseInt(document.getElementById('winAmt').value);let tour=document.getElementById('winTour').value||'Admin Prize';if(!name||!amt){alert('Name ও Amount দাও');return;}let bal=getWallet();setWallet(bal+amt);addHist('WIN',amt,tour+' - Admin to '+name);alert(name+' কে '+amt+'৳ দেওয়া হলো!');document.getElementById('adminPanel').style.display='none';}
+setWallet(getWallet());updateHist();
+</script>
+</body>
+</html>
