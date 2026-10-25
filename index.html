@@ -1,40 +1,53 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin - হ্যালো বাংলাদেশ</title>
-<style>body{background:#070a14;color:white;font-family:Arial;padding:15px} .card{background:#1e1e2f;border:1px solid gold;border-radius:10px;padding:12px;margin:10px 0} .btn{padding:8px 15px;border:none;border-radius:8px;font-weight:bold;margin:3px} .approve{background:#00c853;color:white} .reject{background:#d32f2f;color:white} input{padding:10px;width:100%;margin:10px 0;border-radius:8px}</style>
-</head>
-<body>
-<h2 style="color:gold;text-align:center;">👑 Admin Panel - হ্যালো বাংলাদেশ</h2>
-<input type="password" id="pass" placeholder="Admin Password দাও">
-<button onclick="login()" style="width:100%;padding:10px;background:gold;border:none;border-radius:8px;font-weight:bold;">Login</button>
-<div id="panel" style="display:none;">
-<h3>💰 Pending Add Money Requests</h3>
-<div id="reqList"></div>
-<h3 style="margin-top:20px;">💸 Withdraw Requests</h3>
-<div id="withList"></div>
-</div>
-<script>
-function login(){if(document.getElementById('pass').value=='admin123'){document.getElementById('panel').style.display='block';load();}else alert('Wrong! Password is admin123');}
-function load(){
-let reqs=JSON.parse(localStorage.getItem('hb_requests')||'[]');
-document.getElementById('reqList').innerHTML=reqs.map((r,i)=>`<div class="card">${r.amount}৳ - ${r.trx} - ${r.sender} - ${r.method} - <b style="color:orange">${r.status}</b><br><small>${r.time}</small><br><button class="btn approve" onclick="approve(${i})">Approve</button><button class="btn reject" onclick="reject(${i})">Reject</button></div>`).join('')||'No Request';
-let w=JSON.parse(localStorage.getItem('hb_withdraw')||'[]');
-document.getElementById('withList').innerHTML=w.map((x,i)=>`<div class="card">${x.amount}৳ - ${x.number} - <b>${x.status}</b><br><button class="btn approve" onclick="approveW(${i})">Paid</button></div>`).join('')||'No Withdraw';
-}
-function approve(i){let reqs=JSON.parse(localStorage.getItem('hb_requests')||'[]');let r=reqs[i];r.status='Approved';let bal=parseInt(localStorage.getItem('hb_wallet')||'0');localStorage.setItem('hb_wallet',bal+parseInt(r.amount));localStorage.setItem('hb_requests',JSON.stringify(reqs));load();alert('Approved! '+r.amount+'৳ added');}
-function reject(i){let reqs=JSON.parse(localStorage.getItem('hb_requests')||'[]');reqs[i].status='Rejected';localStorage.setItem('hb_requests',JSON.stringify(reqs));load();}
-function approveW(i){let w=JSON.parse(localStorage.getItem('hb_withdraw')||'[]');w[i].status='Paid';localStorage.setItem('hb_withdraw',JSON.stringify(w));load();}
-</script>
-</body>
-</html>
-body{background:#... 
-var sheet = SpreadsheetApp...
-var data = JSON...
-sheet.appendRow...
-return ContentService...
-}
-function doGet() {
-  return ContentService.createTextOutput("Bot is Running - Hello Bangladesh");
-}
+<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BD TOP UP 26</title><style>body{margin:0;background:#0a0a0a;color:#fff;font-family:Arial,sans-serif}.header{background:#151515;padding:15px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #ffcc00}.logo{color:#ffcc00;font-weight:900;font-size:22px}.live{background:#ffcc00;color:#000;padding:5px 12px;border-radius:20px;font-weight:900;font-size:12px}.banner{margin:12px;background:linear-gradient(90deg,#ff6600,#ffcc00);color:#000;padding:15px;border-radius:12px;text-align:center;font-weight:900}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.card{background:#1e1e1e;border:1px solid #333;border-radius:14px;padding:12px;text-align:center}.price{color:#ffcc00;font-weight:900;font-size:20px;margin:8px 0}.btn{background:#ffcc00;color:#000;border:none;padding:10px;width:100%;border-radius:20px;font-weight:900}.form{background:#151515;margin:12px;padding:16px;border-radius:16px;border:1px solid #333}.input{width:100%;padding:13px;margin:8px 0;border-radius:10px;border:1px solid #444;background:#0a0a0a;color:#fff;box-sizing:border-box}.order{width:100%;background:#25D366;color:#fff;padding:15px;border:none;border-radius:12px;font-weight:900;font-size:17px}</style></head><body><div class="header"><div class="logo">NxT TOP UP BD</div><div class="live">24/7 LIVE</div></div><div class="banner">1 Minute Delivery - bKash: 01756596482</div><div class="grid"><div class="card"><div>100 Diamond</div><div class="price">80 TK</div><button class="btn" onclick="selectPkg('100 Diamond - 80 TK')">BUY NOW</button></div><div class="card"><div>210 Diamond</div><div class="price">170 TK</div><button class="btn" onclick="selectPkg('210 Diamond - 170 TK')">BUY NOW</button></div><div class="card"><div>520 Diamond</div><div class="price">420 TK</div><button class="btn" onclick="selectPkg('520 Diamond - 420 TK')">BUY NOW</button></div><div class="card"><div>1060 Diamond</div><div class="price">850 TK</div><button class="btn" onclick="selectPkg('1060 Diamond - 850 TK')">BUY NOW</button></div><div class="card"><div>Weekly Pass</div><div class="price">152 TK</div><button class="btn" onclick="selectPkg('Weekly Pass - 152 TK')">BUY NOW</button></div><div class="card"><div>Monthly Pass</div><div class="price">775 TK</div><button class="btn" onclick="selectPkg('Monthly Pass - 775 TK')">BUY NOW</button></div></div><div class="form"><input id="uid" class="input" placeholder="Free Fire UID"><input id="pkg" class="input" placeholder="Package" readonly><button class="order" onclick="orderNow()">WhatsApp Order</button></div><script>function selectPkg(v){document.getElementById('pkg').value=v}function orderNow(){var u=document.getElementById('uid').value;var p=document.getElementById('pkg').value;if(!u){alert('UID din');return}window.open("https://wa.me/8801756596482?text=ORDER UID:"+u+" Package:"+p)}</script></body></html>FF TOP UP BD - DIAMOND PRICE LIST
+সবাইকে স্বাগতম
+DIAMOND PACKAGES:
+100 Diamond = 80 TK
+310 Diamond = 240 TK
+520 Diamond = 410 TK
+1060 Diamond = 820 TK
+2180 Diamond = 1650 TK
+5600 Diamond = 4000 TK
+VIP pas
+SPECIAL PASS:
+Weekly Lite = 45 TK
+Weekly Pass = 160 TK
+Monthly Pass = 770 TK
+Level Up Pass = 420 TK
+বিশ্বস্ততা বা ওয়েব সাইট 
+PAYMENT: bKash / Nagad
+DELIVERY: 1 Minute - UID Only
+SUPPORT: 24/7 WhatsApp
+Order System:
+1. Enter Free Fire UID
+2. Select Package
+3. Pay via bKash/Nagad
+
+💎💎💎💎💎💎
+ VIP TOP UP
+বিশ্বস্ততার সাথে ডায়মন্ড টপ-আপ
+
+💎 OFFER Diamond List 💎
+UID 
+ 25 Diamond = 24 Tk
+100 DIAMOND = 79 TK
+UNEPIN
+115 Diamond = 82 Tk
+50 DIAMOND = 38 TK
+ID TOP UP 
+💠 WIKLE Diamond = 160 Tk
+💠 MA Diamond = 770 Tk
+💠 610 Diamond = 850 Tk
+
+✅ ১০০% দ্রুত ডেলিভারি
+✅ 24 ঘন্টা সার্ভিস
+
+📲 অর্ডার করতেBkch করুন:
+01756596482
+
+💰 Bkash / Nagad (Personal):
+01756596482
+
+⚠️ অর্ডারের আগে অবশ্যই>
+hilp line
+whats app
+01756596482
