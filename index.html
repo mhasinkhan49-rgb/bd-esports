@@ -2,206 +2,336 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Football Penalty Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Soccer Dribble & Match Game</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            font-family: Arial, sans-serif;
         }
         body {
-            background-color: #0b2e13;
-            color: #fff;
+            background-color: #111;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
         }
-        .game-container {
-            width: 100%;
-            max-width: 400px;
-            height: 100%;
-            max-height: 650px;
-            background: #198754;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
+        .game-wrapper {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            background: #2e7d32;
             border: 4px solid #fff;
-            position: relative;
-        }
-        .scoreboard {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .field {
-            flex-grow: 1;
-            position: relative;
-            background: #28a745;
-            border: 2px dashed #fff;
-            border-radius: 8px;
-            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
             overflow: hidden;
         }
-        /* Goal Post */
-        .goal-post {
+        /* Football Pitch Markings */
+        .center-circle {
             position: absolute;
-            top: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+        }
+        .center-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: rgba(255,255,255,0.5);
+        }
+        .goal-box {
+            position: absolute;
+            right: 0;
+            top: 150px;
+            width: 80px;
+            height: 200px;
+            border: 2px solid rgba(255,255,255,0.8);
+            border-right: none;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        /* Canvas */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        /* Score & UI */
+        .scoreboard {
+            position: absolute;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 80px;
-            border: 4px solid #fff;
-            border-bottom: none;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        /* Goalkeeper */
-        .keeper {
-            position: absolute;
-            top: 20px;
-            left: 80px;
-            width: 40px;
-            height: 40px;
-            background: #ffc107;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: left 0.3s ease;
-        }
-        /* Football */
-        .ball {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 35px;
-            height: 35px;
-            background: #fff;
-            border-radius: 50%;
-            border: 2px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
             font-size: 18px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            transition: bottom 0.5s ease, left 0.5s ease;
+            font-weight: bold;
+            z-index: 20;
+            border: 1px solid #ffca28;
         }
-        /* Controls / Buttons */
-        .controls {
+
+        /* On-Screen Mobile Controls */
+        .controls-container {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 20;
+            pointer-events: none;
+        }
+        .dpad, .action-btns {
+            pointer-events: auto;
+            display: flex;
             gap: 10px;
         }
-        .shoot-btn-group {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        .btn {
-            background: #ff5722;
+        .dpad-btn, .action-btn {
+            width: 55px;
+            height: 55px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #fff;
+            border-radius: 50%;
             color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            transition: 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .btn:hover {
-            background: #e64a19;
+        .dpad-btn:active, .action-btn:active {
+            background: #ffca28;
+            color: #000;
         }
-        .message {
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-            height: 25px;
-            color: #ffeb3b;
+        .action-btn.shoot { background: rgba(229, 57, 53, 0.8); }
+        .action-btn.pass { background: rgba(30, 136, 229, 0.8); }
+        .action-btn.sprint { background: rgba(76, 175, 80, 0.8); }
+
+        .instructions {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: white;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 20;
         }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <!-- Scoreboard -->
-    <div class="scoreboard">
-        <div>স্কোর: <span id="score">0</span></div>
-        <div>মিস: <span id="miss">0</span></div>
-    </div>
+<div class="game-wrapper">
+    <div class="scoreboard">YOU <span id="score">0</span> - 0 BOT</div>
+    <div class="instructions">কীবোর্ড: Arrow / WASD = মুভمنٹ, Space = শুট, X = পাস</div>
+    
+    <div class="center-line"></div>
+    <div class="center-circle"></div>
+    <div class="goal-box"></div>
 
-    <!-- Message Area -->
-    <div class="message" id="message">শট নেওয়ার জন্য নিচে যেকোনো দিকে ক্লিক করুন!</div>
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-    <!-- Football Field -->
-    <div class="field">
-        <div class="goal-post"></div>
-        <div class="keeper" id="keeper">🧤</div>
-        <div class="ball" id="ball">⚽</div>
-    </div>
+    <!-- Mobile Screen Controls -->
+    <div class="controls-container">
+        <!-- Directional Controls -->
+        <div style="display: grid; grid-template-columns: repeat(3, 45px); gap: 5px;" class="dpad">
+            <div></div>
+            <div class="dpad-btn" ontouchstart="keys['ArrowUp']=true" ontouchend="keys['ArrowUp']=false">⬆️</div>
+            <div></div>
+            <div class="dpad-btn" ontouchstart="keys['ArrowLeft']=true" ontouchend="keys['ArrowLeft']=false">⬅️</div>
+            <div class="dpad-btn" ontouchstart="keys['ArrowDown']=true" ontouchend="keys['ArrowDown']=false">⬇️</div>
+            <div class="dpad-btn" ontouchstart="keys['ArrowRight']=true" ontouchend="keys['ArrowRight']=false">➡️</div>
+        </div>
 
-    <!-- Shoot Controls -->
-    <div class="controls">
-        <div class="shoot-btn-group">
-            <button class="btn" onclick="shoot(30)">বাম দিক</button>
-            <button class="btn" onclick="shoot(90)">মাঝ বরাবর</button>
-            <button class="btn" onclick="shoot(150)">ডান দিক</button>
+        <!-- Action Buttons (Shoot, Pass, Sprint) -->
+        <div class="action-btns">
+            <div class="action-btn pass" onclick="passBall()">PASS</div>
+            <div class="action-btn sprint" onclick="toggleSprint()">SPRINT</div>
+            <div class="action-btn shoot" onclick="shootBall()">SHOOT</div>
         </div>
     </div>
 </div>
 
 <script>
-    let score = 0;
-    let miss = 0;
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-    function shoot(direction) {
-        let ball = document.getElementById('ball');
-        let keeper = document.getElementById('keeper');
-        let message = document.getElementById('message');
+let score = 0;
+let keys = {};
 
-        // Randomly move goalkeeper
-        let keeperPositions = [30, 90, 150];
-        let keeperPos = keeperPositions[Math.floor(Math.random() * keeperPositions.length)];
-        keeper.style.left = keeperPos + 'px';
+// Player (You)
+const player = {
+    x: 150,
+    y: 250,
+    radius: 15,
+    color: '#2196F3',
+    speed: 3,
+    baseSpeed: 3,
+    hasBall: true
+};
 
-        // Move ball to goal
-        ball.style.bottom = '380px';
-        ball.style.left = direction + 'px';
+// Defender (Opponent)
+const defender = {
+    x: 500,
+    y: 250,
+    radius: 15,
+    color: '#E53935',
+    speed: 1.8
+};
 
-        setTimeout(() => {
-            if (direction === keeperPos) {
-                message.innerText = "গোলকিপার সেভ করেছে! মিস!";
-                miss++;
-                document.id('miss') // safe check
-                document.getElementById('miss').innerText = miss;
-            } else {
-                message.innerText = "গোল! দারুণ শট!";
-                score++;
-                document.getElementById('score').innerText = score;
-            }
+// Ball
+const ball = {
+    x: player.x + 15,
+    y: player.y,
+    radius: 7,
+    color: '#FFF',
+    vx: 0,
+    vy: 0
+};
 
-            // Reset Ball and Keeper position after 1 second
-            setTimeout(() => {
-                ball.style.bottom = '40px';
-                ball.style.left = '50%';
-                message.innerText = "পরবর্তী শটের জন্য প্রস্তুত হোন!";
-            }, 1000);
+// Controls tracking
+window.addEventListener('keydown', e => {
+    keys[e.key] = true;
+    if(e.key === ' ') shootBall();
+    if(e.key === 'x' || e.key === 'X') passBall();
+});
+window.addEventListener('keyup', e => keys[e.key] = false);
 
-        }, 500);
+function toggleSprint() {
+    player.speed = player.speed === player.baseSpeed ? 5.5 : player.baseSpeed;
+}
+
+function shootBall() {
+    if (player.hasBall) {
+        player.hasBall = false;
+        ball.vx = 12; // Power Shoot towards Goal
+        ball.vy = (Math.random() - 0.5) * 4;
     }
-</script>
+}
 
+function passBall() {
+    if (player.hasBall) {
+        player.hasBall = false;
+        ball.vx = 7;
+        ball.vy = 2;
+    }
+}
+
+function update() {
+    // Player Movement (Dribble Controls)
+    if (keys['ArrowUp'] || keys['w'] || keys['W']) player.y -= player.speed;
+    if (keys['ArrowDown'] || keys['s'] || keys['S']) player.y += player.speed;
+    if (keys['ArrowLeft'] || keys['a'] || keys['A']) player.x -= player.speed;
+    if (keys['ArrowRight'] || keys['d'] || keys['D']) player.x += player.speed;
+
+    // Boundaries
+    player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+    player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
+
+    // Ball movement with Player
+    if (player.hasBall) {
+        ball.x = player.x + 12;
+        ball.y = player.y;
+    } else {
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        ball.vx *= 0.96; // Friction
+        ball.vy *= 0.96;
+    }
+
+    // AI Defender Logic (Follows Player & Tackles)
+    let dx = player.x - defender.x;
+    let dy = player.y - defender.y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist > 5) {
+        defender.x += (dx / dist) * defender.speed;
+        defender.y += (dy / dist) * defender.speed;
+    }
+
+    // Tackle Collision (Opponent steals the ball)
+    if (dist < player.radius + defender.radius && player.hasBall) {
+        player.hasBall = false;
+        ball.vx = -5; // Kick ball back
+        ball.vy = (Math.random() - 0.5) * 6;
+    }
+
+    // Regain Ball
+    let ballDist = Math.hypot(player.x - ball.x, player.y - ball.y);
+    if (ballDist < player.radius + ball.radius && !player.hasBall && Math.abs(ball.vx) < 3) {
+        player.hasBall = true;
+    }
+
+    // Goal Detection (Right Goal Area)
+    if (ball.x > 780 && ball.y > 150 && ball.y < 350) {
+        score++;
+        document.getElementById('score').innerText = score;
+        resetPositions();
+    }
+}
+
+function resetPositions() {
+    player.x = 150;
+    player.y = 250;
+    defender.x = 550;
+    defender.y = 250;
+    player.hasBall = true;
+    ball.vx = 0;
+    ball.vy = 0;
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Player
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+    ctx.fillStyle = player.color;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+
+    // Draw Defender
+    ctx.beginPath();
+    ctx.arc(defender.x, defender.y, defender.radius, 0, Math.PI * 2);
+    ctx.fillStyle = defender.color;
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw Ball
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.fillStyle = ball.color;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.stroke();
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
 </body>
 </html>
