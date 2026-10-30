@@ -1,31 +1,250 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>DLS26 COOL 500</title><style>*{margin:0;box-sizing:border-box;touch-action:none}body{background:#000;color:#fff;font-family:Arial;overflow:hidden}.top{position:absolute;top:0;width:100%;height:44px;background:#000;display:flex;justify-content:space-between;padding:0 10px;align-items:center;border-bottom:2px solid #2ecc71;z-index:10}#field{position:absolute;top:44px;width:100vw;height:calc(100vh - 144px);background:#1e7a1e}canvas{width:100%;height:100%}.controls{position:absolute;bottom:0;width:100%;height:100px;background:#000e;display:flex;justify-content:space-between;padding:10px;z-index:10}.joy{width:90px;height:90px;background:#fff2;border-radius:50%;position:relative;border:2px solid #fff5}.stick{width:36px;height:36px;background:#fff;border-radius:50%;position:absolute;left:27px;top:27px}.cbtn{width:56px;height:56px;border-radius:50%;background:#222;border:2px solid #fff;color:#fff;font-weight:bold;font-size:10px;display:flex;align-items:center;justify-content:center}.screen{position:absolute;inset:0;background:#000f;z-index:20;padding:14px;overflow:auto}.card{background:#142814;border:2px solid #2ecc71;border-radius:12px;padding:12px;margin:8px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.item{background:#1e331e;border-radius:10px;padding:10px;text-align:center;border:1px solid #334155}.item.owned{border-color:#2ecc71;background:#143214}.hidden{display:none}#msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#000e;border:2px solid #ff0;padding:12px 18px;border-radius:10px;z-index:30;display:none;text-align:center;font-weight:bold}</style></head><body>
-<div class="top"><span id="score">BRA 0-0 ARS</span><span id="coin" style="color:#f1c40f">💰 500</span><span id="time">00:00</span></div>
-<div id="field"><canvas id="cv"></canvas><div id="msg"></div><button onclick="goMenu()" style="position:absolute;top:8px;left:8px;z-index:5;background:#0008;color:#fff;border:1px solid #fff;padding:4px 8px;border-radius:6px">← MENU</button></div>
-<div class="controls"><div class="joy" id="joy"><div class="stick" id="stick"></div></div><div style="display:flex;gap:8px"><div class="cbtn" id="tackle" style="border-color:#f1c40f">TACKLE</div><div class="cbtn" id="shoot" style="border-color:#e74c3c">SHOOT</div><div class="cbtn" id="pass" style="border-color:#2ecc71">PASS</div></div></div>
-<div id="main" class="screen"><div class="card" style="text-align:center"><h2 style="color:#2ecc71">DLS26 COOL - 500 COIN</h2><p style="font-size:11px;color:#aaa">Hamza, Ronaldo, Messi, Mbappe - সব 500 coin - Shin-pad সহ</p><div style="margin:8px">Coin: <b id="menuCoin" style="color:#f1c40f">500</b></div><button onclick="downloadGame()" style="width:100%;padding:14px;background:linear-gradient(90deg,#f1c40f,#e67e22);color:#000;border:none;border-radius:10px;font-weight:bold;font-size:15px;margin:6px 0">⬇️ DOWNLOAD - ফোনে Save করো</button><button onclick="openShop()" style="width:100%;padding:12px;background:#2ecc71;color:#000;border:none;border-radius:10px;font-weight:bold;margin:6px 0">🛒 SHOP - সব 500 Coin</button><button onclick="openTeam()" style="width:100%;padding:12px;background:#f1c40f;color:#000;border:none;border-radius:10px;font-weight:bold;margin:6px 0">👕 MY TEAM - 5 জন</button><button onclick="openPlay()" style="width:100%;padding:12px;background:#3498db;color:#000;border:none;border-radius:10px;font-weight:bold;margin:6px 0">▶️ PLAY - 3 Mode</button></div></div>
-<div id="shop" class="screen hidden"><div class="card"><h3>SHOP - সব 500 <span id="shopCoin" style="float:right;color:#f1c40f">500</span></h3><button onclick="backMain()" style="padding:6px 10px;background:#333;color:#fff;border:none;border-radius:6px;margin-top:8px">← Back</button></div><div class="grid" id="shopGrid"></div></div>
-<div id="team" class="screen hidden"><div class="card"><h3>MY TEAM 5 জন</h3><button onclick="backMain()" style="padding:6px 10px;background:#333;color:#fff;border:none;border-radius:6px">← Back</button></div><div id="slots"></div><div class="card"><div id="owned" style="display:flex;flex-wrap:wrap;gap:6px"></div></div></div>
-<div id="play" class="screen hidden"><div class="card" style="text-align:center"><h3>3 Mode</h3><button onclick="startGame(1)" style="width:100%;padding:12px;margin:6px 0;background:#2ecc71;border:none;border-radius:8px;font-weight:bold">1. TRAINING - Wall</button><button onclick="startGame(2)" style="width:100%;padding:12px;margin:6px 0;background:#e67e22;border:none;border-radius:8px;font-weight:bold">2. 1vs1</button><button onclick="startGame(3)" style="width:100%;padding:12px;margin:6px 0;background:#f1c40f;border:none;border-radius:8px;font-weight:bold;color:#000">3. FINAL 5v5</button><button onclick="backMain()" style="width:100%;padding:8px;background:#333;color:#fff;border:none;border-radius:8px">← Back</button></div></div>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>FC BD 27 - GK SYSTEM</title>
+<style>
+*{box-sizing:border-box;margin:0;touch-action:none;font-family:Arial}
+body{background:#000;color:#fff;overflow:hidden}
+.top{position:fixed;top:0;left:0;right:0;height:44px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:100;border-bottom:2px solid #2ecc71;font-weight:bold;font-size:12px}
+#field{position:fixed;top:44px;left:0;right:0;bottom:100px;background:#1a8a1a}
+#cv{width:100%;height:100%;display:block}
+.controls{position:fixed;bottom:0;left:0;right:0;height:100px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:100}
+.joy{width:90px;height:90px;background:#333;border-radius:50%;border:2px solid #555;position:relative}
+.stick{width:40px;height:40px;background:#fff;border-radius:50%;position:absolute;left:25px;top:25px}
+.btn{width:58px;height:58px;border-radius:50%;background:#222;border:2px solid #fff;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;font-size:10px}
+.screen{position:fixed;inset:0;background:#000;z-index:200;overflow:auto;padding:12px}
+.card{background:#122212;border:2px solid #2ecc71;border-radius:12px;padding:12px;margin:8px 0}
+.b{width:100%;padding:14px;margin:6px 0;background:#2ecc71;color:#000;border:none;border-radius:10px;font-weight:bold}
+.bY{background:#f1c40f} .bB{background:#3498db;color:#fff} .bGK{background:linear-gradient(90deg,#e74c3c,#f1c40f);color:#000}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.item{background:#222;border-radius:10px;padding:10px;text-align:center;border:1px solid #444}
+#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:2px solid #ff0;padding:12px 20px;border-radius:10px;z-index:300;display:none;font-weight:bold;text-align:center}
+</style>
+</head>
+<body>
+<div class="top"><span id="score">🇧🇷 BRA 0-0 ARS 🇦🇷</span><span id="coin" style="color:#f1c40f">💰 1000</span><span id="time">00:00</span></div>
+<div id="field"><canvas id="cv"></canvas><div id="msg"></div></div>
+<div class="controls">
+<div class="joy" id="joy"><div class="stick" id="stick"></div></div>
+<div style="display:flex;gap:6px">
+<div class="btn" id="tBtn">TACKLE</div>
+<div class="btn" id="sBtn" style="border-color:#e74c3c">SHOOT</div>
+<div class="btn" id="pBtn" style="border-color:#2ecc71">PASS</div>
+</div>
+<button onclick="showMenu()" style="padding:6px;background:#333;color:#fff;border:1px solid #fff;border-radius:6px;font-size:10px">MENU</button>
+</div>
+
+<div id="menuScreen" class="screen">
+<div class="card" style="text-align:center">
+<h2 style="color:#2ecc71">🧤 GK SYSTEM - FINAL</h2>
+<p style="font-size:11px;color:#aaa">২ জন করে গোলকি - বল গেলেই ধরে ফেলবে - তুমি যা বলছো ✅</p>
+<div>Coin: <b id="mCoin" style="color:#f1c40f">1000</b></div>
+<button class="b bGK" onclick="openGKShop()">🧤 GK SHOP - ৩ জন গোলকি - 1000 Coin</button>
+<button class="b" onclick="openShop()">🛒 PLAYER SHOP - সব 500</button>
+<button class="b bY" onclick="openTeam()">👕 MY TEAM - 6 জন</button>
+<button class="b bB" onclick="openPlay()">▶️ PLAY - GK Catch System</button>
+<button class="b" style="background:linear-gradient(90deg,#f1c40f,#e67e22)" onclick="downloadGame()">📥 DOWNLOAD</button>
+</div>
+<div class="card" style="font-size:11px;color:#ccc">
+<b>নতুন GK System:</b><br>
+- প্রতি দলে ২ জন গোলকি - সামনে পিছনে দাঁড়িয়ে থাকবে<br>
+- বল গোলের দিকে গেলেই লাফ দিয়ে ধরে ফেলবে<br>
+- ৩ জন গোলকি: Martinez, Romero, Mac Allister - 1000 coin each<br>
+- গোল করা এখন আরো কঠিন - GK Save 70%
+</div>
+</div>
+
+<div id="gkScreen" class="screen" style="display:none">
+<div class="card"><h3>🧤 GK SHOP - 1000 Coin Each <span id="gkCoin" style="float:right;color:#f1c40f">1000</span></h3><button class="b" style="background:#333;color:#fff;padding:8px" onclick="showMenu()">← BACK</button></div>
+<div class="grid" id="gkGrid"></div>
+</div>
+
+<div id="shopScreen" class="screen" style="display:none">
+<div class="card"><h3>PLAYER SHOP - 500 Coin <span id="sCoin" style="float:right;color:#f1c40f">1000</span></h3><button class="b" style="background:#333;color:#fff;padding:8px" onclick="showMenu()">← BACK</button></div>
+<div class="grid" id="shopGrid"></div>
+</div>
+
+<div id="teamScreen" class="screen" style="display:none">
+<div class="card"><h3>MY TEAM - 6 জন <button style="float:right;padding:6px;background:#333;color:#fff;border:none;border-radius:6px" onclick="showMenu()">BACK</button></h3></div>
+<div id="slotBox"></div>
+<div class="card"><h4>Owned Players:</h4><div id="ownedBox" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0"></div><h4>Owned GK:</h4><div id="ownedGKBox" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+</div>
+
+<div id="playScreen" class="screen" style="display:none">
+<div class="card" style="text-align:center"><h3>SELECT MODE - GK CATCH</h3>
+<button class="b" onclick="startGame(1)">1. TRAINING - GK Wall + 2 GK</button>
+<button class="b bY" onclick="startGame(2)">2. 1vs1 + 2 GK Catch</button>
+<button class="b bB" onclick="startGame(3)">3. FINAL 6v6 + 4 GK (2+2) - তুমি যা বলছো</button>
+<button class="b" style="background:#333;color:#fff" onclick="showMenu()">← BACK</button>
+</div>
+</div>
+
 <script>
-const CHARS=[{id:'hamza',name:'Hamza 8',c:'#ff0000',s:'#006A4E',e:'🇧🇩',p:84},{id:'ronaldo',name:'Ronaldo 7',c:'#ff0000',s:'#006633',e:'👑',p:96},{id:'messi',name:'Messi 10',c:'#75aadb',s:'#fff',e:'🐐',p:97},{id:'mbappe',name:'Mbappe 10',c:'#002395',s:'#fff',e:'🚀',p:94},{id:'dybala',name:'Dybala 10',c:'#000',s:'#000',e:'💎',p:88},{id:'martinez',name:'Martinez 23',c:'#75aadb',s:'#fff',e:'🧤',p:87},{id:'neymar',name:'Neymar 10',c:'#ffeb3b',s:'#008000',e:'⚡',p:90},{id:'haaland',name:'Haaland 9',c:'#6cabdd',s:'#00285e',e:'💪',p:92}];
-function getD(){return JSON.parse(localStorage.getItem('dls_final')||'{"coin":500,"owned":["hamza"],"team":["hamza"]}')}function saveD(d){localStorage.setItem('dls_final',JSON.stringify(d));upd()}function upd(){let d=getD();document.getElementById('coin').innerText='💰 '+d.coin;document.getElementById('menuCoin').innerText=d.coin;let s=document.getElementById('shopCoin');if(s)s.innerText=d.coin}upd();
-function downloadGame(){let h=document.documentElement.outerHTML;let b=new Blob([h],{type:'text/html'});let u=URL.createObjectURL(b);let a=document.createElement('a');a.href=u;a.download='DLS26-Cool-500.html';a.click();URL.revokeObjectURL(u);}
-function openShop(){document.getElementById('main').classList.add('hidden');document.getElementById('shop').classList.remove('hidden');let d=getD();let g=document.getElementById('shopGrid');g.innerHTML='';CHARS.forEach(ch=>{let ow=d.owned.includes(ch.id);let div=document.createElement('div');div.className='item '+(ow?'owned':'');div.innerHTML=`<div style="font-size:28px">${ch.e}</div><b style="font-size:11px">${ch.name}</b><div style="font-size:10px">Power ${ch.p}</div><div style="color:#f1c40f;font-weight:bold">500 coin</div><button style="width:100%;padding:6px;background:${ow?'#444':'#2ecc71'};color:${ow?'#888':'#000'};border:none;border-radius:6px;font-weight:bold;margin-top:4px" ${ow?'disabled':''} onclick="buy('${ch.id}')">${ow?'OWNED':'BUY 500'}</button>`;g.appendChild(div);});}
-function buy(id){let d=getD();if(d.owned.includes(id))return;if(d.coin<500){alert('Coin কম! আছে '+d.coin);return;}d.coin-=500;d.owned.push(id);saveD(d);openShop();}
-function openTeam(){document.getElementById('main').classList.add('hidden');document.getElementById('team').classList.remove('hidden');render()}function render(){let d=getD();let sl=document.getElementById('slots');sl.innerHTML='';for(let i=0;i<5;i++){let pid=d.team[i];let ch=CHARS.find(c=>c.id==pid);let div=document.createElement('div');div.style.cssText='border:2px '+(ch?'solid #2ecc71':'dashed #334155')+';border-radius:8px;padding:10px;margin:5px 0;display:flex;justify-content:space-between;background:'+(ch?'#123212':'transparent');div.innerHTML=`<span>Slot ${i+1}: ${ch?ch.e+' '+ch.name:'খালি'}</span><button onclick="clearS(${i})" style="padding:4px 8px;background:#333;color:#fff;border:none;border-radius:4px">X</button>`;sl.appendChild(div);}let list=document.getElementById('owned');list.innerHTML='';d.owned.forEach(id=>{let ch=CHARS.find(c=>c.id==id);let b=document.createElement('button');b.style.cssText='padding:6px 10px;background:#222;color:#fff;border:1px solid #2ecc71;border-radius:20px;font-size:12px';b.innerText=ch.e+' '+ch.name;b.onclick=()=>add(id);list.appendChild(b);});}
-function add(id){let d=getD();if(d.team.includes(id))return;if(d.team.length>=5){alert('Full');return;}d.team.push(id);saveD(d);render()}function clearS(i){let d=getD();d.team.splice(i,1);saveD(d);render()}function openPlay(){document.getElementById('main').classList.add('hidden');document.getElementById('play').classList.remove('hidden');}function backMain(){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById('main').classList.remove('hidden');upd();}
-const canvas=document.getElementById('cv'),ctx=canvas.getContext('2d');let W,H;function rs(){W=canvas.width=canvas.parentElement.clientWidth*2;H=canvas.height=canvas.parentElement.clientHeight*2}rs();window.onresize=rs;let mode=1,run=false,players=[],my=[],opp=[],ball={x:0,y:0},ballV={x:0,y:0},owner=null,active=0,scoreM=0,scoreO=0,t=0,timer,joy={dx:0,dy:0,a:false};
-class P{constructor(x,y,team,num,color,shorts){this.x=x;this.y=y;this.team=team;this.num=num;this.color=color;this.shorts=shorts;this.vx=0;this.vy=0}draw(){ctx.save();ctx.translate(this.x,this.y);ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.ellipse(0,22,20,8,0,0,Math.PI*2);ctx.fill();let mv=Math.hypot(this.vx,this.vy)>0.6;let sw=mv?Math.sin(Date.now()*0.014+this.x)*10:0;ctx.fillStyle='#fff';ctx.fillRect(-8+sw,8,7,16);ctx.fillRect(4-sw,8,7,16);ctx.fillStyle=this.color;ctx.fillRect(-8+sw,8,7,10);ctx.fillRect(4-sw,8,7,10);ctx.fillStyle=this.shorts;ctx.fillRect(-11,-2,22,12);ctx.fillStyle=this.color;ctx.fillRect(-14,-20,28,20);ctx.fillStyle='#000';ctx.font='bold 13px Arial';ctx.textAlign='center';ctx.fillText(this.num,0,-4);ctx.fillStyle='#ffdbac';ctx.beginPath();ctx.arc(0,-28,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#111';ctx.beginPath();ctx.arc(0,-36,11,0,Math.PI*1);ctx.fill();ctx.restore();if(this.team=='my'&&players.indexOf(this)==active){ctx.strokeStyle='#ff0';ctx.lineWidth=4;ctx.beginPath();ctx.arc(this.x,this.y,24,0,Math.PI*2);ctx.stroke();}}}
-function msg(txt,c='#ff0',ms=1400){let m=document.getElementById('msg');m.innerHTML=txt;m.style.borderColor=c;m.style.display='block';setTimeout(()=>m.style.display='none',ms);}
-function initT(){players=[];my=[];opp=[];owner=null;ballV={x:0,y:0};let d=getD();let chars=d.team.map(id=>CHARS.find(c=>c.id==id)).filter(Boolean);if(chars.length==0)chars=[CHARS[0]];let fw=W,fh=H;if(mode==1){let ch=chars[0];let me=new P(240,fh-130,'my',ch.name.split(' ')[1],ch.c,ch.s);players.push(me);my.push(me);active=0;for(let i=0;i<4;i++){let p=new P(fw/2-70+i*40,fh*0.48,'opp',i+2,'#3498db','#0022aa');players.push(p);opp.push(p);}let gk=new P(fw-180,fh*0.48,'opp',1,'#f1c40f','#000');players.push(gk);opp.push(gk);ball={x:me.x+32,y:me.y};owner=me;}else if(mode==2){let ch=chars[0];let me=new P(200,fh/2,'my',ch.name.split(' ')[1],ch.c,ch.s);let o=new P(fw-300,fh/2,'opp','5','#3498db','#0022aa');players=[me,o];my=[me];opp=[o];active=0;ball={x:me.x+28,y:me.y};owner=me;}else{let myPos=[[180,fh/2],[310,fh*0.28],[310,fh*0.72],[430,fh*0.35],[430,fh*0.65]];let oppPos=[[W-180,fh/2],[W-310,fh*0.28],[W-310,fh*0.72],[W-430,fh*0.35],[W-430,fh*0.65]];myPos.forEach((p,i)=>{let ch=chars[i%chars.length];let pl=new P(p[0],p[1],'my',ch.name.split(' ')[1],ch.c,ch.s);players.push(pl);my.push(pl)});oppPos.forEach(p=>{let pl=new P(p[0],p[1],'opp',p[2],'#3498db','#0022aa');players.push(pl);opp.push(pl)});active=0;ball={x:my[0].x+28,y:my[0].y};owner=my[0];}document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`;}
-function startGame(m){mode=m;scoreM=0;scoreO=0;t=0;document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));initT();run=true;clearInterval(timer);timer=setInterval(()=>{t++;let mm=String(Math.floor(t/60)).padStart(2,'0');let ss=String(t%60).padStart(2,'0');document.getElementById('time').innerText=mm+':'+ss},1000);loop();}
-function checkG(){let fw=W,fh=H;if(ball.x>fw-50&&ball.y>fh*0.32&&ball.y<fh*0.58){scoreM++;document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`;msg('GOAL! ⚽ +10 coin','green',1500);let d=getD();d.coin+=10;saveD(d);setTimeout(initT,1200);return true;}if(ball.x<50&&ball.y>fh*0.32&&ball.y<fh*0.58){scoreO++;msg('Opp Goal','red',1000);setTimeout(initT,1000);return true;}if(ball.x<0||ball.x>fw||ball.y<0||ball.y>fh){initT();return true;}return false;}
-function tackle(){let me=my[active];if(!me)return;let tar=owner&&opp.includes(owner)?owner:opp.reduce((a,b)=>Math.hypot(ball.x-a.x,ball.y-a.y)<Math.hypot(ball.x-b.x,ball.y-b.y)?a:b);if(Math.hypot(me.x-tar.x,me.y-tar.y)<64){if(Math.random()<0.3){msg('FOUL! 🟨 বল ওদের কাছে','yellow',1200);ball={x:tar.x+20,y:tar.y};owner=tar;return;}owner=me;ballV={x:0,y:0};ball.x=me.x+24;ball.y=me.y;}}
-function shoot(){if(!owner||!my.includes(owner))return;let fw=W,fh=H;let gy=fh*0.45+(Math.random()-0.5)*80;let ang=Math.atan2(gy-ball.y,fw-ball.x);if(mode==1&&Math.random()<0.35){msg('WALL BLOCK! 🧱','orange');ballV.x=-5;owner=null;return;}if(Math.random()<0.5){msg('GK SAVE! 🧤','red');let gk=opp[opp.length-1];ball={x:gk.x,y:gk.y};owner=gk;return;}let pow=15;ballV.x=Math.cos(ang)*pow;ballV.y=Math.sin(ang)*pow;owner=null;}
-function pass(){if(!owner||!my.includes(owner)||mode==1)return;let cur=my[active];let best=null,d=999;my.forEach((p,i)=>{if(i!=active){let dist=Math.hypot(p.x-cur.x,p.y-cur.y);if(dist>50&&dist<d){d=dist;best=p}}});if(best){let ang=Math.atan2(best.y-ball.y,best.x-ball.x);ballV.x=Math.cos(ang)*11;ballV.y=Math.sin(ang)*11;owner=null;}}
-document.getElementById('tackle').addEventListener('touchstart',tackle);document.getElementById('shoot').addEventListener('touchstart',shoot);document.getElementById('pass').addEventListener('touchstart',pass);
-const joyEl=document.getElementById('joy'),stickEl=document.getElementById('stick');joyEl.addEventListener('touchstart',e=>{joy.a=true;e.preventDefault()},{passive:false});joyEl.addEventListener('touchmove',e=>{let r=joyEl.getBoundingClientRect();let tt=e.touches[0];let dx=tt.clientX-(r.left+45),dy=tt.clientY-(r.top+45);let d=Math.min(45,Math.hypot(dx,dy)),ang=Math.atan2(dy,dx);joy.dx=Math.cos(ang)*d/45;joy.dy=Math.sin(ang)*d/45;stickEl.style.left=27+joy.dx*28+'px';stickEl.style.top=27+joy.dy*28+'px';e.preventDefault();},{passive:false});joyEl.addEventListener('touchend',()=>{joy.a=false;joy.dx=0;joy.dy=0;stickEl.style.left='27px';stickEl.style.top='27px';});
-function loop(){if(!run)return;let me=my[active];if(me&&joy.a){me.vx=joy.dx*5;me.vy=joy.dy*5;me.x+=me.vx;me.y+=me.vy;me.x=Math.max(40,Math.min(W-40,me.x));me.y=Math.max(110,Math.min(H-70,me.y));if(owner==me){ball.x=me.x+28;ball.y=me.y+4;}}if(!owner){ball.x+=ballV.x;ball.y+=ballV.y;ballV.x*=0.983;ballV.y*=0.983;if(checkG()){}for(let p of players){if(Math.hypot(ball.x-p.x,ball.y-p.y)<36&&Math.hypot(ballV.x,ballV.y)<5){owner=p;if(my.includes(p))active=my.indexOf(p);ballV={x:0,y:0};break;}}}if(mode>=2){opp.forEach(o=>{if(owner&&my.includes(owner)){o.x+=(ball.x-o.x)*0.038;o.y+=(ball.y-o.y)*0.038;if(Math.hypot(o.x-ball.x,o.y-ball.y)<38&&Math.random()<0.04){owner=o;ballV={x:0,y:0};msg('BALL LOST!','red',700);}}else if(!owner&&o==opp.reduce((a,b)=>Math.hypot(ball.x-a.x,ball.y-a.y)<Math.hypot(ball.x-b.x,ball.y-b.y)?a:b)){o.x+=(ball.x-o.x)*0.045;o.y+=(ball.y-o.y)*0.045;}else if(owner==o){o.x+=2.6;ball.x=o.x+16;ball.y=o.y;if(Math.random()<0.022){ballV.x=-11;ballV.y=(Math.random()-0.5)*6;owner=null;}}});}ctx.clearRect(0,0,W,H);ctx.fillStyle='#2ea62e';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.strokeRect(20,100,W-40,H-160);ctx.beginPath();ctx.moveTo(W/2,100);ctx.lineTo(W/2,H-60);ctx.stroke();ctx.beginPath();ctx.arc(W/2,H/2,80,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff';ctx.fillRect(20,H/2-70,14,140);ctx.fillRect(W-34,H/2-70,14,140);players.forEach(p=>p.draw());ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ball.x,ball.y,11,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#000';ctx.lineWidth=2;ctx.stroke();requestAnimationFrame(loop);}
-function goMenu(){run=false;clearInterval(timer);document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));document.getElementById('main').classList.remove('hidden');}
-</script></body></html>
+let COIN=1000; let OWNED=['hamza','messi']; let OWNED_GK=['martinez']; let TEAM=['hamza','messi','ronaldo','mbappe']; let TEAM_GK=['martinez'];
+const PLAYERS=[
+{id:'hamza',n:'Hamza 8',c:'#ff0000',s:'#006A4E',e:'🇧🇩',p:84},
+{id:'ronaldo',n:'Ronaldo 7',c:'#ff0000',s:'#006633',e:'👑',p:96},
+{id:'messi',n:'Messi 10',c:'#75aadb',s:'#fff',e:'🐐',p:97},
+{id:'mbappe',n:'Mbappe 10',c:'#002395',s:'#fff',e:'🚀',p:94},
+{id:'dybala',n:'Dybala 10',c:'#000',s:'#000',e:'💎',p:88},
+{id:'neymar',n:'Neymar 10',c:'#ffeb3b',s:'#008000',e:'⚡',p:90},
+];
+const GKs=[
+{id:'martinez',n:'Martinez',full:'Emiliano Martinez',c:'#f1c40f',e:'🧤',p:92,team:'ARG'},
+{id:'romero',n:'Romero',full:'Cristian Romero',c:'#00ff00',e:'🧤',p:88,team:'ARG'},
+{id:'macallister',n:'Mac Allister',full:'Alexis Mac Allister',c:'#3498db',e:'🧤',p:90,team:'ARG'},
+];
+
+function upd(){document.getElementById('coin').innerText='💰 '+COIN; document.getElementById('mCoin').innerText=COIN; document.getElementById('sCoin').innerText=COIN; document.getElementById('gkCoin').innerText=COIN;} upd();
+function downloadGame(){let h=document.documentElement.outerHTML; let b=new Blob([h],{type:'text/html'}); let u=URL.createObjectURL(b); let a=document.createElement('a'); a.href=u; a.download='GK-System-Final.html'; a.click();}
+function hideAll(){['menuScreen','gkScreen','shopScreen','teamScreen','playScreen'].forEach(id=>document.getElementById(id).style.display='none');}
+function showMenu(){hideAll(); document.getElementById('menuScreen').style.display='block'; stopGame();}
+function openGKShop(){hideAll(); document.getElementById('gkScreen').style.display='block'; let g=document.getElementById('gkGrid'); g.innerHTML=''; GKs.forEach(ch=>{let ow=OWNED_GK.includes(ch.id); let div=document.createElement('div'); div.className='item'; div.style.borderColor=ow?'#2ecc71':'#e74c3c'; div.style.background=ow?'#143214':'#221111'; div.innerHTML=`<div style="font-size:36px">${ch.e}</div><b style="font-size:12px">${ch.n}</b><div style="font-size:10px">${ch.full}</div><div style="font-size:10px;color:#aaa">Power ${ch.p} | ${ch.team}</div><div style="color:#f1c40f;font-weight:bold;margin:4px 0">1000 coin</div><button class="b" style="padding:8px;font-size:12px;background:${ow?'#444':'linear-gradient(90deg,#e74c3c,#f1c40f)'};color:${ow?'#888':'#000'}" ${ow?'disabled':''} onclick="buyGK('${ch.id}')">${ow?'OWNED ✅':'BUY 1000'}</button>`; g.appendChild(div);});}
+function buyGK(id){if(OWNED_GK.includes(id)) return; if(COIN<1000){alert('Coin কম! আছে '+COIN+' - 1000 লাগবে'); return;} COIN-=1000; OWNED_GK.push(id); upd(); openGKShop(); alert('GK কিনেছো ✅ '+id);}
+function openShop(){hideAll(); document.getElementById('shopScreen').style.display='block'; let g=document.getElementById('shopGrid'); g.innerHTML=''; PLAYERS.forEach(ch=>{let ow=OWNED.includes(ch.id); let div=document.createElement('div'); div.className='item'; div.style.borderColor=ow?'#2ecc71':'#444'; div.innerHTML=`<div style="font-size:28px">${ch.e}</div><b style="font-size:11px">${ch.n}</b><div style="font-size:10px">Power ${ch.p}</div><div style="color:#f1c40f;font-weight:bold">500 coin</div><button class="b" style="padding:6px;font-size:12px;background:${ow?'#444':'#2ecc71'}" ${ow?'disabled':''} onclick="buyP('${ch.id}')">${ow?'OWNED':'BUY 500'}</button>`; g.appendChild(div);});}
+function buyP(id){if(OWNED.includes(id)) return; if(COIN<500){alert('Coin কম! '+COIN); return;} COIN-=500; OWNED.push(id); upd(); openShop();}
+function openTeam(){hideAll(); document.getElementById('teamScreen').style.display='block'; renderTeam();}
+function renderTeam(){let sb=document.getElementById('slotBox'); sb.innerHTML=''; for(let i=0;i<4;i++){let pid=TEAM[i]; let ch=PLAYERS.find(c=>c.id==pid); let div=document.createElement('div'); div.className='card'; div.style.padding='8px'; div.innerHTML=`<span>Player ${i+1}: ${ch?ch.e+' '+ch.n:'খালি'}</span><button onclick="clearSlot(${i})" style="float:right">X</button>`; sb.appendChild(div);} for(let i=0;i<2;i++){let gid=TEAM_GK[i]; let gk=GKs.find(c=>c.id==gid); let div=document.createElement('div'); div.className='card'; div.style.padding='8px'; div.style.borderColor='#e74c3c'; div.innerHTML=`<span>GK ${i+1}: ${gk?gk.e+' '+gk.n+' (1000)':'খালি GK - 1000 coin দিয়ে কিনো'}</span><button onclick="clearGKSlot(${i})" style="float:right">X</button>`; sb.appendChild(div);} let ob=document.getElementById('ownedBox'); ob.innerHTML=''; OWNED.forEach(id=>{let ch=PLAYERS.find(c=>c.id==id); let b=document.createElement('button'); b.style.cssText='padding:6px 10px;background:#222;color:#fff;border:1px solid #2ecc71;border-radius:20px;font-size:12px'; b.innerText=ch.e+' '+ch.n; b.onclick=()=>addToTeam(id); ob.appendChild(b);}); let obG=document.getElementById('ownedGKBox'); obG.innerHTML=''; OWNED_GK.forEach(id=>{let ch=GKs.find(c=>c.id==id); let b=document.createElement('button'); b.style.cssText='padding:6px 10px;background:#221111;color:#fff;border:1px solid #e74c3c;border-radius:20px;font-size:12px'; b.innerText=ch.e+' '+ch.n+' 1000'; b.onclick=()=>addToGKTeam(id); obG.appendChild(b);});}
+function addToTeam(id){if(TEAM.includes(id)) return; if(TEAM.length>=4){alert('Player Full 4 জন'); return;} TEAM.push(id); renderTeam();}
+function clearSlot(i){TEAM.splice(i,1); renderTeam();}
+function addToGKTeam(id){if(TEAM_GK.includes(id)) return; if(TEAM_GK.length>=2){alert('GK Full - ২ জন GK থাকবে, তুমি যা বলছো'); return;} TEAM_GK.push(id); renderTeam();}
+function clearGKSlot(i){TEAM_GK.splice(i,1); renderTeam();}
+function openPlay(){hideAll(); document.getElementById('playScreen').style.display='block';}
+
+// GAME WITH 2 GK PER SIDE - বল গেলেই ধরে ফেলবে
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d'); let W=0,H=0; function rs(){W=cv.width=cv.parentElement.clientWidth*2; H=cv.height=cv.parentElement.clientHeight*2;} rs(); window.onresize=rs;
+let mode=3, run=false, players=[], my=[], opp=[], gks_my=[], gks_opp=[], ball={x:100,y:100}, ballV={x:0,y:0}, owner=null, active=0, scoreM=0, scoreO=0, t=0, timer=null, joy={dx:0,dy:0,a:false}, celeb=false;
+
+function drawPlayer(p, isActive){
+ctx.save(); ctx.translate(p.x,p.y);
+if(celeb && p.team=='my'){ctx.translate(0, Math.sin(Date.now()*0.02)* -6);}
+ctx.fillStyle='rgba(0,0,0,0.4)'; ctx.beginPath(); ctx.ellipse(0,20,18,7,0,0,Math.PI*2); ctx.fill();
+let sw=Math.sin(Date.now()*0.015+p.x)*8;
+ctx.fillStyle='#fff'; ctx.fillRect(-7+sw,6,6,12); ctx.fillRect(3-sw,6,6,12);
+ctx.fillStyle=p.c; ctx.fillRect(-7+sw,6,6,6); ctx.fillRect(3-sw,6,6,6);
+ctx.fillStyle=p.s; ctx.fillRect(-10,-2,20,10);
+ctx.fillStyle=p.c; ctx.fillRect(-12,-18,24,18);
+ctx.fillStyle='#000'; ctx.font='bold 12px Arial'; ctx.textAlign='center'; ctx.fillText(p.num,0,-4);
+ctx.fillStyle='#ffdbac'; ctx.beginPath(); ctx.arc(0,-26,9,0,Math.PI*2); ctx.fill();
+ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(0,-32,9,0,Math.PI*1); ctx.fill();
+if(celeb && p.team=='my'){ctx.font='bold 18px Arial'; ctx.fillText('🙌',0,-50);}
+ctx.restore();
+if(isActive && !celeb){ctx.strokeStyle='#ff0'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(p.x,p.y,22,0,Math.PI*2); ctx.stroke();}
+}
+function drawGK(g){
+ctx.save(); ctx.translate(g.x,g.y);
+if(g.diving){ctx.translate(0, -Math.abs(Math.sin(g.diveT*0.2))*20); ctx.rotate(g.diveDir*0.4);}
+ctx.fillStyle='rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.ellipse(0,22,22,8,0,0,Math.PI*2); ctx.fill();
+ctx.fillStyle=g.c; ctx.fillRect(-16,-20,32,28);
+ctx.fillStyle='#000'; ctx.font='bold 12px Arial'; ctx.textAlign='center'; ctx.fillText('GK',0,-2);
+ctx.fillStyle='#ffdbac'; ctx.beginPath(); ctx.arc(0,-30,11,0,Math.PI*2); ctx.fill();
+ctx.fillStyle='#fff'; ctx.font='bold 20px Arial'; ctx.fillText('🧤',0,-10);
+if(g.diving){ctx.fillStyle='#ff0'; ctx.font='bold 10px Arial'; ctx.fillText('SAVE!',0,-45);}
+ctx.restore();
+ctx.strokeStyle='#e74c3c'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(g.x,g.y,26,0,Math.PI*2); ctx.stroke();
+}
+
+function showMsg(txt,col){let m=document.getElementById('msg'); m.innerText=txt; m.style.borderColor=col; m.style.display='block'; setTimeout(()=>m.style.display='none',1300);}
+
+function initGame(){
+players=[]; my=[]; opp=[]; gks_my=[]; gks_opp=[]; owner=null; ballV={x:0,y:0}; celeb=false;
+let fw=W, fh=H;
+let tChars=TEAM.map(id=>PLAYERS.find(c=>c.id==id)).filter(Boolean); if(tChars.length==0) tChars=[PLAYERS[0]];
+let tGKs=TEAM_GK.map(id=>GKs.find(c=>c.id==id)).filter(Boolean); if(tGKs.length==0) tGKs=[GKs[0]];
+if(tGKs.length==1) tGKs=[tGKs[0],tGKs[0]];
+
+if(mode==1){
+let ch=tChars[0]; let me={x:240,y:fh-120,team:'my',num:ch.n.split(' ')[1],c:ch.c,s:ch.s};
+players.push(me); my.push(me); active=0;
+for(let i=0;i<3;i++){let o={x:fw/2-60+i*40,y:fh*0.48,team:'opp',num:i+2,c:'#3498db',s:'#0022aa'}; players.push(o); opp.push(o);}
+// 2 GK for opp - তুমি যা বলছো - দুইজন গোলকি থাকবে
+let gk1={x:fw-120,y:fh/2-25,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:1,team:'opp'};
+let gk2={x:fw-60,y:fh/2+25,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:-1,team:'opp'};
+gks_opp=[gk1,gk2];
+ball={x:me.x+30,y:me.y}; owner=me;
+}else if(mode==2){
+let ch=tChars[0]; let me={x:200,y:fh/2,team:'my',num:ch.n.split(' ')[1],c:ch.c,s:ch.s};
+let o={x:fw-350,y:fh/2,team:'opp',num:5,c:'#3498db',s:'#0022aa'};
+players=[me,o]; my=[me]; opp=[o]; active=0;
+let gk1={x:fw-120,y:fh/2-25,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:1,team:'opp'};
+let gk2={x:fw-60,y:fh/2+25,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:-1,team:'opp'};
+gks_opp=[gk1,gk2];
+let mgk1={x:120,y:fh/2-25,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:1,team:'my'};
+let mgk2={x:60,y:fh/2+25,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:-1,team:'my'};
+gks_my=[mgk1,mgk2];
+ball={x:me.x+28,y:me.y}; owner=me;
+}else{
+let myPos=[[200,fh/2],[320,fh*0.25],[320,fh*0.75],[450,fh*0.5]];
+let opPos=[[W-200,fh/2],[W-320,fh*0.25],[W-320,fh*0.75],[W-450,fh*0.5]];
+myPos.forEach((p,i)=>{let ch=tChars[i%tChars.length]; let pl={x:p[0],y:p[1],team:'my',num:ch.n.split(' ')[1],c:ch.c,s:ch.s}; players.push(pl); my.push(pl);});
+opPos.forEach(p=>{let pl={x:p[0],y:p[1],team:'opp',num:1,c:'#3498db',s:'#0022aa'}; players.push(pl); opp.push(pl);});
+// 2 GK each side - তুমি যা বলছো
+let gk1={x:fw-110,y:fh/2-30,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:1,team:'opp'};
+let gk2={x:fw-50,y:fh/2+30,c:(tGKs[1]?tGKs[1].c:tGKs[0].c),n:(tGKs[1]?tGKs[1].n:tGKs[0].n),diving:false,diveT:0,diveDir:-1,team:'opp'};
+gks_opp=[gk1,gk2];
+let mgk1={x:110,y:fh/2-30,c:tGKs[0].c,n:tGKs[0].n,diving:false,diveT:0,diveDir:1,team:'my'};
+let mgk2={x:50,y:fh/2+30,c:(tGKs[1]?tGKs[1].c:tGKs[0].c),n:(tGKs[1]?tGKs[1].n:tGKs[0].n),diving:false,diveT:0,diveDir:-1,team:'my'};
+gks_my=[mgk1,mgk2];
+active=0; ball={x:my[0].x+28,y:my[0].y}; owner=my[0];
+}
+document.getElementById('score').innerText=`🇧🇷 BRA ${scoreM}-${scoreO} ARS 🇦🇷`;
+}
+
+function startGame(m){mode=m; scoreM=0; scoreO=0; t=0; hideAll(); initGame(); run=true; clearInterval(timer); timer=setInterval(()=>{t++; let mm=String(Math.floor(t/60)).padStart(2,'0'); let ss=String(t%60).padStart(2,'0'); document.getElementById('time').innerText=mm+':'+ss;},1000); loop();}
+function stopGame(){run=false; clearInterval(timer);}
+
+function checkGKSave(){
+let fw=W, fh=H;
+// Opp GK - বল গোলের দিকে গেলেই ধরে ফেলবে
+for(let gk of gks_opp){
+let dist=Math.hypot(ball.x-gk.x, ball.y-gk.y);
+if(ball.x>fw-180 && ball.y>fh*0.25 && ball.y<fh*0.75 && dist<110 && !owner && Math.hypot(ballV.x,ballV.y)>2){
+if(Math.random()<0.7){ // 70% Save - তুমি যা বলছো কঠিন গোল
+gk.diving=true; gk.diveT=0; gk.diveDir=(ball.y>gk.y)?1:-1;
+showMsg(`🧤 ${gk.n} SAVE! বল ধরে ফেললো!`,'red');
+ball={x:gk.x, y:gk.y}; owner=null; ballV={x:0,y:0};
+setTimeout(()=>{if(gk.team=='opp'){ball={x:gk.x-40,y:gk.y}; owner=null; ballV={x:-8,y:(Math.random()-0.5)*6}; gk.diving=false;}},600);
+return true;
+}
+}
+}
+// My GK
+for(let gk of gks_my){
+let dist=Math.hypot(ball.x-gk.x, ball.y-gk.y);
+if(ball.x<180 && ball.y>fh*0.25 && ball.y<fh*0.75 && dist<110 && !owner && Math.hypot(ballV.x,ballV.y)>2){
+if(Math.random()<0.7){
+gk.diving=true; gk.diveT=0;
+showMsg(`🧤 ${gk.n} SAVE! তোমার GK ধরে ফেললো!`,'green');
+ball={x:gk.x, y:gk.y}; ballV={x:0,y:0};
+setTimeout(()=>{ball={x:gk.x+40,y:gk.y}; ballV={x:8,y:(Math.random()-0.5)*6}; owner=null; gk.diving=false;},600);
+return true;
+}
+}
+}
+return false;
+}
+
+function checkGoal(){
+let fw=W, fh=H;
+if(ball.x>fw-35 && ball.y>fh*0.32 && ball.y<fh*0.58){
+if(checkGKSave()) return false;
+scoreM++; COIN+=15; upd(); document.getElementById('score').innerText=`🇧🇷 BRA ${scoreM}-${scoreO} ARS 🇦🇷`;
+celeb=true; showMsg('GOAL! 🎉 GK কে ফাঁকি দিয়ে গোল! +15 coin','green'); setTimeout(()=>{celeb=false; initGame();},2200); return true;
+}
+if(ball.x<35 && ball.y>fh*0.32 && ball.y<fh*0.58){
+if(checkGKSave()) return false;
+scoreO++; document.getElementById('score').innerText=`🇧🇷 BRA ${scoreM}-${scoreO} ARS 🇦🇷`; showMsg('Opp Goal 🇦🇷 - তোমার GK Miss করলো','red'); setTimeout(initGame,1200); return true;
+}
+if(ball.x<0||ball.x>fw||ball.y<0||ball.y>fh){initGame(); return true;} return false;
+}
+
+function doTackle(){if(!my[active]) return; let tar=owner&&opp.includes(owner)?owner:opp[0]; if(!tar) return; if(Math.hypot(my[active].x-tar.x,my[active].y-tar.y)<65){if(Math.random()<0.3){showMsg('🟨 FOUL! বল ওদের কাছে','yellow'); ball={x:tar.x+20,y:tar.y}; owner=tar; return;} owner=my[active]; ballV={x:0,y:0}; ball.x=my[active].x+22; ball.y=my[active].y; showMsg('TACKLE!','green');}}
+function doShoot(){if(!owner||!my.includes(owner)||celeb) return; let fw=W, fh=H; let gy=fh*0.45+(Math.random()-0.5)*100; let ang=Math.atan2(gy-ball.y,fw-ball.x); if(mode==1 && Math.random()<0.35){showMsg('WALL BLOCK! 🧱','orange'); ballV={x:-6,y:(Math.random()-0.5)*8}; owner=null; return;} let pow=15; ballV.x=Math.cos(ang)*pow; ballV.y=Math.sin(ang)*pow; owner=null;}
+function doPass(){if(!owner||!my.includes(owner)||mode==1||celeb) return; let cur=my[active]; let best=null,d=999; my.forEach((p,i)=>{if(i!=active){let dist=Math.hypot(p.x-cur.x,p.y-cur.y); if(dist>50&&dist<d){d=dist; best=p}}}); if(best){let ang=Math.atan2(best.y-ball.y,best.x-ball.x); ballV.x=Math.cos(ang)*11; ballV.y=Math.sin(ang)*11; owner=null;}}
+
+document.getElementById('tBtn').addEventListener('touchstart',doTackle); document.getElementById('sBtn').addEventListener('touchstart',doShoot); document.getElementById('pBtn').addEventListener('touchstart',doPass);
+document.getElementById('tBtn').addEventListener('click',doTackle); document.getElementById('sBtn').addEventListener('click',doShoot); document.getElementById('pBtn').addEventListener('click',doPass);
+const joyEl=document.getElementById('joy'), stickEl=document.getElementById('stick');
+joyEl.addEventListener('touchstart',e=>{joy.a=true; e.preventDefau
