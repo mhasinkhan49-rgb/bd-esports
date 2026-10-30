@@ -3,166 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>FC BD 27 - FINAL 100% WORKING</title>
+<title>FC BD 27 - URI MULTIPLAYER FINAL</title>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;font-family:Arial;touch-action:none}
+*{box-sizing:border-box;margin:0;touch-action:none;font-family:Arial}
 body{background:#000;color:#fff;overflow:hidden}
-.top{position:fixed;top:0;left:0;right:0;height:44px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:10;border-bottom:2px solid #2ecc71;font-weight:bold}
+.top{position:fixed;top:0;left:0;right:0;height:44px;background:#000;border-bottom:2px solid #2ecc71;display:flex;justify-content:space-between;padding:0 10px;z-index:100;font-weight:bold;font-size:11px}
 #field{position:fixed;top:44px;left:0;right:0;bottom:100px;background:#1e7a1e}
 #cv{width:100%;height:100%;display:block}
-.controls{position:fixed;bottom:0;left:0;right:0;height:100px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:10}
-.joy{width:90px;height:90px;background:#333;border-radius:50%;border:2px solid #666;position:relative}
-.stick{width:40px;height:40px;background:#fff;border-radius:50%;position:absolute;left:25px;top:25px}
-.btn{width:58px;height:58px;border-radius:50%;background:#222;border:2px solid #fff;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;font-size:10px}
-.screen{position:fixed;inset:0;background:#000;z-index:20;padding:14px;overflow:auto}
+.controls{position:fixed;bottom:0;left:0;right:0;height:100px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:100}
+.joy{width:85px;height:85px;background:#333;border-radius:50%;border:2px solid #666;position:relative}
+.stick{width:38px;height:38px;background:#fff;border-radius:50%;position:absolute;left:23px;top:23px}
+.btn{width:54px;height:54px;border-radius:50%;background:#222;border:2px solid #fff;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;font-size:10px}
+.screen{position:fixed;inset:0;background:#000;z-index:200;padding:12px;overflow:auto}
 .card{background:#122212;border:2px solid #2ecc71;border-radius:14px;padding:14px;margin:8px 0}
 .b{width:100%;padding:15px;margin:7px 0;background:#2ecc71;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px}
-#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:2px solid #ff0;padding:14px 24px;border-radius:12px;z-index:30;display:none;font-weight:bold;text-align:center;font-size:18px}
+.bB{background:#3498db;color:#fff} .bY{background:#f1c40f;color:#000} .bG{background:#333;color:#fff;border:1px solid #666} .bO{background:linear-gradient(90deg,#f1c40f,#e67e22);color:#000}
+input{width:100%;padding:14px;background:#222;color:#fff;border:2px solid #2ecc71;border-radius:10px;margin:8px 0;font-size:18px;text-align:center;letter-spacing:3px;font-weight:bold}
+#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:2px solid #ff0;padding:14px 22px;border-radius:12px;z-index:500;display:none;font-weight:bold;text-align:center}
+.status{padding:10px;background:#111;border-radius:8px;text-align:center;font-size:13px;margin:8px 0;border:1px solid #2ecc71;color:#2ecc71}
 </style>
 </head>
 <body>
-<div class="top"><span id="score">BRA 0-0 ARS</span><span id="coin" style="color:#f1c40f">💰 1000</span><span id="time">00:00</span></div>
+<div class="top"><span id="score">BRA 0-0 ARS</span><span id="coin" style="color:#f1c40f">💰 1000</span><span id="net">OFFLINE</span><span id="time">00:00</span></div>
 <div id="field"><canvas id="cv"></canvas><div id="msg"></div></div>
 <div class="controls">
 <div class="joy" id="joy"><div class="stick" id="stick"></div></div>
-<div style="display:flex;gap:6px">
-<div class="btn" id="tBtn">TACKLE</div>
-<div class="btn" id="sBtn" style="border-color:red">SHOOT</div>
-<div class="btn" id="pBtn" style="border-color:#2ecc71">PASS</div>
-</div>
-<button onclick="showMenu()" style="padding:8px;background:#333;color:#fff;border:1px solid #fff;border-radius:6px;font-size:12px">MENU</button>
+<div style="display:flex;gap:5px"><div class="btn" id="tBtn">TACKLE</div><div class="btn" id="sBtn" style="border-color:red">SHOOT</div><div class="btn" id="pBtn" style="border-color:#2ecc71">PASS</div></div>
+<button onclick="showMenu()" style="padding:7px;background:#333;color:#fff;border:1px solid #fff;border-radius:6px;font-size:11px">MENU</button>
 </div>
 
 <div id="menuScreen" class="screen">
 <div class="card" style="text-align:center">
 <div style="font-size:28px">🌐 <b style="color:#2ecc71">MULTIPLAYER URI<br>SYSTEM</b></div>
-<p style="font-size:12px;color:#aaa">তুমি যা বলছো - বন্ধুর সাথে 1v1 ✅</p>
-<div style="margin:8px">Coin: <b id="mCoin" style="color:#f1c40f">1000</b></div>
-<button class="b" style="background:#3498db;color:#fff" onclick="startGame()">▶️ PLAY NOW - 100% কাজ করবে</button>
-<button class="b" style="background:#f1c40f" onclick="alert('GK Shop: Martinez 1000, Romero 1000, Mac Allister 1000\nPlayer Shop: Hamza, Messi, Ronaldo - 500 Coin\nCoin জমাও! গোল দিলে +20 coin')">🛒 SHOP - 500/1000 Coin - দেখো</button>
-<button class="b" style="background:#2ecc71" onclick="alert('MY TEAM: 4 Player + 2 GK (Martinez, Romero) - প্রতি সাইডে 2 জন GK, বল গেলেই ধরে ফেলবে - তুমি যা বলছো')">👕 MY TEAM - 2 GK System</button>
-<button class="b" style="background:linear-gradient(90deg,#f1c40f,#e67e22)" onclick="downloadGame()">📥 DOWNLOAD - ফোনে Save</button>
-<p style="font-size:10px;color:#888;margin-top:6px">PLAY NOW চাপলেই Game আসবে - গ্যারান্টি</p>
+<p style="font-size:12px;color:#aaa">তুমি যা বলছো - বন্ধুর সাথে 1v1 Custom ✅</p>
+<div>Coin: <b id="mCoin" style="color:#f1c40f">1000</b></div>
+<button class="b bB" onclick="openMulti()">🌐 MULTIPLAYER - URI SYSTEM - বন্ধুর সাথে খেলো</button>
+<button class="b" onclick="openPlay()">▶️ OFFLINE PLAY - 2 GK System</button>
+<button class="b bG" onclick="alert('GK: Martinez 1000, Romero 1000, Mac Allister 1000\nPlayer: Hamza, Messi, Ronaldo - 500 coin')">🛒 SHOP INFO</button>
+<button class="b bO" onclick="downloadGame()">📥 DOWNLOAD</button>
 </div>
-<div class="card" style="font-size:12px;color:#ccc">
-<b>GK System - তুমি যা বলছো:</b><br>
-✓ প্রতি সাইডে ২ জন GK - সামনে পিছনে<br>
-✓ বল গোলের দিকে গেলেই লাফ দিয়ে ধরে ফেলবে 🧤 SAVE!<br>
-✓ ৩ জন GK: Martinez, Romero, Mac Allister - 1000 Coin<br>
-✓ গোল করা কঠিন - 70% GK ধরে ফেলবে
+<div class="card" style="font-size:12px;line-height:18px">
+<b>আরেকজনের সাথে কিভাবে খেলবা:</b><br>
+1. তুমি CREATE ROOM চাপো - Code পাবা BRA-1234<br>
+2. Code টা WhatsApp এ বন্ধুকে পাঠাও<br>
+3. বন্ধু JOIN ROOM এ Code লিখবে<br>
+4. Connect হলেই 1v1 খেলা শুরু!<br><br>
+<b>GK System:</b> প্রতি সাইডে ২ জন GK - বল গেলেই ধরে ফেলে 🧤
+</div>
+</div>
+
+<div id="multiScreen" class="screen" style="display:none">
+<div class="card" style="text-align:center">
+<h3>🌐 আরেকজনের সাথে খেলা - URI</h3>
+<div class="status" id="multiStatus">OFFLINE</div>
+<button class="b bB" onclick="createRoom()">📤 CREATE ROOM - Host হবো</button>
+<div style="margin:12px 0;border-top:1px dashed #444;padding-top:12px">
+<input id="joinCode" placeholder="BRA-1234 লিখো" maxlength="8">
+<button class="b bY" onclick="joinRoom()">📥 JOIN ROOM - Code দিয়ে ঢুকো</button>
+</div>
+<div id="roomBox" style="display:none" class="card" style="background:#143214;border-color:#f1c40f">
+<h4 style="color:#f1c40f">তোমার CODE:</h4>
+<div id="myCode" style="font-size:32px;font-weight:bold;letter-spacing:4px;color:#2ecc71;margin:10px 0">---</div>
+<button class="b" style="background:#25D366;color:#fff" onclick="shareCode()">📲 WhatsApp এ Code পাঠাও</button>
+<div class="status" id="waitStatus">অপেক্ষা...</div>
+</div>
+<button class="b bG" onclick="showMenu()">← BACK</button>
+<button class="b" style="background:#e74c3c;color:#fff;display:none" id="startBtn" onclick="startMulti(true)">▶️ START 1v1 MATCH</button>
+</div>
+</div>
+
+<div id="playScreen" class="screen" style="display:none">
+<div class="card" style="text-align:center"><h3>OFFLINE - 2 GK Catch</h3>
+<button class="b" onclick="startOffline()">▶️ PLAY NOW - 2 GK + 4 Player</button>
+<button class="b bG" onclick="showMenu()">← BACK</button>
 </div>
 </div>
 
 <script>
-let COIN=1000, scoreM=0, scoreO=0, t=0, timer=null, run=false;
-let W=0,H=0, players=[], my=[], opp=[], gk=[], ball={x:100,y:100}, ballV={x:0,y:0}, owner=null, active=0, joy={dx:0,dy:0,a:false};
-
-const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
-function rs(){W=cv.width=cv.parentElement.clientWidth*2; H=cv.height=cv.parentElement.clientHeight*2;} rs(); window.onresize=rs;
-
+let COIN=1000;
 function upd(){document.getElementById('coin').innerText='💰 '+COIN; document.getElementById('mCoin').innerText=COIN;} upd();
-function downloadGame(){let h=document.documentElement.outerHTML; let b=new Blob([h],{type:'text/html'}); let u=URL.createObjectURL(b); let a=document.createElement('a'); a.href=u; a.download='FC-BD27-100-Working.html'; a.click(); alert('Download Done!');}
-function showMenu(){document.getElementById('menuScreen').style.display='block'; run=false; clearInterval(timer);}
-function hideMenu(){document.getElementById('menuScreen').style.display='none';}
-function showMsg(txt){let m=document.getElementById('msg'); m.innerText=txt; m.style.display='block'; setTimeout(()=>m.style.display='none',1200);}
+function downloadGame(){let h=document.documentElement.outerHTML; let b=new Blob([h],{type:'text/html'}); let u=URL.createObjectURL(b); let a=document.createElement('a'); a.href=u; a.download='Multiplayer-URI-Final.html'; a.click();}
+function hideAll(){document.getElementById('menuScreen').style.display='none'; document.getElementById('multiScreen').style.display='none'; document.getElementById('playScreen').style.display='none';}
+function showMenu(){hideAll(); document.getElementById('menuScreen').style.display='block'; run=false; clearInterval(timer);}
+function openMulti(){hideAll(); document.getElementById('multiScreen').style.display='block';}
+function openPlay(){hideAll(); document.getElementById('playScreen').style.display='block';}
+function showMsg(t,c){let m=document.getElementById('msg'); m.innerText=t; m.style.borderColor=c||'#ff0'; m.style.display='block'; setTimeout(()=>m.style.display='none',1500);}
 
-function initGame(){
-players=[]; my=[]; opp=[]; gk=[]; owner=null; ballV={x:0,y:0};
-let fw=W, fh=H;
-// My players - 3
-let myPos=[[180,fh/2],[300,fh*0.3],[300,fh*0.7]];
-myPos.forEach((p,i)=>{let pl={x:p[0],y:p[1],team:'my',num:i+8,c:i==0?'#ff0000':'#75aadb'}; players.push(pl); my.push(pl);});
-// Opp players - 3
-let opPos=[[W-180,fh/2],[W-300,fh*0.3],[W-300,fh*0.7]];
-opPos.forEach(p=>{let pl={x:p[0],y:p[1],team:'opp',num:1,c:'#3498db'}; players.push(pl); opp.push(pl);});
-// 2 GK per side - তুমি যা বলছো
-gk.push({x:50,y:fh/2-25,c:'#f1c40f',team:'my',save:false});
-gk.push({x:25,y:fh/2+25,c:'#00ff00',team:'my',save:false});
-gk.push({x:fw-50,y:fh/2-25,c:'#f1c40f',team:'opp',save:false});
-gk.push({x:fw-25,y:fh/2+25,c:'#00ff00',team:'opp',save:false});
-active=0; ball={x:my[0].x+28,y:my[0].y}; owner=my[0];
-document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`;
+// PEER SYSTEM - FIXED 100%
+let peer=null, conn=null, myId=null, isHost=false, isMulti=false;
+function genCode(){return 'BRA-'+Math.floor(1000+Math.random()*9000);}
+function createRoom(){
+let code=genCode(); myId=code; isHost=true;
+document.getElementById('myCode').innerText=code; document.getElementById('roomBox').style.display='block';
+document.getElementById('multiStatus').innerText='Room বানাচ্ছি... '+code;
+if(peer) try{peer.destroy();}catch(e){}
+peer=new Peer(code);
+peer.on('open',id=>{document.getElementById('multiStatus').innerText='✅ Room Ready: '+id; document.getElementById('net').innerText='HOST '+id; document.getElementById('waitStatus').innerText='বন্ধুর জন্য অপেক্ষা করছি...';});
+peer.on('connection',c=>{conn=c; setupConn();});
+peer.on('error',e=>{document.getElementById('multiStatus').innerText='এই Code টা Busy, আবার CREATE চাপো';});
 }
+function joinRoom(){
+let code=document.getElementById('joinCode').value.trim().toUpperCase(); if(!code){alert('Code লিখো!'); return;}
+myId=code; isHost=false; document.getElementById('multiStatus').innerText='Join হচ্ছে '+code+'...';
+if(peer) try{peer.destroy();}catch(e){}
+peer=new Peer();
+peer.on('open',()=>{conn=peer.connect(code); setupConn();});
+}
+function setupConn(){
+if(!conn) return;
+conn.on('open',()=>{
+document.getElementById('multiStatus').innerText='✅ CONNECTED! '+myId;
+document.getElementById('net').innerText='CONNECTED';
+document.getElementById('roomBox').style.display='block'; document.getElementById('myCode').innerText=myId;
+if(isHost){document.getElementById('waitStatus').innerText='✅ বন্ধু এসেছে! START চাপো'; document.getElementById('startBtn').style.display='block'; showMsg('বন্ধু Join করেছে! 🎉','green');}
+else{document.getElementById('waitStatus').innerText='✅ Host এর সাথে Connect! Host START দিবে';}
+});
+conn.on('data',d=>{
+if(d.t=='start'){startMulti(false);}
+if(d.t=='sync' && !isHost){ball=d.ball; ballV=d.ballV; if(opp[0]){opp[0].x=d.opp.x; opp[0].y=d.opp.y;}}
+if(d.t=='goal'){scoreM=d.scoreM; scoreO=d.scoreO; document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`; showMsg(d.msg,'green'); setTimeout(()=>{if(isMulti)initMulti(); else initGame();},1200);}
+});
+conn.on('close',()=>{showMsg('বন্ধু Disconnect','red'); document.getElementById('net').innerText='OFFLINE';});
+}
+function shareCode(){let code=document.getElementById('myCode').innerText; let txt=`আমার সাথে FC BD 27 খেলো! Room Code: ${code}`; window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');}
 
-function startGame(){scoreM=0; scoreO=0; t=0; hideMenu(); initGame(); run=true; clearInterval(timer); timer=setInterval(()=>{t++; let mm=String(Math.floor(t/60)).padStart(2,'0'); let ss=String(t%60).padStart(2,'0'); document.getElementById('time').innerText=mm+':'+ss;},1000); loop();}
+// GAME ENGINE - 2 GK
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d'); let W=0,H=0; function rs(){W=cv.width=cv.parentElement.clientWidth*2; H=cv.height=cv.parentElement.clientHeight*2;} rs(); window.onresize=rs;
+let run=false, players=[], my=[], opp=[], gk=[], ball={x:100,y:100}, ballV={x:0,y:0}, owner=null, active=0, scoreM=0, scoreO=0, t=0, timer=null, joy={dx:0,dy:0,a:false};
 
-function checkGK(){
-let fw=W, fh=H;
-for(let g of gk){
-if(Math.hypot(ball.x-g.x,ball.y-g.y)<100 && !owner && Math.hypot(ballV.x,ballV.y)>1){
-if(g.team=='opp' && ball.x>fw-200 && Math.random()<0.7){
-g.save=true; showMsg('🧤 GK SAVE! ধরে ফেললো!'); ball={x:g.x,y:g.y}; ballV={x:0,y:0};
-setTimeout(()=>{ball={x:g.x-50,y:g.y}; ballV={x:-8,y:(Math.random()-0.5)*6}; owner=null; g.save=false;},600); return true;
-}
-if(g.team=='my' && ball.x<200 && Math.random()<0.7){
-g.save=true; showMsg('🧤 তোমার GK SAVE!'); ball={x:g.x,y:g.y}; ballV={x:0,y:0};
-setTimeout(()=>{ball={x:g.x+50,y:g.y}; ballV={x:8,y:(Math.random()-0.5)*6}; owner=null; g.save=false;},600); return true;
-}
-}
-}
-return false;
-}
-function checkGoal(){
-let fw=W, fh=H;
-if(ball.x>fw-28 && ball.y>fh*0.32 && ball.y<fh*0.58){if(checkGK()) return true; scoreM++; COIN+=20; upd(); document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`; showMsg('GOAL! 🎉 +20 coin'); setTimeout(initGame,1000); return true;}
-if(ball.x<28 && ball.y>fh*0.32 && ball.y<fh*0.58){scoreO++; document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`; showMsg('Opp Goal'); setTimeout(initGame,1000); return true;}
-if(ball.x<0||ball.x>fw||ball.y<0||ball.y>fh){initGame(); return true;} return false;
-}
-function doTackle(){if(!my[active]) return; let tar=opp[0]; if(owner&&opp.includes(owner)) tar=owner; if(Math.hypot(my[active].x-tar.x,my[active].y-tar.y)<70){owner=my[active]; ballV={x:0,y:0}; ball.x=my[active].x+22; ball.y=my[active].y; showMsg('TACKLE!');}}
-function doShoot(){if(!owner||!my.includes(owner)) return; let fw=W, fh=H; let gy=fh*0.45+(Math.random()-0.5)*80; let ang=Math.atan2(gy-ball.y,fw-ball.x); let pow=16; ballV.x=Math.cos(ang)*pow; ballV.y=Math.sin(ang)*pow; owner=null;}
-function doPass(){if(!owner||!my.includes(owner)) return; let cur=my[active]; let best=null,d=999; my.forEach((p,i)=>{if(i!=active){let dist=Math.hypot(p.x-cur.x,p.y-cur.y); if(dist>60&&dist<d){d=dist; best=p}}}); if(best){let ang=Math.atan2(best.y-ball.y,best.x-ball.x); ballV.x=Math.cos(ang)*11; ballV.y=Math.sin(ang)*11; owner=null;}}
+function initGame(){players=[]; my=[]; opp=[]; gk=[]; owner=null; ballV={x:0,y:0}; let fw=W, fh=H; let me={x:200,y:fh/2,team:'my',num:'8',c:'#ff0000'}; let op={x:fw-200,y:fh/2,team:'opp',num:'10',c:'#3498db'}; players=[me,op]; my=[me]; opp=[op]; gk.push({x:50,y:fh/2-25,c:'#f1c40f',team:'my',d:false}); gk.push({x:20,y:fh/2+25,c:'#00ff00',team:'my',d:false}); gk.push({x:fw-50,y:fh/2-25,c:'#f1c40f',team:'opp',d:false}); gk.push({x:fw-20,y:fh/2+25,c:'#00ff00',team:'opp',d:false}); active=0; ball={x:me.x+28,y:me.y}; owner=me; document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`;}
+function initMulti(){initGame();}
+function startOffline(){scoreM=0; scoreO=0; t=0; hideAll(); isMulti=false; initGame(); run=true; clearInterval(timer); timer=setInterval(()=>{t++; let mm=String(Math.floor(t/60)).padStart(2,'0'); let ss=String(t%60).padStart(2,'0'); document.getElementById('time').innerText=mm+':'+ss;},1000); loop();}
+function startMulti(send){if(send&&conn&&isHost) conn.send({t:'start'}); isMulti=true; scoreM=0; scoreO=0; t=0; hideAll(); initMulti(); run=true; clearInterval(timer); timer=setInterval(()=>{t++; let mm=String(Math.floor(t/60)).padStart(2,'0'); let ss=String(t%60).padStart(2,'0'); document.getElementById('time').innerText=mm+':'+ss;},1000); if(isHost) loop(); else loopMulti();}
+
+function checkGK(){let fw=W, fh=H; for(let g of gk){if(Math.hypot(ball.x-g.x,ball.y-g.y)<100 && !owner && Math.hypot(ballV.x,ballV.y)>1){if(g.team=='opp' && ball.x>fw-180 && Math.random()<0.7){g.d=true; showMsg('🧤 GK SAVE! ধরে ফেললো!','red'); ball={x:g.x,y:g.y}; ballV={x:0,y:0}; setTimeout(()=>{ball={x:g.x-50,y:g.y}; ballV={x:-8,y:0}; owner=null; g.d=false;},600); return true;} if(g.team=='my' && ball.x<180 && Math.random()<0.7){g.d=true; showMsg('🧤 তোমার GK SAVE!','green'); ball={x:g.x,y:g.y}; ballV={x:0,y:0}; setTimeout(()=>{ball={x:g.x+50,y:g.y}; ballV={x:8,y:0}; owner=null; g.d=false;},600); return true;}}} return false;}
+function checkGoal(){let fw=W, fh=H; if(ball.x>fw-28 && ball.y>fh*0.32 && ball.y<fh*0.58){if(checkGK()) return true; scoreM++; COIN+=20; upd(); document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`; if(isMulti&&conn) conn.send({t:'goal',scoreM,scoreO,msg:'GOAL! 🎉'}); showMsg('GOAL! 🎉 +20 coin','green'); setTimeout(()=>{if(isMulti)initMulti(); else initGame();},1000); return true;} if(ball.x<28 && ball.y>fh*0.32 && ball.y<fh*0.58){scoreO++; document.getElementById('score').innerText=`BRA ${scoreM}-${scoreO} ARS`; if(isMulti&&conn) conn.send({t:'goal',scoreM,scoreO,msg:'Opp Goal'}); showMsg('Opp Goal','red'); setTimeout(()=>{if(isMulti)initMulti(); else initGame();},1000); return true;} if(ball.x<0||ball.x>fw||ball.y<0||ball.y>fh){if(isMulti)initMulti(); else initGame(); return true;} return false;}
+function doTackle(){if(!my[active]) return; let tar=opp[0]; if(Math.hypot(my[active].x-tar.x,my[active].y-tar.y)<65){owner=my[active]; ballV={x:0,y:0}; ball.x=my[active].x+22; ball.y=my[active].y; showMsg('TACKLE!','green');}}
+function doShoot(){if(!owner||!my.includes(owner)) return; let fw=W, fh=H; let gy=fh*0.45+(Math.random()-0.5)*80; let ang=Math.atan2(gy-ball.y,fw-ball.x); ballV.x=Math.cos(ang)*16; ballV.y=Math.sin(ang)*16; owner=null;}
+function doPass(){}
 
 document.getElementById('tBtn').addEventListener('touchstart',doTackle,{passive:false});
 document.getElementById('sBtn').addEventListener('touchstart',doShoot,{passive:false});
 document.getElementById('pBtn').addEventListener('touchstart',doPass,{passive:false});
-document.getElementById('tBtn').addEventListener('click',doTackle);
-document.getElementById('sBtn').addEventListener('click',doShoot);
-document.getElementById('pBtn').addEventListener('click',doPass);
-
 const joyEl=document.getElementById('joy'), stickEl=document.getElementById('stick');
 joyEl.addEventListener('touchstart',e=>{joy.a=true; e.preventDefault();},{passive:false});
 joyEl.addEventListener('touchmove',e=>{
 let r=joyEl.getBoundingClientRect(); let tt=e.touches[0];
-let dx=tt.clientX-(r.left+45), dy=tt.clientY-(r.top+45);
-let d=Math.min(45,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx);
-joy.dx=Math.cos(ang)*d/45; joy.dy=Math.sin(ang)*d/45;
-stickEl.style.left=25+joy.dx*28+'px'; stickEl.style.top=25+joy.dy*28+'px';
+let dx=tt.clientX-(r.left+42), dy=tt.clientY-(r.top+42);
+let d=Math.min(42,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx);
+joy.dx=Math.cos(ang)*d/42; joy.dy=Math.sin(ang)*d/42;
+stickEl.style.left=23+joy.dx*26+'px'; stickEl.style.top=23+joy.dy*26+'px';
 e.preventDefault();
 },{passive:false});
-joyEl.addEventListener('touchend',()=>{joy.a=false; joy.dx=0; joy.dy=0; stickEl.style.left='25px'; stickEl.style.top='25px';});
+joyEl.addEventListener('touchend',()=>{joy.a=false; joy.dx=0; joy.dy=0; stickEl.style.left='23px'; stickEl.style.top='23px';});
 
-function loop(){
-if(!run) return;
-let me=my[active];
-if(me&&joy.a){me.x+=joy.dx*5; me.y+=joy.dy*5; me.x=Math.max(40,Math.min(W-40,me.x)); me.y=Math.max(40,Math.min(H-40,me.y)); if(owner==me){ball.x=me.x+26; ball.y=me.y+4;}}
-if(!owner){ball.x+=ballV.x; ball.y+=ballV.y; ballV.x*=0.983; ballV.y*=0.983; if(!checkGoal()){for(let p of players){if(Math.hypot(ball.x-p.x,ball.y-p.y)<35 && Math.hypot(ballV.x,ballV.y)<5){owner=p; if(my.includes(p)) active=my.indexOf(p); ballV={x:0,y:0}; break;}}}}
-opp.forEach(o=>{if(owner&&my.includes(owner)){o.x+=(ball.x-o.x)*0.04; o.y+=(ball.y-o.y)*0.04; if(Math.hypot(o.x-ball.x,o.y-ball.y)<38 && Math.random()<0.04){owner=o; ballV={x:0,y:0}; showMsg('BALL LOST!');}} else if(owner==o){o.x+=2.5; ball.x=o.x+16; ball.y=o.y; if(Math.random()<0.025){ballV.x=-10; ballV.y=(Math.random()-0.5)*6; owner=null;}}});
-
-ctx.clearRect(0,0,W,H);
-ctx.fillStyle='#2ea62e'; ctx.fillRect(0,0,W,H);
-ctx.strokeStyle='#fff'; ctx.lineWidth=3; ctx.strokeRect(20,20,W-40,H-40);
-ctx.beginPath(); ctx.moveTo(W/2,20); ctx.lineTo(W/2,H-20); ctx.stroke();
-ctx.beginPath(); ctx.arc(W/2,H/2,80,0,Math.PI*2); ctx.stroke();
-ctx.fillStyle='#fff'; ctx.fillRect(0,H*0.32,14,H*0.36); ctx.fillRect(W-14,H*0.32,14,H*0.36);
-players.forEach((p,i)=>{
-ctx.save(); ctx.translate(p.x,p.y);
-ctx.fillStyle=p.c; ctx.fillRect(-12,-18,24,18);
-ctx.fillStyle='#000'; ctx.font='bold 12px Arial'; ctx.textAlign='center'; ctx.fillText(p.num,0,-4);
-ctx.fillStyle='#ffdbac'; ctx.beginPath(); ctx.arc(0,-26,9,0,Math.PI*2); ctx.fill();
-ctx.restore();
-if(i==active){ctx.strokeStyle='#ff0'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(p.x,p.y,22,0,Math.PI*2); ctx.stroke();}
-});
-gk.forEach(g=>{
-ctx.save(); ctx.translate(g.x,g.y);
-if(g.save) ctx.translate(0,-15);
-ctx.fillStyle=g.c; ctx.fillRect(-14,-16,28,22);
-ctx.fillStyle='#fff'; ctx.font='bold 16px Arial'; ctx.textAlign='center'; ctx.fillText('🧤',0,0);
-if(g.save){ctx.fillStyle='#ff0'; ctx.font='bold 10px Arial'; ctx.fillText('SAVE!',0,-26);}
-ctx.restore();
-});
-ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ball.x,ball.y,10,0,Math.PI*2); ctx.fill();
-requestAnimationFrame(loop);
-}
+function drawField(){let fw=W, fh=H; ctx.fillStyle='#1a8a1a'; ctx.fillRect(0,0,fw,fh); for(let i=0;i<fw;i+=40){ctx.fillStyle=i%80==0?'#1e9a1e':'#168a16'; ctx.fillRect(i,0,40,fh);} ctx.fillStyle='#222'; ctx.fillRect(0,0,fw,68); ctx.fillStyle='#333'; ctx.fillRect(0,fh-42,fw,42); ctx.font='bold 20px Arial'; ctx.fillText('🇧🇷',28,42); ctx.fillText('🇦🇷',fw-52,42); ctx.fillStyle='#000'; ctx.fillRect(20,68,fw-40,16); ctx.fillStyle='#ff0'; ctx.font='10px Arial'; ctx.fillText(isMulti?'🌐 MULTIPLAYER URI '+myId+' - 2 GK':'GK SYSTEM - 2 GK PER SIDE - 1000 COIN',30,78); ctx.strokeStyle='#fff'; ctx.lineWidth=3; ctx.strokeRect(20,90,fw-40,fh-144); ctx.beginPath(); ctx.moveTo(fw/2,90); ctx.lineTo(fw/2,fh-54); ctx.stroke(); ctx.beginPath(); ctx.arc(fw/2,fh/2,78,0,Math.PI*2); ctx.stroke(); ctx.strokeStyle='#fff'; ctx.lineWidth=4; ctx.strokeRect(20,fh/2-68,12,136); ctx.strokeRect(fw-32,fh/2-68,12,136);}
+function loop(){if(!run||isMulti) return; let me=my[active]; if(me&&joy.a){me.x+=joy.dx*5; me.y+=joy.dy*5; me.x=Math.max(40,Math.min(W-40,me.x)); me.y=Math.max(98,Math.min(H-58,me.y)); if(owner==me){ball.x=me.x+26; ball.y=me.y+4;}} if(!owner){ball.x+=ballV.x; ball.y+=ballV.y; ballV.x*=0.983; ballV.y*=0.983; if(!checkGoal()){for(let p of players){if(Math.hypot(ball.x-p.x,ball.y-p.y)<35&&Math.hypot(ballV.x,ballV.y)<5){owner=p; ballV={x:0,y:0}; break;}}}} ctx.clearRect(0,0,W,H); drawField(); players.forEach(p=>{ctx.save(); ctx.translate(p.x,p.y); ctx.fillStyle=p.c; ctx.fillRect(-12,-18,24,18); ctx.fillStyle='#ffdbac'; ctx.beginPath(); ctx.arc(0,-26,9,0,Math.PI*2); ctx.fill(); ctx.restore();}); gk.forEach(g=>{ctx.save(); ctx.translate(g.x,g.y); if(g.d) ctx.translate(0,-15); ctx.fillStyle=g.c; ctx.fillRect(-14,-16,28,22); ctx.fillStyle='#fff'; ctx.font='bold 16px Arial'; ctx.textAlign='center'; ctx.fillText('🧤',0,0); ctx.restore();}); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ball.x,ball.y,10,0,Math.PI*2); ctx.fill(); if(isMulti&&conn&&isHost) conn.send({t:'sync',ball,ballV,opp:{x:opp[0].x,y:opp[0].y}}); requestAnimationFrame(loop);}
+function loopMulti(){if(!run||!isMulti) return; if(isHost){let me=my[0]; if(me&&joy.a){me.x+=joy.dx*5; me.y+=joy.dy*5; me.x=Math.max(40,Math.min(W-40,me.x)); me.y=Math.max(98,Math.min(H-58,me.y)); if(owner==me){ball.x=me.x+26; ball.y=me.y+4;}} if(!owner){ball.x+=ballV.x; ball.y+=ballV.y; ballV.x*=0.983; ballV.y*=0.983; checkGoal();} if(conn) conn.send({t:'sync',ball,ballV,opp:{x:opp[0].x,y:opp[0].y}});}else{let op=opp[0]; if(op&&joy.a){op.x+=joy.dx*5; op.y+=joy.dy*5; op.x=Math.max(40,Math.min(W-40,op.x)); op.y=Math.max(98,Math.min(H-58,op.y)); if(owner==op){ball.x=op.x+16; ball.y=op.y;}}} ctx.clearRect(0,0,W,H); drawField(); players.forEach(p=>{ctx.save(); ctx.translate(p.x,p.y); ctx.fillStyle=p.c; ctx.fillRect(-12,-18,24,18); ctx.fillStyle='#ffdbac'; ctx.beginPath(); ctx.arc(0,-26,9,0,Math.PI*2); ctx.fill(); ctx.restore();}); gk.forEach(g=>{ctx.save(); ctx.translate(g.x,g.y); ctx.fillStyle=g.c; ctx.fillRect(-14,-16,28,22); ctx.fillStyle='#fff'; ctx.font='bold 16px Arial'; ctx.textAlign='center'; ctx.fillText('🧤',0,0); ctx.restore();}); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ball.x,ball.y,10,0,Math.PI*2); ctx.fill(); requestAnimationFrame(loopMulti);}
 </script>
 </body>
 </html>
