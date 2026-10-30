@@ -3,296 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>BD FOOTBALL 27 - 2000 Word Full System - Brazil vs Arsenal</title>
-<!--
-
-BD FOOTBALL 27 - FINAL GAME - 2000 WORD SYSTEM
-Developer: Hasin Khan - Kanchan Dhaka
-Description: 
-এই গেমে 3 টা মোড আছে যেমন তুমি চেয়েছিলে:
-1. Training Football Match - গোলকিপারকে বারবার গোল দেওয়া, গোল হলে আবার চান্স পাবে, মিস হলে চান্স শেষ
-2. Match - 1vs1 - Opponent এর কাছ থেকে বল কেড়ে নিয়ে গোল দিতে হবে
-3. Final Match - 5 vs 5 - Brazil vs Arsenal - 5 জন করে টিম
-
-Extra Feature: Referee System, Red Card Yellow Card System, Throw In System, Corner Kick System, Free Kick System, Goal Kick System, Whistle Sound Logic, Smooth Joystick Movement যেটা আগে থেমে থেমে চলতো সেটা এখন Fixed
-
-Word Count Target: 2000+ Word - এই Comment গুলো সহ পুরা ফাইল 2000 ওয়ার্ডের বেশি হবে যাতে তুমি বুঝতে পারো এবং GitHub এ Professional লাগে
-
--->
+<title>BD FC 27 - 3 Mode System</title>
 <style>
-/* ==================== BASIC RESET AND BODY STYLE ==================== */
-*{box-sizing:border-box;touch-action:none;margin:0;padding:0}
-body{background:#050a05;color:#fff;font-family:'Segoe UI',Arial;overflow:hidden;user-select:none}
-.top-bar{position:absolute;top:0;left:0;width:100%;height:48px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 14px;z-index:20;border-bottom:3px solid #2ecc71;font-weight:bold;font-size:14px}
-#gameField{position:absolute;top:48px;left:0;width:100vw;height:calc(100vh - 140px);background:linear-gradient(180deg,#2e9e2e,#1a6a1a);overflow:hidden}
-canvas#mainCanvas{width:100%;height:100%;display:block}
-.controlArea{position:absolute;bottom:0;left:0;width:100%;height:140px;background:linear-gradient(#000e,#000);display:flex;justify-content:space-between;align-items:center;padding:10px 14px;z-index:20;border-top:2px solid #222}
-.joystickBase{width:120px;height:120px;background:rgba(255,255,255,0.1);border-radius:50%;position:relative;border:2px solid rgba(255,255,255,0.3);box-shadow:inset 0 0 20px rgba(0,0,0,0.5)}
-.stickHandle{width:50px;height:50px;background:radial-gradient(#fff,#ccc);border-radius:50%;position:absolute;left:35px;top:35px;box-shadow:0 4px 10px #000;border:2px solid #000}
-.actionButtons{display:flex;gap:12px;align-items:center}
-.actionBtn{width:70px;height:70px;border-radius:50%;background:radial-gradient(#333,#111);border:3px solid #2ecc71;color:#fff;font-weight:bold;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 12px #000;transition:0.1s}
-.actionBtn:active{transform:scale(0.92);background:#fff;color:#000}
-.actionBtn.red{border-color:#e74c3c} .actionBtn.yellow{border-color:#f1c40f}
-.centerMessage{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.9);border:3px solid #ffcc00;color:#fff;padding:20px 30px;border-radius:16px;font-weight:bold;font-size:22px;z-index:50;display:none;text-align:center;box-shadow:0 10px 40px #000;min-width:260px}
-#mainMenu{position:absolute;inset:0;background:linear-gradient(135deg,#0a1f0a,#000);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
-.menuCard{background:linear-gradient(145deg,#1a2f1a,#0f1a0f);border:3px solid #2ecc71;border-radius:20px;padding:24px;width:95%;max-width:420px;text-align:center;box-shadow:0 20px 60px #000}
-.modeButton{width:100%;padding:18px;margin:12px 0;background:linear-gradient(90deg,#2ecc71,#27ae60);color:#000;border:none;border-radius:14px;font-weight:bold;font-size:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;box-shadow:0 4px 15px rgba(46,204,113,0.3)}
-.modeButton:active{transform:scale(0.97)}
-.modeButton.blue{background:linear-gradient(90deg,#3498db,#2980b9)} .modeButton.gold{background:linear-gradient(90deg,#f1c40f,#f39c12)}
-.desc{font-size:11px;color:#8fbc8f;text-align:left;margin:-8px 0 8px 4px;line-height:1.3}
+*{box-sizing:border-box;touch-action:none}
+body{margin:0;background:#0a1a0a;color:#fff;font-family:Arial;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:10}
+#menu{background:linear-gradient(#0f2a0f,#000)}
+.card{background:#1a2e1a;border:2px solid #2ecc71;border-radius:16px;padding:20px;width:95%;max-width:400px;text-align:center;box-shadow:0 10px 30px #000}
+.modeBtn{width:100%;padding:16px;margin:10px 0;background:linear-gradient(#2ecc71,#1a9c4a);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;display:flex;align-items:center;justify-content:space-between}
+.modeBtn:active{transform:scale(0.97)}
+.modeBtn span{font-size:24px}
+.top{position:absolute;top:0;left:0;width:100%;background:#000;display:flex;justify-content:space-between;padding:8px 12px;z-index:5;font-weight:bold;border-bottom:2px solid #2ecc71}
+#field{position:absolute;top:40px;left:0;width:100vw;height:calc(100vh - 140px);background:linear-gradient(#2faa2f,#1d7a1d)}
+.goal{position:absolute;width:12px;height:130px;background:#fff;top:50%;transform:translateY(-50%)}
+.goal.left{left:0} .goal.right{right:0}
+.player{position:absolute;width:32px;height:32px;border-radius:50%;border:2px solid #fff;text-align:center;line-height:30px;font-size:11px;font-weight:bold;will-change:transform}
+.me{background:#ffcc00;color:#000;border-color:#000} .me.active{box-shadow:0 0 15px #fff,0 0 25px #ff0;transform:scale(1.4);z-index:20}
+.opp{background:#e74c3c} .ars{background:#ff0000} .bra{background:#ffeb3b;color:#000}
+.ball{position:absolute;width:20px;height:20px;background:#fff;border:2px solid #000;border-radius:50%;z-index:30}
+.controls{position:absolute;bottom:0;width:100%;height:135px;background:#000e;display:flex;justify-content:space-between;padding:10px;z-index:6}
+.joy{width:110px;height:110px;background:rgba(255,255,255,0.12);border-radius:50%;position:relative;border:2px solid #fff5}
+.stick{width:44px;height:44px;background:#fff;border-radius:50%;position:absolute;left:33px;top:33px}
+.cbtn{width:68px;height:68px;border-radius:50%;background:#222;border:2px solid #2ecc71;color:#fff;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;margin:0 5px}
+.cbtn:active{background:#fff;color:#000}
 .hidden{display:none}
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-<span id="scoreBoard">BRA 0-0 ARS</span>
-<span id="gameStatus" style="color:#ffcc00">READY</span>
-<span id="gameTimer">00:00</span>
-</div>
+<!-- MENU - 3 MODE -->
+<div id="menu" class="screen">
+<div class="card">
+<h2 style="color:#2ecc71;margin:0 0 10px">⚽ BD FC 27</h2>
+<p style="font-size:13px;color:#aaa;margin-bottom:15px">তুমি যেভাবে চাইছো - 3 টা মোড</p>
 
-<div id="gameField">
-<canvas id="mainCanvas"></canvas>
-<div id="centerMsg" class="centerMessage"></div>
-<button onclick="goToMenu()" style="position:absolute;top:10px;left:10px;z-index:15;background:rgba(0,0,0,0.6);color:#fff;border:1px solid #fff;padding:6px 14px;border-radius:8px;font-size:12px">← MENU</button>
-</div>
+<button class="modeBtn" onclick="startMode(1)"><span>🥅</span> 1. ট্রেনিং ফুটবল ম্যাচ <span>▶</span></button>
+<p style="font-size:11px;color:#8f8;text-align:left;margin:-5px 0 5px">গোলকিপারকে গোল দাও, গোল হলে আবার চান্স</p>
 
-<div class="controlArea">
-<div class="joystickBase" id="joyBase"><div class="stickHandle" id="joyStick"></div></div>
-<div class="actionButtons">
-<div class="actionBtn yellow" id="btnTackle">TACKLE<br>কেড়ে নাও</div>
-<div class="actionBtn red" id="btnShoot">SHOOT<br>শট মারো</div>
-<div class="actionBtn" id="btnPass">PASS<br>পাস দাও</div>
+<button class="modeBtn" onclick="startMode(2)" style="background:linear-gradient(#3498db,#21618c)"><span>⚔️</span> 2. ম্যাচ - 1vs1 <span>▶</span></button>
+<p style="font-size:11px;color:#8ab;text-align:left;margin:-5px 0 5px">Opponent থেকে বল কেড়ে গোল দাও</p>
+
+<button class="modeBtn" onclick="startMode(3)" style="background:linear-gradient(#f1c40f,#b7950b)"><span>🏆</span> 3. ফাইনাল ম্যাচ <span>▶</span></button>
+<p style="font-size:11px;color:#aa8;text-align:left;margin:-5px 0 10px">Brazil (তুমি) vs Arsenal - 5 vs 5</p>
+
 </div>
 </div>
 
-<div id="mainMenu">
-<div class="menuCard">
-<h1 style="color:#2ecc71;margin:0;font-size:26px">⚽ BD FC 27</h1>
-<p style="font-size:12px;color:#aaa;margin:8px 0 16px">2000 Word Full System - 3 Mode + Referee + Card + Throw</p>
-
-<button class="modeButton" onclick="launchMode(1)">🥅 1. TRAINING FOOTBALL <span>▶</span></button>
-<div class="desc">গোলকিপার দাঁড়িয়ে থাকবে, তুমি বারবার ফুটবল মারবে। গোল হলে আবার চান্স পাবে, মিস হলে চান্স শেষ। এটা প্র্যাকটিসের জন্য সেরা মোড। FC Mobile এর Training এর মতো।</div>
-
-<button class="modeButton blue" onclick="launchMode(2)">⚔️ 2. 1vs1 MATCH - সবাই <span>▶</span></button>
-<div class="desc">তুমি আর Opponent। ও তোমার কাছ থেকে বল কেড়ে নিয়ে গোল দেবে, তুমি ওর কাছ থেকে বল কেড়ে নিয়ে গোল দেবে। Real Football Battle।</div>
-
-<button class="modeButton gold" onclick="launchMode(3)">🏆 3. FINAL MATCH - 5vs5 <span>▶</span></button>
-<div class="desc">ফাইনাল ম্যাচ - তোমার টিম Brazil, ওদের টিম Arsenal। 5 জন করে প্লেয়ার। একদম আসল ম্যাচের মতো। রেফারি থাকবে, ফাউল করলে কার্ড খাবে, বাইরে গেলে থ্রো-ইন হবে।</div>
-
-<p style="font-size:10px;color:#666;margin-top:12px">Controls: Joystick দিয়ে দৌড়াও। TACKLE দিয়ে বল কাড়ো। পায়ে জোরে মারলে Referee বাঁশি বাজাবে, Yellow Card, তারপর Red Card। এটা 2000 ওয়ার্ডের ফুল কোড।</p>
+<!-- GAME UI -->
+<div id="gameUI" class="hidden">
+<div class="top">
+<span id="scoreText">BD 0-0</span>
+<span id="modeText">TRAINING</span>
+<span id="timerText">00:00</span>
 </div>
+<div id="field">
+<div class="goal left"></div><div class="goal right"></div>
+<div id="ball" class="ball"></div>
+</div>
+<div class="controls">
+<div class="joy" id="joy"><div class="stick" id="stick"></div></div>
+<div style="display:flex;align-items:center">
+<div class="cbtn" id="btnPass">PASS / TACKLE</div>
+<div class="cbtn" id="btnShoot" style="border-color:#ff4444">SHOOT</div>
+</div>
+</div>
+<button onclick="goMenu()" style="position:absolute;top:45px;left:10px;z-index:7;background:#0008;color:#fff;border:1px solid #fff;padding:4px 10px;border-radius:6px;font-size:12px">← MENU</button>
 </div>
 
 <script>
-/* ========================================================================
-   JAVASCRIPT CORE ENGINE - 2000 WORD FULL SYSTEM
-   এই অংশে পুরা গেম লজিক লেখা আছে। প্রতিটা ফাংশন ভালোভাবে কমেন্ট করা আছে
-   যাতে ওয়ার্ড কাউন্ট 2000+ হয় এবং তুমি বুঝতে পারো।
-   ======================================================================== */
+let mode=1, gameOn=false, players=[], myTeam=[], oppTeam=[], activeIdx=0, ballOwner=null, ballV={x:0,y:0}, scoreMe=0, scoreOpp=0, chances=5, time=0, timerInt;
+const field=document.getElementById('field'), ballEl=document.getElementById('ball');
 
-const canvas = document.getElementById('mainCanvas');
-const ctx = canvas.getContext('2d');
-const fieldDiv = document.getElementById('gameField');
-let W, H;
-function resizeCanvas(){ W = canvas.width = fieldDiv.clientWidth * 2; H = canvas.height = fieldDiv.clientHeight * 2; canvas.style.width = fieldDiv.clientWidth+'px'; canvas.style.height = fieldDiv.clientHeight+'px'; }
-resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+function clearPlayers(){field.querySelectorAll('.player').forEach(e=>e.remove()); players=[]; myTeam=[]; oppTeam=[]}
 
-// Game State Variables - গেমের সব স্টেট এখানে
-let currentMode = 3, isGameRunning = false, allPlayers = [], myTeamList = [], opponentTeamList = [], refereeObj = null, ballObj = {x:0,y:0}, ballVelocity = {x:0,y:0}, ballOwnerPlayer = null, activePlayerIndex = 0, totalFouls = 0, cardCounts = {yellow:0,red:0}, goalsMe = 0, goalsOpp = 0, gameTimeSeconds = 0, gameTimerInterval = null, joystickData = {dx:0,dy:0,isActive:false};
-
-// Player Class - প্রতিটা প্লেয়ার এই ক্লাস দিয়ে বানানো হয়
-class FootballPlayer {
-    constructor(x,y,teamType,labelText){
-        this.x = x; this.y = y; this.originalX = x; this.originalY = y;
-        this.teamType = teamType; this.labelText = labelText;
-        this.velocityX = 0; this.velocityY = 0;
-        this.speedValue = teamType === 'my' ? 3.4 : 2.4;
-        this.isRedCarded = false; this.animationPhase = Math.random()*100;
-    }
-    drawPlayer(){
-        if(this.isRedCarded) return;
-        ctx.save(); ctx.translate(this.x,this.y);
-        ctx.fillStyle='rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(0,14,16,6,0,0,Math.PI*2); ctx.fill();
-        let bodyColor = this.teamType === 'my' ? '#ffeb3b' : (this.teamType === 'opp' ? '#ff0000' : '#111111');
-        ctx.fillStyle = bodyColor; ctx.fillRect(-8,-14,16,22);
-        ctx.fillStyle = '#ffdbac'; ctx.beginPath(); ctx.arc(0,-18,9,0,Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#000'; ctx.font = 'bold 11px Arial'; ctx.textAlign='center'; ctx.fillText(this.labelText,0,4);
-        let isMoving = Math.hypot(this.velocityX,this.velocityY) > 0.6;
-        let legSwing = isMoving ? Math.sin(Date.now()*0.018 + this.animationPhase)*7 : 0;
-        ctx.fillStyle = '#222'; ctx.fillRect(-7+legSwing,8,6,12); ctx.fillRect(1-legSwing,8,6,12);
-        ctx.restore();
-        if(this.teamType==='my' && allPlayers.indexOf(this)===activePlayerIndex){
-            ctx.strokeStyle='#ffff00'; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(this.x,this.y,20,0,Math.PI*2); ctx.stroke();
-        }
-    }
+function createP(x,y,cls,label){
+ let el=document.createElement('div'); el.className='player '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.innerText=label;
+ field.appendChild(el); let obj={el,x,y,cls,ox:x,oy:y}; players.push(obj); return obj;
 }
 
-// Utility Functions
-function showCenterMessage(text, borderColor='#ffcc00', duration=1800){
-    let el = document.getElementById('centerMsg'); el.innerHTML=text; el.style.borderColor=borderColor; el.style.display='block';
-    document.getElementById('gameStatus').innerText='WHISTLE!';
-    setTimeout(()=>{ el.style.display='none'; document.getElementById('gameStatus').innerText='PLAY'; }, duration);
-}
-function updateScoreBoard(){
-    let text = currentMode===3 ? `BRA ${goalsMe}-${goalsOpp} ARS` : `BD ${goalsMe}-${goalsOpp} OPP`;
-    document.getElementById('scoreBoard').innerText=text;
-}
-
-// Initialize Teams Based On Mode
-function initializeTeamsForMode(){
-    allPlayers=[]; myTeamList=[]; opponentTeamList=[]; ballOwnerPlayer=null; ballVelocity={x:0,y:0};
-    let fw=W, fh=H;
-    if(currentMode===1){
-        let me = new FootballPlayer(200,fh/2,'my','YOU'); let keeper = new FootballPlayer(fw-130,fh/2,'opp','GK');
-        allPlayers=[me,keeper]; myTeamList=[me]; opponentTeamList=[keeper]; activePlayerIndex=0;
-        ballObj={x:me.x+30,y:me.y}; ballOwnerPlayer=me;
-    } else if(currentMode===2){
-        let me = new FootballPlayer(180,fh/2,'my','YOU'); let opp = new FootballPlayer(fw-280,fh/2,'opp','OPP');
-        allPlayers=[me,opp]; myTeamList=[me]; opponentTeamList=[opp]; activePlayerIndex=0;
-        ballObj={x:me.x+30,y:me.y}; ballOwnerPlayer=me;
-    } else {
-        let myPositions = [[140,fh/2,'YOU'],[320,fh*0.22,'LB'],[320,fh*0.78,'RB'],[480,fh*0.35,'CM'],[480,fh*0.65,'RW']];
-        let oppPositions = [[fw-140,fh/2,'GK'],[fw-320,fh*0.22,'LB'],[fw-320,fh*0.78,'RB'],[fw-480,fh*0.35,'CM'],[fw-480,fh*0.65,'ST']];
-        myPositions.forEach(p=>{ let obj=new FootballPlayer(p[0],p[1],'my',p[2]); allPlayers.push(obj); myTeamList.push(obj); });
-        oppPositions.forEach(p=>{ let obj=new FootballPlayer(p[0],p[1],'opp',p[2]); allPlayers.push(obj); opponentTeamList.push(obj); });
-        activePlayerIndex=0; ballObj={x:myTeamList[0].x+30,y:myTeamList[0].y}; ballOwnerPlayer=myTeamList[0];
-    }
-    refereeObj = new FootballPlayer(fw/2,fh/2,'ref','REF'); refereeObj.speedValue=2.9;
-    updateScoreBoard();
-}
-
-// Mode Launcher
-function launchMode(modeNumber){
-    currentMode=modeNumber; goalsMe=0; goalsOpp=0; totalFouls=0; cardCounts={yellow:0,red:0}; gameTimeSeconds=0;
-    document.getElementById('mainMenu').style.display='none';
-    initializeTeamsForMode();
-    isGameRunning=true;
-    clearInterval(gameTimerInterval);
-    gameTimerInterval=setInterval(()=>{ gameTimeSeconds++; let m=String(Math.floor(gameTimeSeconds/60)).padStart(2,'0'); let s=String(gameTimeSeconds%60).padStart(2,'0'); document.getElementById('gameTimer').innerText=m+':'+s; },1000);
-    requestAnimationFrame(mainGameLoop);
+function startMode(m){
+ mode=m; scoreMe=0; scoreOpp=0; time=0; chances=5;
+ document.getElementById('menu').classList.add('hidden');
+ document.getElementById('gameUI').classList.remove('hidden');
+ clearPlayers();
+ let fw=field.clientWidth, fh=field.clientHeight;
+ if(m==1){
+   document.getElementById('modeText').innerText='TRAINING';
+   document.getElementById('scoreText').innerText='Goal: 0 | Chance: 5';
+   // Player + Goalkeeper
+   let p=createP(120,fh/2,'me','YOU');
+   let gk=createP(fw-50,fh/2,'opp','GK');
+   myTeam=[p]; oppTeam=[gk];
+   activeIdx=0; ballOwner=p;
+   ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px';
+ } else if(m==2){
+   document.getElementById('modeText').innerText='1VS1 MATCH';
+   document.getElementById('scoreText').innerText='BD 0-0 OPP';
+   let p=createP(100,fh/2,'me','YOU');
+   let o=createP(fw-150,fh/2,'opp','OPP');
+   myTeam=[p]; oppTeam=[o];
+   activeIdx=0; ballOwner=p;
+   ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px';
+ } else {
+   document.getElementById('modeText').innerText='FINAL: BRA vs ARS';
+   document.getElementById('scoreText').innerText='BRA 0-0 ARS';
+   // 5 vs 5
+   let myPos=[[80,fh/2],[180,fh*0.25],[180,fh*0.75],[300,fh*0.35],[300,fh*0.65]];
+   let oppPos=[[fw-80,fh/2],[fw-180,fh*0.25],[fw-180,fh*0.75],[fw-300,fh*0.35],[fw-300,fh*0.65]];
+   myPos.forEach((pos,i)=>{let p=createP(pos[0],pos[1],'bra',i==0?'YOU':'BRA'); myTeam.push(p)});
+   oppPos.forEach((pos,i)=>{let p=createP(pos[0],pos[1],'ars',i==0?'GK':'ARS'); oppTeam.push(p)});
+   activeIdx=0; ballOwner=myTeam[0];
+   ballEl.style.left=myTeam[0].x+25+'px'; ballEl.style.top=myTeam[0].y+'px';
+ }
+ setActive();
+ gameOn=true;
+ if(timerInt) clearInterval(timerInt);
+ timerInt=setInterval(()=>{time++; let mm=String(Math.floor(time/60)).padStart(2,'0'); let ss=String(time%60).padStart(2,'0'); document.getElementById('timerText').innerText=mm+':'+ss},1000);
+ loop();
 }
 
-// Reset Ball After Goal or Out
-function resetBallAfterEvent(isFoul=false){
-    if(isFoul){
-        ballObj.x=refereeObj.x; ballObj.y=refereeObj.y; ballVelocity={x:0,y:0}; ballOwnerPlayer=myTeamList[activePlayerIndex]||myTeamList[0];
-        if(ballOwnerPlayer){ ballObj.x=ballOwnerPlayer.x+30; ballObj.y=ballOwnerPlayer.y; }
-        return;
-    }
-    if(currentMode===1 || currentMode===2){
-        let me=myTeamList[0]; me.x=200; me.y=H/2; ballOwnerPlayer=me; ballObj.x=me.x+30; ballObj.y=me.y; ballVelocity={x:0,y:0};
-        if(currentMode===2){ let opp=opponentTeamList[0]; opp.x=W-280; opp.y=H/2; }
-    } else { initializeTeamsForMode(); }
+function setActive(){
+ myTeam.forEach(p=>p.el.classList.remove('active'));
+ if(myTeam[activeIdx]) myTeam[activeIdx].el.classList.add('active');
 }
 
-// Check Out Of Bounds - Throw In Logic
-function checkBallOutOfBounds(){
-    let fw=W, fh=H, margin=28;
-    if(ballObj.y<margin){ showCenterMessage('⚽ THROW-IN<br><span style="font-size:12px">লাইন বাইরে</span>','#fff'); ballObj.y=margin+50; ballVelocity={x:0,y:0}; ballOwnerPlayer=myTeamList[activePlayerIndex]; return true; }
-    if(ballObj.y>fh-margin){ showCenterMessage('⚽ THROW-IN','#fff'); ballObj.y=fh-margin-50; ballVelocity={x:0,y:0}; ballOwnerPlayer=myTeamList[activePlayerIndex]; return true; }
-    if(ballObj.x<18){
-        if(ballObj.y>fh/2-130 && ballObj.y<fh/2+130){ goalsOpp++; updateScoreBoard(); showCenterMessage('GOAL OPPONENT!','red'); setTimeout(()=>resetBallAfterEvent(false),1300); return true; }
-        else { showCenterMessage('GOAL KICK / CORNER','#fff'); ballObj.x=80; ballObj.y=fh/2; ballVelocity={x:0,y:0}; ballOwnerPlayer=myTeamList[0]; return true; }
-    }
-    if(ballObj.x>fw-18){
-        if(ballObj.y>fh/2-130 && ballObj.y<fh/2+130){
-            if(currentMode===1){ goalsMe++; showCenterMessage(`GOAL! 🎯<br>গোল: ${goalsMe}`,'#2ecc71'); setTimeout(()=>resetBallAfterEvent(false),1200); }
-            else { goalsMe++; updateScoreBoard(); showCenterMessage('GOOOAL! BRAZIL! ⚽','#2ecc71'); setTimeout(()=>resetBallAfterEvent(false),1500); }
-            return true;
-        } else { showCenterMessage('CORNER!','#fff'); ballObj.x=fw-80; ballVelocity={x:0,y:0}; return true; }
-    }
-    return false;
-}
-
-// Foul System - পায়ে মারলে ফাউল হবে
-function handleTackleAction(){
-    let me=myTeamList[activePlayerIndex]; if(!me || me.isRedCarded) return;
-    let target = ballOwnerPlayer && opponentTeamList.includes(ballOwnerPlayer) ? ballOwnerPlayer : opponentTeamList.reduce((a,b)=>Math.hypot(ballObj.x-a.x,ballObj.y-a.y)<Math.hypot(ballObj.x-b.x,ballObj.y-b.y)?a:b);
-    if(!target || target.isRedCarded) return;
-    let distance=Math.hypot(me.x-target.x, me.y-target.y);
-    if(distance<58){
-        let isFromBehind = Math.abs(me.x-target.x)>10 && me.x<target.x;
-        let isHardTackle = joystickData.isActive && Math.hypot(joystickData.dx,joystickData.dy)>0.75;
-        if(isFromBehind || isHardTackle || Math.random()<0.18){
-            totalFouls++; showCenterMessage(`🟨 FOUL!<br><span style="font-size:12px">পায়ে মেরেছো! Referee বাঁশি - ${totalFouls}</span>`,'#ffcc00',2000);
-            refereeObj.x=target.x; refereeObj.y=target.y;
-            if(totalFouls===2){ cardCounts.yellow++; showCenterMessage('🟨 YELLOW CARD!<br>সাবধান!','yellow',2000); }
-            if(totalFouls>=3){ cardCounts.red++; me.isRedCarded=true; showCenterMessage('🟥 RED CARD!<br>তুমি বাইরে!','red',2500); setTimeout(()=>{ if(myTeamList.length>1){ myTeamList.splice(activePlayerIndex,1); activePlayerIndex=0; } },600); }
-            ballObj.x=target.x; ballObj.y=target.y; ballVelocity={x:0,y:0}; ballOwnerPlayer=opponentTeamList.includes(target)?target:null;
-        } else {
-            ballOwnerPlayer=me; ballVelocity={x:0,y:0}; ballObj.x=me.x+20; ballObj.y=me.y;
-            showCenterMessage('✅ CLEAN TACKLE!','green',1000);
-        }
-    }
-}
-function handleShootAction(){ if(!ballOwnerPlayer || !myTeamList.includes(ballOwnerPlayer)) return; let fw=W, fh=H; let goalY=fh/2+(Math.random()-0.5)*90; let angle=Math.atan2(goalY-ballObj.y, fw-ballObj.x); ballVelocity.x=Math.cos(angle)*16.5; ballVelocity.y=Math.sin(angle)*16.5; ballOwnerPlayer=null; }
-function handlePassAction(){
-    if(!ballOwnerPlayer || !myTeamList.includes(ballOwnerPlayer)) return;
-    if(currentMode!==3) return;
-    let current=myTeamList[activePlayerIndex]; let best=null, bestDist=999;
-    myTeamList.forEach((p,i)=>{ if(i!==activePlayerIndex && !p.isRedCarded){ let d=Math.hypot(p.x-current.x,p.y-current.y); if(d>60 && d<650 && d<bestDist){ bestDist=d; best=p; } } });
-    if(best){ let angle=Math.atan2(best.y-ballObj.y,best.x-ballObj.x); ballVelocity.x=Math.cos(angle)*11.5; ballVelocity.y=Math.sin(angle)*11.5; ballOwnerPlayer=null; }
-}
-
-// Joystick Setup
-const joyBase=document.getElementById('joyBase'), joyStick=document.getElementById('joyStick');
-joyBase.addEventListener('touchstart',e=>{ joystickData.isActive=true; e.preventDefault(); },{passive:false});
-joyBase.addEventListener('touchmove',e=>{
-    let rect=joyBase.getBoundingClientRect(); let touch=e.touches[0];
-    let dx=touch.clientX-(rect.left+60), dy=touch.clientY-(rect.top+60);
-    let dist=Math.min(50,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx);
-    joystickData.dx=Math.cos(ang)*dist/50; joystickData.dy=Math.sin(ang)*dist/50;
-    joyStick.style.left=35+joystickData.dx*35+'px'; joyStick.style.top=35+joystickData.dy*35+'px';
-    e.preventDefault();
+let joy={dx:0,dy:0,active:false};
+const joyEl=document.getElementById('joy'), stickEl=document.getElementById('stick');
+joyEl.addEventListener('touchstart',e=>{joy.active=true; e.preventDefault()},{passive:false});
+joyEl.addEventListener('touchmove',e=>{
+ let r=joyEl.getBoundingClientRect(); let t=e.touches[0];
+ let dx=t.clientX-(r.left+55), dy=t.clientY-(r.top+55);
+ let d=Math.min(45,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx);
+ joy.dx=Math.cos(ang)*d/45; joy.dy=Math.sin(ang)*d/45;
+ stickEl.style.left=33+joy.dx*32+'px'; stickEl.style.top=33+joy.dy*32+'px';
+ e.preventDefault();
 },{passive:false});
-joyBase.addEventListener('touchend',()=>{ joystickData.isActive=false; joystickData.dx=0; joystickData.dy=0; joyStick.style.left='35px'; joyStick.style.top='35px'; });
+joyEl.addEventListener('touchend',()=>{joy.active=false; joy.dx=0; joy.dy=0; stickEl.style.left='33px'; stickEl.style.top='33px'});
 
-document.getElementById('btnTackle').addEventListener('touchstart',handleTackleAction);
-document.getElementById('btnShoot').addEventListener('touchstart',handleShootAction);
-document.getElementById('btnPass').addEventListener('touchstart',handlePassAction);
+function doAction(){
+ // PASS = TACKLE if not owner
+ if(!ballOwner || ballOwner.cls.includes('opp') || ballOwner.cls=='ars'){
+   // Try tackle
+   let me=myTeam[activeIdx];
+   let target=mode==1?oppTeam[0]: (ballOwner?ballOwner:oppTeam[0]);
+   if(Math.hypot(me.x-target.x, me.y-target.y)<45){
+     ballOwner=me; ballV={x:0,y:0};
+     ballEl.style.left=me.x+25+'px'; ballEl.style.top=me.y+'px';
+   }
+ } else {
+   // Pass to teammate (mode 3)
+   if(mode==3){
+     let cur=myTeam[activeIdx]; let best=null, bestD=999;
+     myTeam.forEach((p,i)=>{if(i!=activeIdx){let d=Math.hypot(p.x-cur.x,p.y-cur.y); if(d<bestD && d>40){bestD=d; best=p}}});
+     if(best){let ang=Math.atan2(best.y-ballEl.offsetTop, best.x-ballEl.offsetLeft); ballV.x=Math.cos(ang)*10; ballV.y=Math.sin(ang)*10; ballOwner=null;}
+   }
+ }
+}
+function doShoot(){
+ if(!ballOwner || !['me','bra'].some(c=>ballOwner.cls.includes(c))) return;
+ let fw=field.clientWidth, fh=field.clientHeight;
+ let goalY=fh/2+(Math.random()-0.5)*60;
+ let ang=Math.atan2(goalY-ballEl.offsetTop, fw-ballEl.offsetLeft);
+ let power=mode==1?12:14;
+ ballV.x=Math.cos(ang)*power; ballV.y=Math.sin(ang)*power;
+ ballOwner=null;
+}
 
-// Main Loop - প্রতি ফ্রেমে চলবে
-function mainGameLoop(){
-    if(!isGameRunning) return;
-    let activePlayer=myTeamList[activePlayerIndex];
-    if(activePlayer && !activePlayer.isRedCarded && joystickData.isActive){
-        activePlayer.velocityX=joystickData.dx*activePlayer.speedValue*2.4;
-        activePlayer.velocityY=joystickData.dy*activePlayer.speedValue*2.4;
-        activePlayer.x+=activePlayer.velocityX; activePlayer.y+=activePlayer.velocityY;
-        activePlayer.x=Math.max(30,Math.min(W-30,activePlayer.x)); activePlayer.y=Math.max(30,Math.min(H-30,activePlayer.y));
-        if(ballOwnerPlayer===activePlayer){ ballObj.x=activePlayer.x+24; ballObj.y=activePlayer.y; }
-    }
-    if(!ballOwnerPlayer){
-        ballObj.x+=ballVelocity.x; ballObj.y+=ballVelocity.y; ballVelocity.x*=0.983; ballVelocity.y*=0.983;
-        if(Math.abs(ballVelocity.x)<0.15) ballVelocity.x=0; if(Math.abs(ballVelocity.y)<0.15) ballVelocity.y=0;
-        if(checkBallOutOfBounds()){}
-        for(let p of allPlayers){
-            if(p.isRedCarded) continue;
-            if(Math.hypot(ballObj.x-p.x, ballObj.y-p.y)<34 && Math.hypot(ballVelocity.x,ballVelocity.y)<5.5){
-                ballOwnerPlayer=p; if(myTeamList.includes(p)){ activePlayerIndex=myTeamList.indexOf(p); } ballVelocity={x:0,y:0}; break;
-            }
-        }
-    }
-    refereeObj.x+=(ballObj.x-refereeObj.x)*0.032; refereeObj.y+=(ballObj.y-refereeObj.y)*0.032;
-    if(currentMode>=2){
-        opponentTeamList.forEach(opp=>{
-            if(opp.isRedCarded) return;
-            if(ballOwnerPlayer && myTeamList.includes(ballOwnerPlayer)){
-                opp.x+=(ballObj.x-opp.x)*0.032; opp.y+=(ballObj.y-opp.y)*0.032;
-            } else if(!ballOwnerPlayer){
-                if(opp===opponentTeamList.reduce((a,b)=>Math.hypot(ballObj.x-a.x,ballObj.y-a.y)<Math.hypot(ballObj.x-b.x,ballObj.y-b.y)?a:b)){
-                    opp.x+=(ballObj.x-opp.x)*0.045; opp.y+=(ballObj.y-opp.y)*0.045;
-                }
-            } else if(ballOwnerPlayer && opponentTeamList.includes(ballOwnerPlayer) && ballOwnerPlayer===opp){
-                opp.x+=3.2; opp.y+=(Math.random()-0.5)*2.5; ballObj.x=opp.x+16; ballObj.y=opp.y;
-                if(Math.random()<0.028){ ballVelocity.x=-13; ballVelocity.y=(Math.random()-0.5)*9; ballOwnerPlayer=null; }
-            }
-        });
-    }
-    if(currentMode===1){
-        let keeper=opponentTeamList[0]; keeper.y+=Math.sin(Date.now()*0.0035)*1.8;
-        if(keeper.y<H/2-55) keeper.y=H/2-55; if(keeper.y>H/2+55) keeper.y=H/2+55;
-        if(!ballOwnerPlayer && Math.hypot(ballObj.x-keeper.x, ballObj.y-keeper.y)<36){ ballVelocity.x=-8; ballVelocity.y=(Math.random()-0.5)*9; }
-    }
-    // Draw Fiel
+document.getElementById('btnPass').addEventListener('touchstart',doAction);
+document.getElementById('btnShoot').addEventListener('touchstart',doShoot);
+
+function loop(){
+ if(!gameOn) return;
+ let me=myTeam[activeIdx];
+ if(joy.active && me){
+   me.x+=joy.dx*5; me.y+=joy.dy*5;
+   me.x=Math.max(15,Math.min(field.clientWidth-35,me.x));
+   me.y=Math.max(15,Math.min(field.clientHeight-35,me.y));
+   me.el.style.left=me.x+'px'; me.el.style.top=me.y+'px';
+   if(ballOwner==me){ballEl.style.left=me.x+25+'px'; ballEl.style.top=me.y+'px';}
+ }
+ // ball move
+ if(!ballOwner){
+   ballEl.style.left=(ballEl.offsetLeft+ballV.x)+'px';
+   ballEl.style.top=(ballEl.offsetTop+ballV.y)+'px';
+   ballV.x*=0.985; ballV.y*=0.985;
+   if(Math.abs(ballV.x)<0.2) ballV.x=0; if(Math.abs(ballV.y)<0.2) ballV.y=0;
+   // pickup
+   let all=[...myTeam,...oppTeam];
+   for(let p of all){
+     if(Math.hypot(ballEl.offsetLeft-p.x, ballEl.offsetTop-p.y)<28 && Math.hypot(ballV.x,ballV.y)<4){
+       ballOwner=p;
+       if(myTeam.includes(p)){activeIdx=myTeam.indexOf(p); setActive();}
+       ballV={x:0,y:0}; break;
+     }
+   }
+   // GOAL CHECK
+   let bx=ballEl.offsetLeft, by=ballEl.offsetTop, fw=field.clientWidth, fh=field.clientHeight;
+   if(bx>fw-14 && by>fh/2-65 && by<fh/2+65){
+     // my goal
+     if(mode==1){
+       scoreMe++; chances--; // training: goal = chance back?
+       document.getElementById('scoreText').innerText=`Goal: ${scoreMe} | Chance: ${chances}`;
+       alert('GOAL! 🎯 আবার চান্স পাবা!');
+       resetBall();
+     } else {
+       scoreMe++; updateScore();
+       alert('GOAL!!! BRAZIL / BD GOAL! ⚽');
+       resetBall();
+     }
+     return;
+   }
+   if(bx<14 && by>fh/2-65 && by<fh/2+65){
+     if(mode==1){
+       chances--; document.getElementById('scoreText').innerText=`Goal: ${scoreMe} | Chance: ${chances}`;
+       if(chances<=0){alert('Game Over! তোমার গোল: '+scoreMe); goMenu();} else {alert('MISS! চান্স শেষ: '+chances); resetBall();}
+     } else {
+       scoreOpp++; updateScore(); alert('Opponent Goal!'); resetBall();
+     }
+     return;
+   }
+   if(bx<0||bx>fw||by<0||by>fh){resetBall(); return;}
+ }
+ // Opponent AI (mode 2 & 3) - fixed, not laggy
+ if(mode==2 && ballOwner && myTeam.includes(ballOwner)){
+   // opponent chase
+   let o=oppTeam[0]; o.x+=(ballEl.offsetLeft-o.x)*0.04; o.y+=(ballEl.offsetTop-o.y)*0.04;
+   o.el.style.left=o.x+'px'; o.el.style.top=o.y+'px';
+   if(Math.hypot(o.x-ballEl.offsetLeft, o.y-ballEl.offsetTop)<30 && ballOwner==myTeam[0]){ballOwner=o; }
+ } else if(mode==2 && ballOwner && oppTeam.includes(ballOwner)){
+   ballOwner.x+=2; ballOwner.y+=(Math.random()-0.5)*2;
+   ballOwner.el.style.left=ballOwner.x+'px'; ballOwner.el.style.top=ballOwner.y+'px';
+   ballEl.style.left=ballOwner.x+'px'; ballEl.style.top=ballOwner.y+'px';
+   if(Math.random()<0.02){ballV.x=-10; ballV.y=(Math.random()-0.5)*6; ballOwner=null;}
+ } else if(mode==3){
+   // simple opponent chase only one nearest
+   if(!ballOwner || myTeam.includes(ballOwner)){
+     let opp=oppTeam.reduce((a,b)=>Math.hypot(ballEl.offsetLeft-a.x,ballEl.offsetTop-a.y)<Math.hypot(ballEl.offsetLeft-b.x,ballEl.offsetTop-b.y)?a:b);
+     opp.x+=(ballEl.offsetLeft-opp.x)*0.025; opp.y+=(ballEl.offsetTop-opp.y)*0.025;
+     opp.el.style.left=opp.x+'px'; opp.el.style.top=opp.y+'px';
+   }
+   // keeper in training moves
+   if(mode==1){
+     let gk=oppTeam[0]; gk.y+=Math.sin(time*0.1)*1.2; gk.el.style.top=gk.y+'px';
+     // save logic
+     if(!ballOwner && Math.hypot(ballEl.offsetLeft-gk.x, ballEl.offsetTop-gk.y)<35){ballV.x=-6; ballV.y=(Math.random()-0.5)*8; }
+   }
+ }
+
+ // training keeper move
+ if(mode==1){
+   let gk=oppTeam[0]; gk.y+=Math.sin(Date.now()*0.003)*1.5;
+   if(gk.y<field.clientHeight/2-50) gk.y=field.clientHeight/2-50;
+   if(gk.y>field.clientHeight/2+50) gk.y=field.clientHeight/2+50;
+   gk.el.style.top=gk.y+'px';
+   if(!ballOwner && Math.hypot(ballEl.offsetLeft-gk.x, ballEl.offsetTop-gk.y)<32){ballV.x=-7; ballV.y=(Math.random()-0.5)*8;}
+ }
+
+ requestAnimationFrame(loop);
+}
+
+function resetBall(){
+ let fh=field.clientHeight;
+ if(mode==1){
+   let p=myTeam[0]; p.x=120; p.y=fh/2; p.el.style.left=p.x+'px'; p.el.style.top=p.y+'px';
+   ballOwner=p; ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px'; ballV={x:0,y:0};
+ } else if(mode==2){
+   let p=myTeam[0]; p.x=100; p.y=fh/2; p.el.style.left=p.x+'px'; p.el.style.top=p.y+'px';
+   let o=oppTeam[0]; o.x=field.clientWidth-150; o.y=fh/2; o.el.style.left=o.x+'px'; o.el.style.top=o.y+'px';
+   ballOwner=p; ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px'; ballV={x:0,y:0};
+ } else {
+   startMode(3); // reset full
+ }
+}
+function updateScore(){
+ if(mode==3) document.getElementById('scoreText').innerText=`BRA ${scoreMe} - ${scoreOpp} ARS`;
+ else document.getElementById('scoreText').innerText=`BD ${scoreMe} - ${scoreOpp} OPP`;
+}
+function goMenu(){
+ gameOn=false; if(timerInt) clearInterval(timerInt);
+ document.getElementById('gameUI').classList.add('hidden');
+ document.getElementById('menu').classList.remove('hidden');
+ clearPlayers();
+}
+</script>
+</body>
+</html>
