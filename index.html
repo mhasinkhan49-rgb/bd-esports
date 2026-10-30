@@ -1,85 +1,301 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cyber Lab Pro - Advanced</title>
-<style>
-body{background:#000;color:#0f0;font-family:monospace;margin:0;padding:0}
-header{background:#0a0a0a;padding:20px;text-align:center;border-bottom:2px solid #0f0;box-shadow:0 0 20px #0f0}
-h1{margin:0;color:#0f0}
-.container{max-width:1000px;margin:auto;padding:15px}
-.card{background:#0a0f0a;border:1px solid #0f0;border-radius:8px;padding:20px;margin:15px 0}
-h2{color:#0f0;border-bottom:1px solid #0f0;padding-bottom:8px}
-input,textarea{width:95%;padding:12px;background:#000;border:1px solid #0f0;color:#0f0;border-radius:5px;margin:8px 0}
-button{background:#0f0;color:#000;padding:12px 20px;border:none;font-weight:bold;border-radius:5px;cursor:pointer;margin:5px}
-button:hover{background:#fff}
-.output{background:#000;border:1px dashed #0f0;padding:15px;margin-top:10px;min-height:40px;white-space:pre-wrap;word-break:break-all}
-.danger{color:#ff3333;border-color:#ff3333}
-.safe{color:#0f0}
-.flex{display:flex;gap:10px;flex-wrap:wrap}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yes, Your Majesty - Royal Court Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #1a1a1a;
+            color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            max-height: 750px;
+            background: #2b2b2b;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            border: 2px solid #d4af37;
+            position: relative;
+        }
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: #1f1f1f;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        .stat-box {
+            text-align: center;
+            font-size: 12px;
+        }
+        .stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        /* Character & Dialog Area */
+        .scene-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+        }
+        .character-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #444;
+            border: 3px solid #d4af37;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .dialog-box {
+            background: #383838;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #555;
+            width: 100%;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        /* Choice Buttons */
+        .choices-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .choice-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #d4af37;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .choice-btn:hover {
+            background: #d4af37;
+            color: #111;
+            font-weight: bold;
+        }
+        /* Game Over Modal */
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .game-over h1 {
+            color: #ff4d4d;
+            margin-bottom: 15px;
+        }
+        .restart-btn {
+            background: #d4af37;
+            color: #111;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<header>
-<h1>⚡ CYBER LAB PRO v2.0</h1>
-<p>Advanced Ethical Hacking Lab - For Education Only</p>
-</header>
 
-<div class="container">
+<div class="game-container">
+    <!-- Stats Header -->
+    <div class="stats-bar">
+        <div class="stat-box">💰 সোনা<div class="stat-value" id="stat-gold">50</div></div>
+        <div class="stat-box">👥 জনবল<div class="stat-value" id="stat-people">50</div></div>
+        <div class="stat-box">⚔️ সেনা<div class="stat-value" id="stat-army">50</div></div>
+        <div class="stat-box">🕊️ শান্তি<div class="stat-value" id="stat-peace">50</div></div>
+    </div>
 
-<div class="card">
-<h2>[LAB 01] SQL Injection Simulator</h2>
-<p>হ্যাকাররা কিভাবে Login Bypass করে দেখো (নিজের Lab এ)</p>
-<input id="sqlUser" placeholder="Username: admin">
-<input id="sqlPass" placeholder="Password: ' OR '1'='1">
-<button onclick="sqlTest()">ATTACK SIMULATION</button>
-<div id="sqlOut" class="output">Output এখানে দেখাবে...</div>
-</div>
+    <!-- Scene & Dialog -->
+    <div class="scene-area">
+        <div class="character-img" id="char-avatar">👑</div>
+        <div class="dialog-box" id="dialog-text">রাজদরবারে স্বাগতম, মহামান্য রাজা! আপনার রাজ্য পরিচালনা শুরু করুন।</div>
+    </div>
 
-<div class="card">
-<h2>[LAB 02] XSS Attack Lab</h2>
-<p>কোনো সাইটে Script ঢুকিয়ে কি হয়?</p>
-<textarea id="xssInput" placeholder="এখানে লিখো: <script>alert('Hacked')</script>"></textarea>
-<button onclick="xssTest()">TEST XSS</button>
-<div id="xssOut" class="output">Safe Output...</div>
-</div>
+    <!-- Choices -->
+    <div class="choices-area" id="choices-container">
+        <button class="choice-btn" onclick="startGame()">গেম শুরু করুন</button>
+    </div>
 
-<div class="card">
-<h2>[LAB 03] Hash Cracker Lab</h2>
-<p>Password কিভাবে Hash হয়ে থাকে? Crack করে দেখো!</p>
-<input id="hashInput" placeholder="Hash লিখো: 5f4dcc3b5aa765d61d8327deb882cf99 = password">
-<button onclick="hashTest()">CRACK HASH</button>
-<div id="hashOut" class="output">Hash Database: password, admin123, 123456, hello2026</div>
-</div>
-
-<div class="card">
-<h2>[LAB 04] Brute Force Defender</h2>
-<p>তোমার সাইটকে Brute Force থেকে কিভাবে বাঁচাবা?</p>
-<button onclick="bruteTest()">START DEFENSE SIMULATION</button>
-<div id="bruteOut" class="output">Click to simulate 100 login attempts...</div>
-</div>
-
+    <!-- Game Over Screen -->
+    <div class="game-over" id="game-over-screen">
+        <h1>রাজ্যের পতন ঘটেছে!</h1>
+        <p id="game-over-reason">আপনার ভুল সিদ্ধান্তের কারণে রাজ্য ধ্বংস হয়ে গেছে।</p>
+        <button class="restart-btn" onclick="restartGame()">পুনরায় চেষ্টা করুন</button>
+    </div>
 </div>
 
 <script>
-// LAB 01
-function sqlTest(){
- let u=document.getElementById('sqlUser').value;
- let p=document.getElementById('sqlPass').value;
- let out=document.getElementById('sqlOut');
- let payload = ["' OR '1'='1", "' OR 1=1--", "admin'--", "' OR 'a'='a"];
- let isAttack = payload.some(x=>p.includes(x) || u.includes(x));
- if(isAttack){
-   out.innerHTML = `✅ ATTACK SUCCESSFUL IN LAB!\nQuery: SELECT * FROM users WHERE user='${u}' AND pass='${p}'\n\nResult: Login Bypassed!\n\n[DEFENSE]: Use Prepared Statements!\nCode: $stmt = $pdo->prepare("SELECT * FROM users WHERE user=?");`;
-   out.className="output danger";
- } else {
-   out.innerHTML = `❌ ATTACK FAILED\nReason: Input is sanitized!\nYour site is SAFE from SQLi.`;
-   out.className="output safe";
- }
-}
-// LAB 02
-function xssTest(){
- let code=document.getElementById('xssInput').value;
- let out=document.getElementById('xssOut');
- if(code.toLowerCase().includes('<script')){
-   out.innerHTML = `⚠️ XSS DETECTED!\nInput: ${code.replace(/</g,'&lt
+    // Game Stats
+    let stats = {
+        gold: 50,
+        people: 50,
+        army: 50,
+        peace: 50
+    };
+
+    // Story Scenarios (Yes/No or Choice-based Events)
+    const scenarios = [
+        {
+            avatar: "🧙‍♂️",
+            text: "রাজ্যজুড়ে খরা চলছে। জাদুকর বলছে যাদুর বলে বৃষ্টি নামাতে প্রচুর সোনা লাগবে। জাদুকরের প্রস্তাবে রাজি হবেন?",
+            choices: [
+                { text: "হ্যাঁ, সোনা দিয়ে বৃষ্টি নামাও।", effect: { gold: -20, people: +15, peace: +10 } },
+                { text: "না, প্রকৃতির ওপর ভরসা রাখুন।", effect: { gold: +10, people: -15, peace: -10 } }
+            ]
+        },
+        {
+            avatar: "🛡️",
+            text: "সেনাপ্রধান সীমান্ত সুরক্ষার জন্য নতুন অস্ত্র কেনার অনুমতি চাচ্ছেন।",
+            choices: [
+                { text: "অনুমতি দিলাম, অস্ত্র কিনুন।", effect: { gold: -25, army: +20, peace: +5 } },
+                { text: "দরকার নেই, কোষাগার বাঁচান।", effect: { gold: +10, army: -15, peace: -5 } }
+            ]
+        },
+        {
+            avatar: "🌾",
+            text: "কৃষকরা অতিরিক্ত কর মওকুফের আবেদন নিয়ে এসেছে। কী করবেন?",
+            choices: [
+                { text: "কর মওকুফ করে দিন।", effect: { gold: -15, people: +20, peace: +15 } },
+                { text: "না, কর কমানো যাবে না।", effect: { gold: +15, people: -20, peace: -10 } }
+            ]
+        },
+        {
+            avatar: "🦹‍♂️",
+            text: "এক চোর ধরা পড়েছে। সে রাজাকে প্রচুর ঘুস দিতে চাচ্ছে তাকে ছেড়ে দেওয়ার জন্য।",
+            choices: [
+                { text: "ঘুস নিয়ে তাকে ছেড়ে দাও।", effect: { gold: +30, people: -15, peace: -15 } },
+                { text: "তাকে কঠোর শাস্তি দাও!", effect: { gold: -5, people: +15, peace: +10 } }
+            ]
+        },
+        {
+            avatar: "👑",
+            text: "প্রতিবেশী রাজ্য থেকে মৈত্রী চুক্তির প্রস্তাব এসেছে। আপনি কি গ্রহণ করবেন?",
+            choices: [
+                { text: "হ্যাঁ, শান্তি বজায় রাখা ভালো।", effect: { army: -10, peace: +20, gold: -10 } },
+                { text: "না, আমরা একাই শক্তিশালী।", effect: { army: +15, peace: -10, gold: +5 } }
+            ]
+        }
+    ];
+
+    let currentScenarioIndex = 0;
+
+    function updateUI() {
+        document.getElementById('stat-gold').innerText = stats.gold;
+        document.getElementById('stat-people').innerText = stats.people;
+        document.getElementById('stat-army').innerText = stats.army;
+        document.getElementById('stat-peace').innerText = stats.peace;
+
+        // Check Game Over Conditions
+        if (stats.gold <= 0 || stats.people <= 0 || stats.army <= 0 || stats.peace <= 0) {
+            triggerGameOver("আপনার রাজ্যের যেকোনো একটি সম্পদ শূন্যে পৌঁছে গেছে!");
+        } else if (stats.gold >= 100 || stats.people >= 100 || stats.army >= 100 || stats.peace >= 100) {
+            triggerGameOver("অভিনন্দন! আপনার রাজ্য চরম সমৃদ্ধি ও শক্তিতে ভরে উঠেছে এবং আপনি জয়ী হয়েছেন!");
+        }
+    }
+
+    function loadScenario() {
+        if (currentScenarioIndex >= scenarios.length) {
+            currentScenarioIndex = 0; // Loop scenarios or end game
+        }
+
+        let scenario = scenarios[currentScenarioIndex];
+        document.getElementById('char-avatar').innerText = scenario.avatar;
+        document.getElementById('dialog-text').innerText = scenario.text;
+
+        let choicesContainer = document.getElementById('choices-container');
+        choicesContainer.innerHTML = '';
+
+        scenario.choices.forEach((choice, index) => {
+            let btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.innerText = choice.text;
+            btn.onclick = () => makeChoice(choice.effect);
+            choicesContainer.appendChild(btn);
+        });
+    }
+
+    function makeChoice(effect) {
+        stats.gold += effect.gold || 0;
+        stats.people += effect.people || 0;
+        stats.army += effect.army || 0;
+        stats.peace += effect.peace || 0;
+
+        // Keep stats within 0 to 100 range
+        for (let key in stats) {
+            if (stats[key] > 100) stats[key] = 100;
+            if (stats[key] < 0) stats[key] = 0;
+        }
+
+        updateUI();
+        currentScenarioIndex++;
+        loadScenario();
+    }
+
+    function startGame() {
+        stats = { gold: 50, people: 50, army: 50, peace: 50 };
+        currentScenarioIndex = 0;
+        document.getElementById('game-over-screen').style.display = 'none';
+        updateUI();
+        loadScenario();
+    }
+
+    function triggerGameOver(reason) {
+        document.getElementById('game-over-reason').innerText = reason;
+        document.getElementById('game-over-screen').style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>
