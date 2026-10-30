@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ফুটবল গেম (Soccer Mobile)</title>
+    <title>ফুটবল গেম (Hard AI Edition)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -36,7 +36,6 @@
             border: 2px solid #444;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
-        /* Top Header & Leaderboard */
         .header {
             background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 100%);
             padding: 10px;
@@ -55,14 +54,8 @@
             font-weight: bold;
             font-size: 14px;
         }
-        .team-score {
-            margin: 0 5px;
-        }
-        .timer {
-            color: #ffeb3b;
-            font-size: 13px;
-            margin-left: 10px;
-        }
+        .team-score { margin: 0 5px; }
+        .timer { color: #ffeb3b; font-size: 13px; margin-left: 10px; }
         .tokens-display {
             background: rgba(255,193,7,0.2);
             border: 1px solid #ffc107;
@@ -75,7 +68,6 @@
             align-items: center;
             gap: 4px;
         }
-        /* Stadium & Audience */
         .stadium {
             position: relative;
             flex: 1;
@@ -107,13 +99,7 @@
             0% { transform: translateY(0); }
             100% { transform: translateY(-3px); }
         }
-
-        canvas {
-            background-color: #4caf50;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.2);
-        }
-
-        /* Controls Section */
+        canvas { background-color: #4caf50; }
         .controls-container {
             height: 160px;
             background: rgba(0, 0, 0, 0.7);
@@ -123,11 +109,7 @@
             padding: 10px 20px;
             z-index: 10;
         }
-        .d-pad {
-            position: relative;
-            width: 110px;
-            height: 110px;
-        }
+        .d-pad { position: relative; width: 110px; height: 110px; }
         .d-btn {
             position: absolute;
             width: 36px;
@@ -140,7 +122,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            touch-action: manipulation;
         }
         .d-btn:active { background: rgba(255, 255, 255, 0.5); }
         .d-up { top: 0; left: 37px; }
@@ -148,11 +129,7 @@
         .d-left { top: 37px; left: 0; }
         .d-right { top: 37px; right: 0; }
 
-        .action-btns {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .action-btns { display: flex; gap: 10px; align-items: center; }
         .btn {
             width: 55px;
             height: 55px;
@@ -165,7 +142,6 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            touch-action: manipulation;
             cursor: pointer;
         }
         .btn:active { transform: scale(0.95); }
@@ -173,19 +149,6 @@
         .btn-sprint { background: #388e3c; }
         .btn-shoot { background: #d32f2f; }
 
-        /* Shop & Overlay Modals */
-        .overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            padding: 20px;
-            text-align: center;
-        }
         .shop-btn {
             position: absolute;
             top: 50px;
@@ -199,6 +162,18 @@
             font-size: 12px;
             cursor: pointer;
             z-index: 10;
+        }
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            padding: 20px;
+            text-align: center;
         }
         .character-card {
             background: #222;
@@ -220,10 +195,7 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .buy-btn:disabled {
-            background: #555;
-            color: #888;
-        }
+        .buy-btn:disabled { background: #555; color: #888; }
         .close-btn {
             margin-top: 15px;
             background: #d32f2f;
@@ -239,7 +211,6 @@
 <body>
 
 <div id="game-container">
-    <!-- Header / Leaderboard -->
     <div class="header">
         <div class="scoreboard">
             <span>YOU</span> <span id="score-user" class="team-score">0</span>
@@ -247,21 +218,17 @@
             <span id="score-bot" class="team-score">0</span> <span>BOT</span>
             <span id="timer" class="timer">01:00</span>
         </div>
-        <div class="tokens-display">
-            🪙 <span id="token-count">0</span>
-        </div>
+        <div class="tokens-display">🪙 <span id="token-count">0</span></div>
     </div>
 
-    <button class="shop-btn" onclick="openShop()">🛒 শপ (Shop)</button>
+    <button class="shop-btn" onclick="openShop()">🛒 শপ</button>
 
-    <!-- Pitch Field & Audience -->
     <div class="stadium">
         <div class="audience-side top" id="audience-top"></div>
         <canvas id="fieldCanvas" width="360" height="480"></canvas>
         <div class="audience-side bottom" id="audience-bottom"></div>
     </div>
 
-    <!-- Mobile Controls -->
     <div class="controls-container">
         <div class="d-pad">
             <div class="d-btn d-up" id="btn-up">▲</div>
@@ -276,15 +243,14 @@
         </div>
     </div>
 
-    <!-- Shop Modal -->
     <div id="shop-modal" class="overlay hidden">
         <h2>ক্যারেক্টার শপ</h2>
-        <p style="font-size: 12px; color: #aaa; margin-bottom: 15px;">টোকেন দিয়ে প্লেয়ার আনলক করুন</p>
+        <p style="font-size: 12px; color: #aaa; margin-bottom: 15px;">১০,০০০ টোকেন দিয়ে শক্তিশালী প্লেয়ার কিনুন</p>
         
         <div class="character-card">
             <div>
                 <strong style="color: #ff4081;">লি (Lee)</strong>
-                <div style="font-size: 11px; color:#ccc;">গতি: +২০%</div>
+                <div style="font-size: 11px; color:#ccc;">গতি: +৩০%</div>
             </div>
             <button class="buy-btn" id="buy-lee" onclick="buyCharacter('Lee', 10000)">১০,০০০ 🪙</button>
         </div>
@@ -292,7 +258,7 @@
         <div class="character-card">
             <div>
                 <strong style="color: #00e676;">আফা (Afa)</strong>
-                <div style="font-size: 11px; color:#ccc;">শুট পাওয়ার: +২৫%</div>
+                <div style="font-size: 11px; color:#ccc;">শুট পাওয়ার: +৪০%</div>
             </div>
             <button class="buy-btn" id="buy-afa" onclick="buyCharacter('Afa', 10000)">১০,০০০ 🪙</button>
         </div>
@@ -300,7 +266,7 @@
         <div class="character-card">
             <div>
                 <strong style="color: #00b0ff;">ফিফা (Fifa)</strong>
-                <div style="font-size: 11px; color:#ccc;">অল-রাউন্ডার বোনাস</div>
+                <div style="font-size: 11px; color:#ccc;">সুপার স্পিড ও পাওয়ার</div>
             </div>
             <button class="buy-btn" id="buy-fifa" onclick="buyCharacter('Fifa', 10000)">১০,০০০ 🪙</button>
         </div>
@@ -308,7 +274,6 @@
         <button class="close-btn" onclick="closeShop()">বন্ধ করুন</button>
     </div>
 
-    <!-- End Game Modal -->
     <div id="end-modal" class="overlay hidden">
         <h1 id="match-result">ম্যাচ সমাপ্ত!</h1>
         <p id="reward-text" style="margin: 15px 0; color: #ffc107; font-size: 18px;"></p>
@@ -320,7 +285,6 @@
     const canvas = document.getElementById('fieldCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Game Variables
     let tokens = parseInt(localStorage.getItem('game_tokens') || '0');
     let unlockedChars = JSON.parse(localStorage.getItem('unlocked_chars') || '[]');
     let selectedChar = localStorage.getItem('selected_char') || 'Normal';
@@ -332,80 +296,58 @@
     let timerInterval = null;
     let isGameOver = false;
 
-    // Controls state
     const keys = { up: false, down: false, left: false, right: false, sprint: false };
-
-    // Update UI Tokens
     document.getElementById('token-count').innerText = tokens;
 
-    // Setup Audience
     function setupAudience() {
         const topAud = document.getElementById('audience-top');
         const botAud = document.getElementById('audience-bottom');
         const colors = ['#f44336', '#e91e63', '#9c27b0', '#2196f3', '#ffeb3b', '#ff9800'];
-        
         for(let i=0; i<25; i++){
             let d1 = document.createElement('div');
             d1.className = 'spectator';
             d1.style.background = colors[Math.floor(Math.random()*colors.length)];
-            d1.style.animationDelay = (Math.random()*0.8) + 's';
-            topAud.appendChild(d1);
-
-            let d2 = document.createElement('div');
-            d2.className = 'spectator';
-            d2.style.background = colors[Math.floor(Math.random()*colors.length)];
-            d2.style.animationDelay = (Math.random()*0.8) + 's';
-            botAud.appendChild(d2);
+            topAud.appendChild(d1.cloneNode(true));
+            botAud.appendChild(d1);
         }
     }
 
-    // Ball Class
     class Ball {
         constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.vx = 0;
-            this.vy = 0;
+            this.x = x; this.y = y;
+            this.vx = 0; this.vy = 0;
             this.radius = 5;
-            this.friction = 0.96;
+            this.friction = 0.97;
             this.owner = null;
         }
         update() {
             if (this.owner) {
                 this.x = this.owner.x + Math.cos(this.owner.angle) * 10;
                 this.y = this.owner.y + Math.sin(this.owner.angle) * 10;
-                this.vx = 0;
-                this.vy = 0;
+                this.vx = 0; this.vy = 0;
             } else {
                 this.x += this.vx;
                 this.y += this.vy;
                 this.vx *= this.friction;
                 this.vy *= this.friction;
 
-                // Field boundaries check
                 if(this.x < 10) { this.x = 10; this.vx *= -0.5; }
                 if(this.x > canvas.width - 10) { this.x = canvas.width - 10; this.vx *= -0.5; }
                 
                 // Goal Detection
                 if(this.y < 15) {
                     if(this.x > 120 && this.x < 240) {
-                        // User Goal
                         userScore++;
                         document.getElementById('score-user').innerText = userScore;
                         resetPositions();
-                    } else {
-                        this.y = 15; this.vy *= -0.5;
-                    }
+                    } else { this.y = 15; this.vy *= -0.5; }
                 }
                 if(this.y > canvas.height - 15) {
                     if(this.x > 120 && this.x < 240) {
-                        // Bot Goal
                         botScore++;
                         document.getElementById('score-bot').innerText = botScore;
                         resetPositions();
-                    } else {
-                        this.y = canvas.height - 15; this.vy *= -0.5;
-                    }
+                    } else { this.y = canvas.height - 15; this.vy *= -0.5; }
                 }
             }
         }
@@ -414,32 +356,30 @@
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
             ctx.fillStyle = '#fff';
             ctx.fill();
-            ctx.strokeStyle = '#000';
             ctx.stroke();
             ctx.closePath();
         }
     }
 
-    // Player Class (8 Characters Total: 4 User Team, 4 Bot Team - including Goalkeepers)
     class Player {
         constructor(x, y, team, isGK = false, isMain = false) {
-            this.startX = x;
-            this.startY = y;
-            this.x = x;
-            this.y = y;
-            this.team = team; // 'user' or 'bot'
+            this.startX = x; this.startY = y;
+            this.x = x; this.y = y;
+            this.team = team; 
             this.isGK = isGK;
             this.isMain = isMain;
             this.radius = 9;
-            this.speed = isGK ? 1.5 : 2;
+            this.speed = isGK ? 2 : 2.4; // আগের চেয়ে বটের গতি বাড়িয়ে হার্ড করা হয়েছে
             this.angle = 0;
         }
 
         update() {
-            let speedMultiplier = 1;
-            if(this.isMain && selectedChar === 'Lee') speedMultiplier = 1.25;
+            let speedMult = 1;
+            if(this.isMain) {
+                if(selectedChar === 'Lee') speedMult = 1.3;
+                if(selectedChar === 'Fifa') speedMult = 1.4;
+            }
 
-            // Player logic
             if (this.isMain) {
                 let dx = 0, dy = 0;
                 if (keys.up) dy -= 1;
@@ -449,55 +389,50 @@
 
                 if (dx !== 0 || dy !== 0) {
                     this.angle = Math.atan2(dy, dx);
-                    let currentSpeed = this.speed * speedMultiplier * (keys.sprint ? 1.5 : 1);
-                    this.x += Math.cos(this.angle) * currentSpeed;
-                    this.y += Math.sin(this.angle) * currentSpeed;
+                    let curSpeed = this.speed * speedMult * (keys.sprint ? 1.6 : 1);
+                    this.x += Math.cos(this.angle) * curSpeed;
+                    this.y += Math.sin(this.angle) * curSpeed;
                 }
             } else if (this.isGK) {
-                // Goalkeeper Simple AI
-                this.x += (ball.x - this.x) * 0.05;
-                this.x = Math.max(130, Math.min(230, this.x)); // Stay near goal width
+                // গোলকিপার এখন আরও স্মার্টলি বল সেভ করবে
+                this.x += (ball.x - this.x) * 0.08;
+                this.x = Math.max(130, Math.min(230, this.x));
             } else {
-                // AI Players
-                let target = ball.owner ? ball.owner : ball;
+                // বটের আক্রমণাত্মক ও ট্যাকল করার এআই (Hard AI)
+                let target = ball;
                 let dist = Math.hypot(target.x - this.x, target.y - this.y);
                 
                 if (this.team === 'bot') {
                     if (ball.owner === this) {
-                        // Bot running towards User Goal
-                        let goalTargetX = 180;
-                        let goalTargetY = canvas.height;
-                        this.angle = Math.atan2(goalTargetY - this.y, goalTargetX - this.x);
-                        this.x += Math.cos(this.angle) * this.speed * 0.8;
-                        this.y += Math.sin(this.angle) * this.speed * 0.8;
+                        // বট বল পেলে সোজা ইউজার গোলপোস্টের দিকে আক্রমণ করবে
+                        let goalX = 180, goalY = 10;
+                        this.angle = Math.atan2(goalY - this.y, goalX - this.x);
+                        this.x += Math.cos(this.angle) * (this.speed * 1.1);
+                        this.y += Math.sin(this.angle) * (this.speed * 1.1);
 
-                        // Shoot if near
-                        if(this.y > canvas.height - 100) {
-                            shootBall(this, 0, 1);
+                        // কাছে আসলে শ্যুট করবে
+                        if(this.y < 120) {
+                            shootBall(this, 0, -1);
                         }
                     } else {
-                        // Chase ball/tackle
-                        if(dist < 120) {
-                            this.angle = Math.atan2(target.y - this.y, target.x - this.x);
-                            this.x += Math.cos(this.angle) * this.speed * 0.7;
-                            this.y += Math.sin(this.angle) * this.speed * 0.7;
-                        }
+                        // খুব দ্রুত বলের দিকে ছুটে এসে কেড়ে নেওয়ার চেষ্টা করবে
+                        this.angle = Math.atan2(target.y - this.y, target.x - this.x);
+                        let aggressiveSpeed = this.speed * 1.15;
+                        this.x += Math.cos(this.angle) * aggressiveSpeed;
+                        this.y += Math.sin(this.angle) * aggressiveSpeed;
                     }
                 } else {
-                    // Teammate AI
-                    if (ball.owner !== this && !this.isMain) {
-                        // Support positioning
-                        let homeY = this.startY;
-                        this.y += (homeY - this.y) * 0.02;
+                    // ইউজারের সতীর্থ প্লেয়াররা একটু সাপোর্ট দেবে
+                    if (!this.isMain && ball.owner !== this) {
+                        this.y += (this.startY - this.y) * 0.03;
                     }
                 }
             }
 
-            // Keep inside field
             this.x = Math.max(12, Math.min(canvas.width - 12, this.x));
             this.y = Math.max(12, Math.min(canvas.height - 12, this.y));
 
-            // Tackle / Ball Steal Logic
+            // বল কেড়ে নেওয়ার কোলিশন চেক
             let distToBall = Math.hypot(ball.x - this.x, ball.y - this.y);
             if (distToBall < this.radius + ball.radius + 2) {
                 ball.owner = this;
@@ -514,7 +449,6 @@
             ctx.stroke();
             ctx.closePath();
 
-            // Main indicator
             if(this.isMain) {
                 ctx.beginPath();
                 ctx.moveTo(this.x, this.y - 14);
@@ -526,23 +460,20 @@
         }
     }
 
-    // Initialize 8 Characters (4 User, 4 Bot - 1 GK each)
     let players = [];
     let ball = new Ball(canvas.width / 2, canvas.height / 2);
 
     function initPlayers() {
         players = [
-            // User Team (Blue)
-            new Player(180, 40, 'user', true),               // User GK
-            new Player(180, 320, 'user', false, true),       // Main Controllable
-            new Player(100, 250, 'user', false),             // Teammate 1
-            new Player(260, 250, 'user', false),             // Teammate 2
+            new Player(180, 40, 'user', true),               
+            new Player(180, 320, 'user', false, true),       
+            new Player(100, 260, 'user', false),             
+            new Player(260, 260, 'user', false),             
 
-            // Bot Team (Red)
-            new Player(180, 440, 'bot', true),               // Bot GK
-            new Player(180, 160, 'bot', false),              // Bot Player 1
-            new Player(100, 200, 'bot', false),              // Bot Player 2
-            new Player(260, 200, 'bot', false)               // Bot Player 3
+            new Player(180, 440, 'bot', true),               
+            new Player(180, 160, 'bot', false),              
+            new Player(100, 200, 'bot', false),              
+            new Player(260, 200, 'bot', false)               
         ];
     }
 
@@ -551,18 +482,12 @@
         ball.x = canvas.width / 2;
         ball.y = canvas.height / 2;
         ball.vx = 0; ball.vy = 0;
-
-        players.forEach(p => {
-            p.x = p.startX;
-            p.y = p.startY;
-        });
+        players.forEach(p => { p.x = p.startX; p.y = p.startY; });
     }
 
-    // Pass & Shoot Functions
     function passBall() {
         let main = players.find(p => p.isMain);
         if (ball.owner === main) {
-            // Find closest teammate
             let teammates = players.filter(p => p.team === 'user' && !p.isMain);
             let closest = teammates[0];
             let minDist = 999;
@@ -570,13 +495,66 @@
                 let d = Math.hypot(t.x - main.x, t.y - main.y);
                 if (d < minDist) { minDist = d; closest = t; }
             });
-
             ball.owner = null;
             let angle = Math.atan2(closest.y - main.y, closest.x - main.x);
-            ball.vx = Math.cos(angle) * 7;
-            ball.vy = Math.sin(angle) * 7;
+            ball.vx = Math.cos(angle) * 8;
+            ball.vy = Math.sin(angle) * 8;
         }
     }
 
     function shootBall(shooter = null, dirX = 0, dirY = -1) {
-        let p = shooter || play
+        let p = shooter || players.find(p => p.isMain);
+        if (ball.owner === p) {
+            ball.owner = null;
+            let power = 10;
+            if(p.isMain && (selectedChar === 'Afa' || selectedChar === 'Fifa')) power = 13;
+
+            if(!shooter) {
+                let angle = Math.atan2(0 - p.y, 180 - p.x);
+                ball.vx = Math.cos(angle) * power;
+                ball.vy = Math.sin(angle) * power;
+            } else {
+                ball.vx = dirX * power;
+                ball.vy = dirY * power;
+            }
+        }
+    }
+
+    function drawPitch() {
+        ctx.fillStyle = '#4caf50';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+        ctx.beginPath();
+        ctx.moveTo(10, canvas.height / 2);
+        ctx.lineTo(canvas.width - 10, canvas.height / 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 40, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.fillRect(120, 2, 120, 10);
+        ctx.strokeRect(120, 2, 120, 10);
+        ctx.fillRect(120, canvas.height - 12, 120, 10);
+        ctx.strokeRect(120, canvas.height - 12, 120, 10);
+    }
+
+    function gameLoop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawPitch();
+        players.forEach(p => { p.update(); p.draw(); });
+        ball.update();
+        ball.draw();
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            matchTime--;
+            let mins = Math.floor(matchTime / 60);
+            let secs = matchTime % 60;
+            document.getElementById('timer').innerText = 
+                `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+      
