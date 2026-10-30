@@ -3,288 +3,354 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>BD FC 27 - 3 Mode System</title>
+<title>FC BD 27 - 500 Coin Shop + Download</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRkMgQkQgMjcgNTAwIENvaW4iLCJzaG9ydF9uYW1lIjoiRkNCREoiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBhMWEwYSIsInRoZW1lX2NvbG9yIjoiIzJlY2M3MSIsImljb25zIjpbXX0=">
+<meta name="theme-color" content="#2ecc71">
 <style>
-*{box-sizing:border-box;touch-action:none}
-body{margin:0;background:#0a1a0a;color:#fff;font-family:Arial;overflow:hidden}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:10}
-#menu{background:linear-gradient(#0f2a0f,#000)}
-.card{background:#1a2e1a;border:2px solid #2ecc71;border-radius:16px;padding:20px;width:95%;max-width:400px;text-align:center;box-shadow:0 10px 30px #000}
-.modeBtn{width:100%;padding:16px;margin:10px 0;background:linear-gradient(#2ecc71,#1a9c4a);color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;display:flex;align-items:center;justify-content:space-between}
-.modeBtn:active{transform:scale(0.97)}
-.modeBtn span{font-size:24px}
-.top{position:absolute;top:0;left:0;width:100%;background:#000;display:flex;justify-content:space-between;padding:8px 12px;z-index:5;font-weight:bold;border-bottom:2px solid #2ecc71}
-#field{position:absolute;top:40px;left:0;width:100vw;height:calc(100vh - 140px);background:linear-gradient(#2faa2f,#1d7a1d)}
-.goal{position:absolute;width:12px;height:130px;background:#fff;top:50%;transform:translateY(-50%)}
-.goal.left{left:0} .goal.right{right:0}
-.player{position:absolute;width:32px;height:32px;border-radius:50%;border:2px solid #fff;text-align:center;line-height:30px;font-size:11px;font-weight:bold;will-change:transform}
-.me{background:#ffcc00;color:#000;border-color:#000} .me.active{box-shadow:0 0 15px #fff,0 0 25px #ff0;transform:scale(1.4);z-index:20}
-.opp{background:#e74c3c} .ars{background:#ff0000} .bra{background:#ffeb3b;color:#000}
-.ball{position:absolute;width:20px;height:20px;background:#fff;border:2px solid #000;border-radius:50%;z-index:30}
-.controls{position:absolute;bottom:0;width:100%;height:135px;background:#000e;display:flex;justify-content:space-between;padding:10px;z-index:6}
+*{box-sizing:border-box;touch-action:none;margin:0} body{background:#0a160a;color:#fff;font-family:Arial;overflow:hidden}
+.top{position:absolute;top:0;width:100%;height:46px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:20;border-bottom:2px solid #2ecc71;font-weight:bold;font-size:13px}
+.coin{color:#f1c40f;background:#222;padding:4px 10px;border-radius:20px;border:1px solid #f1c40f}
+#field{position:absolute;top:46px;left:0;width:100vw;height:calc(100vh - 140px);background:#1e7a1e}
+canvas{width:100%;height:100%;display:block}
+.controls{position:absolute;bottom:0;width:100%;height:140px;background:#000e;display:flex;justify-content:space-between;padding:10px;z-index:10}
 .joy{width:110px;height:110px;background:rgba(255,255,255,0.12);border-radius:50%;position:relative;border:2px solid #fff5}
 .stick{width:44px;height:44px;background:#fff;border-radius:50%;position:absolute;left:33px;top:33px}
-.cbtn{width:68px;height:68px;border-radius:50%;background:#222;border:2px solid #2ecc71;color:#fff;font-weight:bold;font-size:12px;display:flex;align-items:center;justify-content:center;margin:0 5px}
-.cbtn:active{background:#fff;color:#000}
+.cbtn{width:60px;height:60px;border-radius:50%;background:#222;border:2px solid #fff;color:#fff;font-weight:bold;font-size:11px;display:flex;align-items:center;justify-content:center}
+.screen{position:absolute;inset:0;background:linear-gradient(#0f2a0f,#000);z-index:30;display:flex;flex-direction:column;padding:14px;overflow:auto}
+.card{background:#162216;border:1px solid #2ecc71;border-radius:12px;padding:14px;margin:8px 0}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shop-item{background:#1e331e;border:1px solid #334155;border-radius:10px;padding:10px;text-align:center}
+.shop-item.owned{border-color:#2ecc71;background:#143214}
+.price{color:#f1c40f;font-weight:bold;margin:6px 0}
+button.buy{width:100%;padding:8px;background:#2ecc71;color:#000;border:none;border-radius:6px;font-weight:bold}
+button.buy:disabled{background:#444;color:#888}
+button.dl{padding:8px 14px;background:#f1c40f;color:#000;border:none;border-radius:8px;font-weight:bold;font-size:12px}
+#msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#000e;border:2px solid #f1c40f;padding:14px 20px;border-radius:12px;z-index:40;display:none;text-align:center;font-weight:bold}
 .hidden{display:none}
+.mode{width:100%;padding:14px;margin:6px 0;background:#2ecc71;color:#000;border:none;border-radius:10px;font-weight:bold}
 </style>
 </head>
 <body>
-
-<!-- MENU - 3 MODE -->
-<div id="menu" class="screen">
-<div class="card">
-<h2 style="color:#2ecc71;margin:0 0 10px">⚽ BD FC 27</h2>
-<p style="font-size:13px;color:#aaa;margin-bottom:15px">তুমি যেভাবে চাইছো - 3 টা মোড</p>
-
-<button class="modeBtn" onclick="startMode(1)"><span>🥅</span> 1. ট্রেনিং ফুটবল ম্যাচ <span>▶</span></button>
-<p style="font-size:11px;color:#8f8;text-align:left;margin:-5px 0 5px">গোলকিপারকে গোল দাও, গোল হলে আবার চান্স</p>
-
-<button class="modeBtn" onclick="startMode(2)" style="background:linear-gradient(#3498db,#21618c)"><span>⚔️</span> 2. ম্যাচ - 1vs1 <span>▶</span></button>
-<p style="font-size:11px;color:#8ab;text-align:left;margin:-5px 0 5px">Opponent থেকে বল কেড়ে গোল দাও</p>
-
-<button class="modeBtn" onclick="startMode(3)" style="background:linear-gradient(#f1c40f,#b7950b)"><span>🏆</span> 3. ফাইনাল ম্যাচ <span>▶</span></button>
-<p style="font-size:11px;color:#aa8;text-align:left;margin:-5px 0 10px">Brazil (তুমি) vs Arsenal - 5 vs 5</p>
-
-</div>
-</div>
-
-<!-- GAME UI -->
-<div id="gameUI" class="hidden">
 <div class="top">
-<span id="scoreText">BD 0-0</span>
-<span id="modeText">TRAINING</span>
-<span id="timerText">00:00</span>
+<span id="score">BRA 0-0 ARS</span>
+<span class="coin" id="coinTxt">💰 500 coin</span>
+<div style="display:flex;gap:6px">
+<button class="dl" onclick="downloadGame()">📥 DOWNLOAD</button>
+<span id="time">00:00</span>
 </div>
-<div id="field">
-<div class="goal left"></div><div class="goal right"></div>
-<div id="ball" class="ball"></div>
 </div>
+<div id="field"><canvas id="cv"></canvas><div id="msg"></div><button onclick="goMenu()" style="position:absolute;top:8px;left:8px;z-index:11;background:#0008;color:#fff;border:1px solid #fff;padding:4px 10px;border-radius:6px;font-size:11px">← MENU</button></div>
 <div class="controls">
 <div class="joy" id="joy"><div class="stick" id="stick"></div></div>
 <div style="display:flex;align-items:center">
-<div class="cbtn" id="btnPass">PASS / TACKLE</div>
-<div class="cbtn" id="btnShoot" style="border-color:#ff4444">SHOOT</div>
+<div class="cbtn" id="btnTackle" style="border-color:#f1c40f">TACKLE</div>
+<div class="cbtn" id="btnShoot" style="border-color:#e74c3c">SHOOT</div>
+<div class="cbtn" id="btnPass" style="border-color:#2ecc71">PASS</div>
 </div>
 </div>
-<button onclick="goMenu()" style="position:absolute;top:45px;left:10px;z-index:7;background:#0008;color:#fff;border:1px solid #fff;padding:4px 10px;border-radius:6px;font-size:12px">← MENU</button>
+
+<div id="mainMenu" class="screen">
+<div class="card" style="text-align:center">
+<h2 style="color:#2ecc71">FC BD 27 - 500 COIN SHOP</h2>
+<p style="font-size:12px;color:#aaa">সব Character 500 Coin - Direct Download System</p>
+<div style="margin:10px 0">💰 <b id="menuCoin">500</b> coin | ম্যাচে +10 coin</div>
+<button class="mode" onclick="openShop()">🛒 SHOP - সব 500 Coin (Hamza, Dybala, Ronaldo, Martinez, Mbappe...)</button>
+<button class="mode" onclick="openTeam()" style="background:#f1c40f">👕 MY TEAM - 5 জন সাজাও</button>
+<button class="mode" onclick="openPlay()" style="background:#3498db">▶️ PLAY - 3 Mode</button>
+<button class="mode" onclick="downloadGame()" style="background:#fff;color:#000">📥 WEBSITE DOWNLOAD করো - ফোনে Save হবে</button>
+<p style="font-size:10px;color:#888;margin-top:8px">Install Tip: Chrome এ 3 dot → Add to Home Screen → App হিসেবে Install হবে</p>
+</div>
+</div>
+
+<div id="shopScreen" class="screen hidden">
+<div class="card"><h3>🛒 500 Coin Shop - All Players 500 <span style="float:right" class="coin" id="shopCoin">500</span></h3><button onclick="backMain()" style="margin-top:8px;padding:6px 12px;background:#333;color:#fff;border:none;border-radius:6px">← Back</button></div>
+<div class="shop-grid" id="shopGrid"></div>
+</div>
+
+<div id="teamScreen" class="screen hidden">
+<div class="card"><h3>👕 MY TEAM - 5 জন</h3><button onclick="backMain()" style="padding:6px 12px;background:#333;color:#fff;border:none;border-radius:6px">← Back</button></div>
+<div id="teamSlots"></div>
+<div class="card"><h4>Owned (500 coin players):</h4><div id="ownedList" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+</div>
+
+<div id="playScreen" class="screen hidden">
+<div class="card" style="text-align:center">
+<h3>3 Mode - DLS26 Character</h3>
+<button class="mode" onclick="startMatch(1)">1. TRAINING - Free Kick Wall</button>
+<button class="mode" onclick="startMatch(2)" style="background:#e67e22">2. 1vs1 Dribble</button>
+<button class="mode" onclick="startMatch(3)" style="background:#f1c40f">3. FINAL BRA vs ARS 5v5</button>
+<button onclick="backMain()" style="margin-top:10px;padding:8px;background:#333;color:#fff;border:none;border-radius:8px;width:100%">← Back</button>
+</div>
 </div>
 
 <script>
-let mode=1, gameOn=false, players=[], myTeam=[], oppTeam=[], activeIdx=0, ballOwner=null, ballV={x:0,y:0}, scoreMe=0, scoreOpp=0, chances=5, time=0, timerInt;
-const field=document.getElementById('field'), ballEl=document.getElementById('ball');
+const canvas=document.getElementById('cv'), ctx=canvas.getContext('2d'); let W,H, field=document.getElementById('field');
+function rs(){W=canvas.width=field.clientWidth*2; H=canvas.height=field.clientHeight*2} rs(); window.onresize=rs;
 
-function clearPlayers(){field.querySelectorAll('.player').forEach(e=>e.remove()); players=[]; myTeam=[]; oppTeam=[]}
+// --- 500 COIN SHOP - তুমি যা যা বলছো সব ---
+let CHARACTERS=[
+ {id:'hamza', name:'Hamza Choudhury', price:500, color:'#006A4E', power:82, emoji:'🇧🇩'},
+ {id:'dybala', name:'Dybala', price:500, color:'#fff', power:88, emoji:'💎'},
+ {id:'ronaldo', name:'Ronaldo', price:500, color:'#e74c3c', power:96, emoji:'👑'},
+ {id:'martinez', name:'Martinez', price:500, color:'#3498db', power:87, emoji:'🧤'},
+ {id:'mbappe', name:'Mbappe', price:500, color:'#111', power:94, emoji:'⚡'},
+ {id:'messi', name:'Messi', price:500, color:'#3498db', power:96, emoji:'🐐'},
+ {id:'neymar', name:'Neymar', price:500, color:'#f1c40f', power:90, emoji:'🎩'},
+ {id:'haaland', name:'Haaland', price:500, color:'#2ecc71', power:92, emoji:'🤖'},
+ {id:'salah', name:'Salah', price:500, color:'#e74c3c', power:89, emoji:'👑'},
+ {id:'benzema', name:'Benzema', price:500, color:'#fff', power:88, emoji:'⚽'},
+ {id:'fati', name:'Ansu Fati', price:500, color:'#004D98', power:84, emoji:'🌟'},
+ {id:'jamal', name:'Jamal Bhuyan', price:500, color:'#006A4E', power:78, emoji:'🇧🇩'},
+];
+function getData(){let d=JSON.parse(localStorage.getItem('fc500_data')||'{"coin":500,"owned":["hamza"],"team":["hamza"]}'); return d;}
+function saveData(d){localStorage.setItem('fc500_data',JSON.stringify(d)); updCoin();}
+function updCoin(){let d=getData(); document.getElementById('coinTxt').innerText='💰 '+d.coin+' coin'; document.getElementById('menuCoin').innerText=d.coin; let s=document.getElementById('shopCoin'); if(s) s.innerText=d.coin+' coin';}
+updCoin();
 
-function createP(x,y,cls,label){
- let el=document.createElement('div'); el.className='player '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.innerText=label;
- field.appendChild(el); let obj={el,x,y,cls,ox:x,oy:y}; players.push(obj); return obj;
+function openShop(){
+ document.getElementById('mainMenu').classList.add('hidden'); document.getElementById('shopScreen').classList.remove('hidden');
+ let d=getData(); let grid=document.getElementById('shopGrid'); grid.innerHTML='';
+ CHARACTERS.forEach(ch=>{
+   let owned=d.owned.includes(ch.id);
+   let div=document.createElement('div'); div.className='shop-item '+(owned?'owned':'');
+   div.innerHTML=`<div style="font-size:28px">${ch.emoji}</div><b style="font-size:12px">${ch.name}</b><div style="font-size:11px">Power ${ch.power}</div><div class="price">500 coin</div><button class="buy" ${owned?'disabled':''} onclick="buyChar('${ch.id}')">${owned?'OWNED ✅':'BUY 500'}</button>`;
+   grid.appendChild(div);
+ });
+}
+function buyChar(id){
+ let d=getData(); let ch=CHARACTERS.find(c=>c.id==id);
+ if(d.owned.includes(id)) return;
+ if(d.coin<500){alert('Coin কম! আছে '+d.coin+' - ম্যাচ খেলে 10 coin করে জমাও'); return;}
+ d.coin-=500; d.owned.push(id); saveData(d); openShop(); alert(ch.name+' কিনেছো 500 coin দিয়ে! ✅');
+}
+function openTeam(){document.getElementById('mainMenu').classList.add('hidden'); document.getElementById('teamScreen').classList.remove('hidden'); renderTeam();}
+function renderTeam(){
+ let d=getData(); let slots=document.getElementById('teamSlots'); slots.innerHTML='';
+ for(let i=0;i<5;i++){let pid=d.team[i]; let ch=CHARACTERS.find(c=>c.id==pid); let div=document.createElement('div'); div.className='card'; div.style.cssText='padding:8px;margin:4px 0;display:flex;justify-content:space-between;align-items:center;border-style:'+(ch?'solid':'dashed'); div.innerHTML=`<span>Slot ${i+1}: ${ch?ch.emoji+' '+ch.name:'খালি'}</span><button onclick="clearSlot(${i})" style="padding:4px 8px;background:#333;color:#fff;border:none;border-radius:4px">X</button>`; slots.appendChild(div);}
+ let list=document.getElementById('ownedList'); list.innerHTML=''; d.owned.forEach(id=>{let ch=CHARACTERS.find(c=>c.id==id); let b=document.createElement('button'); b.style.cssText='padding:6px 10px;background:#222;color:#fff;border:1px solid #2ecc71;border-radius:20px;font-size:12px'; b.innerText=ch.emoji+' '+ch.name; b.onclick=()=>addToTeam(id); list.appendChild(b);});
+}
+function addToTeam(id){let d=getData(); if(d.team.includes(id)){alert('Already team এ আছে'); return;} if(d.team.length>=5){alert('Team Full 5 জন'); return;} d.team.push(id); saveData(d); renderTeam();}
+function clearSlot(i){let d=getData(); d.team.splice(i,1); saveData(d); renderTeam();}
+function openPlay(){document.getElementById('mainMenu').classList.add('hidden'); document.getElementById('playScreen').classList.remove('hidden');}
+function backMain(){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden')); document.getElementById('mainMenu').classList.remove('hidden'); updCoin();}
+
+// --- DOWNLOAD SYSTEM ---
+function downloadGame(){
+ let htmlContent = document.documentElement.outerHTML;
+ let blob = new Blob([htmlContent], {type:'text/html'});
+ let url = URL.createObjectURL(blob);
+ let a = document.createElement('a'); a.href=url; a.download='FC-BD-27-500-coin-game.html';
+ document.body.appendChild(a); a.click(); document.body.removeChild(a);
+ URL.revokeObjectURL(url);
+ let m=document.getElementById('msg'); m.innerHTML='📥 DOWNLOAD DONE!<br><span style="font-size:12px">ফোনে Save হয়েছে - এখন Offline খেলতে পারবা</span>'; m.style.display='block'; setTimeout(()=>m.style.display='none',2500);
 }
 
-function startMode(m){
- mode=m; scoreMe=0; scoreOpp=0; time=0; chances=5;
- document.getElementById('menu').classList.add('hidden');
- document.getElementById('gameUI').classList.remove('hidden');
- clearPlayers();
- let fw=field.clientWidth, fh=field.clientHeight;
- if(m==1){
-   document.getElementById('modeText').innerText='TRAINING';
-   document.getElementById('scoreText').innerText='Goal: 0 | Chance: 5';
-   // Player + Goalkeeper
-   let p=createP(120,fh/2,'me','YOU');
-   let gk=createP(fw-50,fh/2,'opp','GK');
-   myTeam=[p]; oppTeam=[gk];
-   activeIdx=0; ballOwner=p;
-   ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px';
- } else if(m==2){
-   document.getElementById('modeText').innerText='1VS1 MATCH';
-   document.getElementById('scoreText').innerText='BD 0-0 OPP';
-   let p=createP(100,fh/2,'me','YOU');
-   let o=createP(fw-150,fh/2,'opp','OPP');
-   myTeam=[p]; oppTeam=[o];
-   activeIdx=0; ballOwner=p;
-   ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px';
- } else {
-   document.getElementById('modeText').innerText='FINAL: BRA vs ARS';
-   document.getElementById('scoreText').innerText='BRA 0-0 ARS';
-   // 5 vs 5
-   let myPos=[[80,fh/2],[180,fh*0.25],[180,fh*0.75],[300,fh*0.35],[300,fh*0.65]];
-   let oppPos=[[fw-80,fh/2],[fw-180,fh*0.25],[fw-180,fh*0.75],[fw-300,fh*0.35],[fw-300,fh*0.65]];
-   myPos.forEach((pos,i)=>{let p=createP(pos[0],pos[1],'bra',i==0?'YOU':'BRA'); myTeam.push(p)});
-   oppPos.forEach((pos,i)=>{let p=createP(pos[0],pos[1],'ars',i==0?'GK':'ARS'); oppTeam.push(p)});
-   activeIdx=0; ballOwner=myTeam[0];
-   ballEl.style.left=myTeam[0].x+25+'px'; ballEl.style.top=myTeam[0].y+'px';
- }
- setActive();
- gameOn=true;
- if(timerInt) clearInterval(timerInt);
- timerInt=setInterval(()=>{time++; let mm=String(Math.floor(time/60)).padStart(2,'0'); let ss=String(time%60).padStart(2,'0'); document.getElementById('timerText').innerText=mm+':'+ss},1000);
- loop();
-}
-
-function setActive(){
- myTeam.forEach(p=>p.el.classList.remove('active'));
- if(myTeam[activeIdx]) myTeam[activeIdx].el.classList.add('active');
-}
-
-let joy={dx:0,dy:0,active:false};
-const joyEl=document.getElementById('joy'), stickEl=document.getElementById('stick');
-joyEl.addEventListener('touchstart',e=>{joy.active=true; e.preventDefault()},{passive:false});
-joyEl.addEventListener('touchmove',e=>{
- let r=joyEl.getBoundingClientRect(); let t=e.touches[0];
- let dx=t.clientX-(r.left+55), dy=t.clientY-(r.top+55);
- let d=Math.min(45,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx);
- joy.dx=Math.cos(ang)*d/45; joy.dy=Math.sin(ang)*d/45;
- stickEl.style.left=33+joy.dx*32+'px'; stickEl.style.top=33+joy.dy*32+'px';
- e.preventDefault();
-},{passive:false});
-joyEl.addEventListener('touchend',()=>{joy.active=false; joy.dx=0; joy.dy=0; stickEl.style.left='33px'; stickEl.style.top='33px'});
-
-function doAction(){
- // PASS = TACKLE if not owner
- if(!ballOwner || ballOwner.cls.includes('opp') || ballOwner.cls=='ars'){
-   // Try tackle
-   let me=myTeam[activeIdx];
-   let target=mode==1?oppTeam[0]: (ballOwner?ballOwner:oppTeam[0]);
-   if(Math.hypot(me.x-target.x, me.y-target.y)<45){
-     ballOwner=me; ballV={x:0,y:0};
-     ballEl.style.left=me.x+25+'px'; ballEl.style.top=me.y+'px';
-   }
- } else {
-   // Pass to teammate (mode 3)
-   if(mode==3){
-     let cur=myTeam[activeIdx]; let best=null, bestD=999;
-     myTeam.forEach((p,i)=>{if(i!=activeIdx){let d=Math.hypot(p.x-cur.x,p.y-cur.y); if(d<bestD && d>40){bestD=d; best=p}}});
-     if(best){let ang=Math.atan2(best.y-ballEl.offsetTop, best.x-ballEl.offsetLeft); ballV.x=Math.cos(ang)*10; ballV.y=Math.sin(ang)*10; ballOwner=null;}
-   }
+// --- GAME ENGINE DLS26 STYLE ---
+let mode=1, run=false, players=[], my=[], opp=[], ball={x:0,y:0}, ballV={x:0,y:0}, owner=null, active=0, scoreM=0, scoreO=0, t=0, timer, joy={dx:0,dy:0,a:false};
+class DLSPlayer{
+ constructor(x,y,team,num,color,emoji){this.x=x;this.y=y;this.team=team;this.num=num;this.color=color;this.emoji=emoji;this.vx=0;this.vy=0;this.red=false;}
+ draw(){
+   if(this.red) return;
+   ctx.save(); ctx.translate(this.x,this.y);
+   ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.ellipse(0,18,18,7,0,0,Math.PI*2); ctx.fill();
+   let moving=Math.hypot(this.vx,this.vy)>0.6; let swing=moving?Math.sin(Date.now()*0.015+this.x)*9:0;
+   ctx.fillStyle='#111'; ctx.fillRect(-7+swing,6,6,14); ctx.fillRect(3-swing,6,6,14);
+   ctx.fillStyle=this.team=='my'?'#ffeb3b':'#3498db'; ctx.fillRect(-7+swing,6,6,8); ctx.fillRect(3-swing,6,6,8);
+   ctx.fillStyle='#fff'; if(this.team=='opp') ctx.fillStyle='#0022aa'; ctx.fillRect(-9,-2,18,10);
+   ctx.fillStyle=this.color; ctx.fillRect(-12,-18,24,18);
+   ctx.fillStyle='#000'; ctx.font='bold 12px Arial'; ctx.textAlign='center'; ctx.fillText(this.num,0,-4);
+   ctx.fillStyle='#ffdbac'; ctx.beginPath(); ctx.arc(0,-24,9,0,Math.PI*2); ctx.fill();
+   ctx.restore();
+   if(this.team=='my' && players.indexOf(this)==active){ctx.strokeStyle='#ff0'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(this.x,this.y,20,0,Math.PI*2); ctx.stroke();}
  }
 }
-function doShoot(){
- if(!ballOwner || !['me','bra'].some(c=>ballOwner.cls.includes(c))) return;
- let fw=field.clientWidth, fh=field.clientHeight;
- let goalY=fh/2+(Math.random()-0.5)*60;
- let ang=Math.atan2(goalY-ballEl.offsetTop, fw-ballEl.offsetLeft);
- let power=mode==1?12:14;
- ballV.x=Math.cos(ang)*power; ballV.y=Math.sin(ang)*power;
- ballOwner=null;
-}
-
-document.getElementById('btnPass').addEventListener('touchstart',doAction);
-document.getElementById('btnShoot').addEventListener('touchstart',doShoot);
-
-function loop(){
- if(!gameOn) return;
- let me=myTeam[activeIdx];
- if(joy.active && me){
-   me.x+=joy.dx*5; me.y+=joy.dy*5;
-   me.x=Math.max(15,Math.min(field.clientWidth-35,me.x));
-   me.y=Math.max(15,Math.min(field.clientHeight-35,me.y));
-   me.el.style.left=me.x+'px'; me.el.style.top=me.y+'px';
-   if(ballOwner==me){ballEl.style.left=me.x+25+'px'; ballEl.style.top=me.y+'px';}
- }
- // ball move
- if(!ballOwner){
-   ballEl.style.left=(ballEl.offsetLeft+ballV.x)+'px';
-   ballEl.style.top=(ballEl.offsetTop+ballV.y)+'px';
-   ballV.x*=0.985; ballV.y*=0.985;
-   if(Math.abs(ballV.x)<0.2) ballV.x=0; if(Math.abs(ballV.y)<0.2) ballV.y=0;
-   // pickup
-   let all=[...myTeam,...oppTeam];
-   for(let p of all){
-     if(Math.hypot(ballEl.offsetLeft-p.x, ballEl.offsetTop-p.y)<28 && Math.hypot(ballV.x,ballV.y)<4){
-       ballOwner=p;
-       if(myTeam.includes(p)){activeIdx=myTeam.indexOf(p); setActive();}
-       ballV={x:0,y:0}; break;
-     }
-   }
-   // GOAL CHECK
-   let bx=ballEl.offsetLeft, by=ballEl.offsetTop, fw=field.clientWidth, fh=field.clientHeight;
-   if(bx>fw-14 && by>fh/2-65 && by<fh/2+65){
-     // my goal
-     if(mode==1){
-       scoreMe++; chances--; // training: goal = chance back?
-       document.getElementById('scoreText').innerText=`Goal: ${scoreMe} | Chance: ${chances}`;
-       alert('GOAL! 🎯 আবার চান্স পাবা!');
-       resetBall();
-     } else {
-       scoreMe++; updateScore();
-       alert('GOAL!!! BRAZIL / BD GOAL! ⚽');
-       resetBall();
-     }
-     return;
-   }
-   if(bx<14 && by>fh/2-65 && by<fh/2+65){
-     if(mode==1){
-       chances--; document.getElementById('scoreText').innerText=`Goal: ${scoreMe} | Chance: ${chances}`;
-       if(chances<=0){alert('Game Over! তোমার গোল: '+scoreMe); goMenu();} else {alert('MISS! চান্স শেষ: '+chances); resetBall();}
-     } else {
-       scoreOpp++; updateScore(); alert('Opponent Goal!'); resetBall();
-     }
-     return;
-   }
-   if(bx<0||bx>fw||by<0||by>fh){resetBall(); return;}
- }
- // Opponent AI (mode 2 & 3) - fixed, not laggy
- if(mode==2 && ballOwner && myTeam.includes(ballOwner)){
-   // opponent chase
-   let o=oppTeam[0]; o.x+=(ballEl.offsetLeft-o.x)*0.04; o.y+=(ballEl.offsetTop-o.y)*0.04;
-   o.el.style.left=o.x+'px'; o.el.style.top=o.y+'px';
-   if(Math.hypot(o.x-ballEl.offsetLeft, o.y-ballEl.offsetTop)<30 && ballOwner==myTeam[0]){ballOwner=o; }
- } else if(mode==2 && ballOwner && oppTeam.includes(ballOwner)){
-   ballOwner.x+=2; ballOwner.y+=(Math.random()-0.5)*2;
-   ballOwner.el.style.left=ballOwner.x+'px'; ballOwner.el.style.top=ballOwner.y+'px';
-   ballEl.style.left=ballOwner.x+'px'; ballEl.style.top=ballOwner.y+'px';
-   if(Math.random()<0.02){ballV.x=-10; ballV.y=(Math.random()-0.5)*6; ballOwner=null;}
- } else if(mode==3){
-   // simple opponent chase only one nearest
-   if(!ballOwner || myTeam.includes(ballOwner)){
-     let opp=oppTeam.reduce((a,b)=>Math.hypot(ballEl.offsetLeft-a.x,ballEl.offsetTop-a.y)<Math.hypot(ballEl.offsetLeft-b.x,ballEl.offsetTop-b.y)?a:b);
-     opp.x+=(ballEl.offsetLeft-opp.x)*0.025; opp.y+=(ballEl.offsetTop-opp.y)*0.025;
-     opp.el.style.left=opp.x+'px'; opp.el.style.top=opp.y+'px';
-   }
-   // keeper in training moves
-   if(mode==1){
-     let gk=oppTeam[0]; gk.y+=Math.sin(time*0.1)*1.2; gk.el.style.top=gk.y+'px';
-     // save logic
-     if(!ballOwner && Math.hypot(ballEl.offsetLeft-gk.x, ballEl.offsetTop-gk.y)<35){ballV.x=-6; ballV.y=(Math.random()-0.5)*8; }
-   }
- }
-
- // training keeper move
+function init(){
+ players=[]; my=[]; opp=[]; owner=null; ballV={x:0,y:0}; let fw=W, fh=H; let d=getData(); let teamChars=d.team.map(id=>CHARACTERS.find(c=>c.id==id)).filter(Boolean); if(teamChars.length==0) teamChars=[CHARACTERS[0]];
  if(mode==1){
-   let gk=oppTeam[0]; gk.y+=Math.sin(Date.now()*0.003)*1.5;
-   if(gk.y<field.clientHeight/2-50) gk.y=field.clientHeight/2-50;
-   if(gk.y>field.clientHeight/2+50) gk.y=field.clientHeight/2+50;
-   gk.el.style.top=gk.y+'px';
-   if(!ballOwner && Math.hypot(ballEl.offsetLeft-gk.x, ballEl.offsetTop-gk.y)<32){ballV.x=-7; ballV.y=(Math.random()-0.5)*8;}
+   let ch=teamChars[0]; let me=new DLSPlayer(220,fh-120,'my',ch.name.substring(0,2),ch.color,ch.emoji); players.push(me); my.push(me); active=0;
+   for(let i=0;i<4;i++){let p=new DLSPlayer(fw/2-60+i*35,fh*0.45,'opp',i+2,'#3498db',''); players.push(p); opp.push(p);}
+   let gk=new DLSPlayer(fw-180,fh*0.45,'opp',1,'#f1c40f',''); players.push(gk); opp.push(gk);
+   ball={x:me.x+30,y:me.y}; owner=me;
+ } else if(mode==2){
+   let ch=teamChars[0]; let me=new DLSPlayer(200,fh/2,'my',ch.name.substring(0,2),ch.color,ch.emoji); let o=new DLSPlayer(fw-300,fh/2,'opp','5','#3498db',''); players=[me,o]; my=[me]; opp=[o]; active=0; ball={x:me.x+28,y:me.y}; owner=me;
+ } else {
+   let myPos=[[180,fh/2],[300,fh*0.3],[300,fh*0.7],[420,fh*0.35],[420,fh*0.65]];
+   let oppPos=[[W-180,fh/2],[W-300,fh*0.3],[W-300,fh*0.7],[W-420,fh*0.35],[W-420,fh*0.65]];
+   myPos.forEach((p,i)=>{let ch=teamChars[i%teamChars.length]; let pl=new DLSPlayer(p[0],p[1],'my',ch.name.substring(0,2),ch.color,ch.emoji); players.push(pl); my.push(pl)});
+   oppPos.forEach(p=>{let pl=new DLSPlayer(p[0],p[1],'opp',p[2],'#3498db',''); players.push(pl); opp.push(pl)});
+   active=0; ball={x:my[0].x+28,y:my[0].y}; owner=my[0];
  }
-
+ document.getElementById('score').innerText=mode==3?`BRA ${scoreM}-${scoreO} ARS`:`BD ${scoreM}-${scoreO} OPP`;
+}
+function start(m){mode=m; scoreM=0; scoreO=0; t=0; document.getElementById('mainMenu').classList.add('hidden'); document.getElementById('shopScreen').classList.add('hidden'); document.getElementById('playScreen').classList.add('hidden'); document.getElementById('teamScreen').classList.add('hidden'); init(); run=true; clearInterval(timer); timer=setInterval(()=>{t++; let mm=String(Math.floor(t/60)).padStart(2,'0'); let ss=String(t%60).padStart(2,'0'); document.getElementById('time').innerText=mm+':'+ss},1000); loop();}
+function checkGoal(){
+ let fw=W, fh=H;
+ if(ball.x>fw-40 && ball.y>fh*0.35 && ball.y<fh*0.55){scoreM++; document.getElementById('score').innerText=mode==3?`BRA ${scoreM}-${scoreO} ARS`:`BD ${scoreM}-${scoreO} OPP`; let m=document.getElementById('msg'); m.innerHTML='GOAL! +10 coin ⚽'; m.style.display='block'; setTimeout(()=>{m.style.display='none'; let d=getData(); d.coin+=10; saveData(d); init();},1200); return true;}
+ if(ball.x<40 && ball.y>fh*0.35 && ball.y<fh*0.55){scoreO++; document.getElementById('score').innerText=mode==3?`BRA ${scoreM}-${scoreO} ARS`:`BD ${scoreM}-${scoreO} OPP`; let m=document.getElementById('msg'); m.innerHTML='Opp Goal!'; m.style.display='block'; setTimeout(()=>{m.style.display='none'; init();},1000); return true;}
+ if(ball.x<0||ball.x>fw||ball.y<0||ball.y>fh){init(); return true;} return false;
+}
+function tackle(){let me=my[active]; if(!me||me.red) return; let target=owner && opp.includes(owner)?owner:opp.reduce((a,b)=>Math.hypot(ball.x-a.x,ball.y-a.y)<Math.hypot(ball.x-b.x,ball.y-b.y)?a:b); if(Math.hypot(me.x-target.x,me.y-target.y)<60){owner=me; ballV={x:0,y:0}; ball.x=me.x+22; ball.y=me.y;}}
+function shoot(){if(!owner||!my.includes(owner)) return; let fw=W, fh=H; let gy=fh*0.45+(Math.random()-0.5)*60; let ang=Math.atan2(gy-ball.y,fw-ball.x); ballV.x=Math.cos(ang)*16; ballV.y=Math.sin(ang)*16; owner=null;}
+function pass(){if(!owner||!my.includes(owner)||mode==1) return; let cur=my[active]; let best=null,d=999; my.forEach((p,i)=>{if(i!=active){let dist=Math.hypot(p.x-cur.x,p.y-cur.y); if(dist>50&&dist<d){d=dist; best=p}}}); if(best){let ang=Math.atan2(best.y-ball.y,best.x-ball.x); ballV.x=Math.cos(ang)*10; ballV.y=Math.sin(ang)*10; owner=null;}}
+document.getElementById('btnTackle').addEventListener('touchstart',tackle);
+document.getElementById('btnShoot').addEventListener('touchstart',shoot);
+document.getElementById('btnPass').addEventListener('touchstart',pass);
+const joyEl=document.getElementById('joy'), stickEl=document.getElementById('stick');
+joyEl.addEventListener('touchstart',e=>{joy.a=true; e.preventDefault()},{passive:false});
+joyEl.addEventListener('touchmove',e=>{let r=joyEl.getBoundingClientRect(); let tt=e.touches[0]; let dx=tt.clientX-(r.left+55), dy=tt.clientY-(r.top+55); let d=Math.min(50,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx); joy.dx=Math.cos(ang)*d/50; joy.dy=Math.sin(ang)*d/50; stickEl.style.left=35+joy.dx*35+'px'; stickEl.style.top=35+joy.dy*35+'px'; e.preventDefault();},{passive:false});
+joyEl.addEventListener('touchend',()=>{joy.a=false; joy.dx=0; joy.dy=0; stickEl.style.left='35px'; stickEl.style.top='35px';});
+function loop(){
+ if(!run) return;
+ let me=my[active]; if(me&&!me.red&&joy.a){me.vx=joy.dx*4.5; me.vy=joy.dy*4.5; me.x+=me.vx; me.y+=me.vy; me.x=Math.max(30,Math.min(W-30,me.x)); me.y=Math.max(30,Math.min(H-30,me.y)); if(owner==me){ball.x=me.x+26; ball.y=me.y+4;}}
+ if(!owner){ball.x+=ballV.x; ball.y+=ballV.y; ballV.x*=0.983; ballV.y*=0.983; if(checkGoal()){} for(let p of players){if(Math.hypot(ball.x-p.x,ball.y-p.y)<32 && Math.hypot(ballV.x,ballV.y)<5){owner=p; if(my.includes(p)) active=my.indexOf(p); ballV={x:0,y:0}; break;}}}
+ if(mode>=2){opp.forEach(o=>{if(owner&&my.includes(owner)){o.x+=(ball.x-o.x)*0.03; o.y+=(ball.y-o.y)*0.03;} else if(!owner && o==opp.reduce((a,b)=>Math.hypot(ball.x-a.x,ball.y-a.y)<Math.hypot(ball.x-b.x,ball.y-b.y)?a:b)){o.x+=(ball.x-o.x)*0.04; o.y+=(ball.y-o.y)*0.04;} else if(owner==o){o.x+=2.8; ball.x=o.x+16; ball.y=o.y; if(Math.random()<0.02){ballV.x=-11; ballV.y=(Math.random()-0.5)*6; owner=null;}}});}
+ ctx.clearRect(0,0,W,H); ctx.fillStyle='#2ea62e'; ctx.fillRect(0,0,W,H); ctx.strokeStyle='#fff'; ctx.lineWidth=4; ctx.strokeRect(20,20,W-40,H-40); ctx.beginPath(); ctx.moveTo(W/2,20); ctx.lineTo(W/2,H-20); ctx.stroke(); ctx.beginPath(); ctx.arc(W/2,H/2,90,0,Math.PI*2); ctx.stroke(); ctx.fillStyle='#fff'; ctx.fillRect(0,H*0.35,14,H*0.2); ctx.fillRect(W-14,H*0.35,14,H*0.2);
+ players.forEach(p=>p.draw()); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ball.x,ball.y,10,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.stroke();
  requestAnimationFrame(loop);
 }
+function goMenu(){run=false; clearInterval(timer); document.querySelectorAll('.screen').forEach(s=>{if(s.id!='mainMenu') s.classList.add('hidden')}); document.getElementById('mainMenu').classList.remove('hidden');}
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>FC BD 27 - 500 Coin Shop + Download</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRkMgQkQgMjciLCJzaG9ydF9uYW1lIjoiRkNEIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwMDAwMDAifQ==">
+<style>
+*{box-sizing:border-box;touch-action:none;margin:0} body{background:#0a160a;color:#fff;font-family:Arial;overflow:hidden}
+.top{position:absolute;top:0;width:100%;height:46px;background:#000;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:20;border-bottom:2px solid #2ecc71;font-weight:bold}
+.coin{color:#f1c40f;background:#222;padding:5px 12px;border-radius:20px;border:1px solid #f1c40f}
+#field{position:absolute;top:46px;left:0;width:100vw;height:calc(100vh - 150px);background:#1e7a1e}
+canvas{width:100%;height:100%;display:block}
+.controls{position:absolute;bottom:0;width:100%;height:150px;background:#000e;display:flex;justify-content:space-between;padding:10px;z-index:20}
+.joy{width:110px;height:110px;background:rgba(255,255,255,0.12);border-radius:50%;position:relative;border:2px solid #fff5}
+.stick{width:44px;height:44px;background:#fff;border-radius:50%;position:absolute;left:33px;top:33px}
+.cbtn{width:62px;height:62px;border-radius:50%;background:#222;border:2px solid #fff;color:#fff;font-weight:bold;font-size:11px;display:flex;align-items:center;justify-content:center}
+.screen{position:absolute;inset:0;background:linear-gradient(#0f2a0f,#000);z-index:30;display:flex;flex-direction:column;padding:14px;overflow:auto}
+.card{background:#162216;border:2px solid #2ecc71;border-radius:12px;padding:14px;margin:8px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{background:#1e331e;border:1px solid #334155;border-radius:12px;padding:10px;text-align:center}
+.item.owned{border-color:#2ecc71;background:#143214}
+button.buy{width:100%;padding:8px;background:#2ecc71;color:#000;border:none;border-radius:6px;font-weight:bold;margin-top:6px}
+button.buy:disabled{background:#444;color:#888}
+#msg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#000e;border:2px solid #ff0;padding:14px 22px;border-radius:12px;z-index:40;display:none;text-align:center;font-weight:bold;font-size:18px}
+.hidden{display:none}
+.modeBtn{width:100%;padding:14px;margin:7px 0;background:#2ecc71;color:#000;border:none;border-radius:10px;font-weight:bold}
+.downloadBtn{width:100%;padding:14px;margin:7px 0;background:linear-gradient(90deg,#f1c40f,#e67e22);color:#000;border:none;border-radius:10px;font-weight:bold;font-size:16px;box-shadow:0 4px 15px rgba(241,196,15,0.4)}
+</style>
+</head>
+<body>
+<div class="top"><span id="score">BRA 0-0 ARS</span><span class="coin" id="coinTxt">💰 500 coin</span><span id="time">00:00</span></div>
+<div id="field"><canvas id="cv"></canvas><div id="msg"></div><button onclick="goMenu()" style="position:absolute;top:8px;left:8px;z-index:15;background:#0008;color:#fff;border:1px solid #fff;padding:5px 10px;border-radius:6px;font-size:11px">← MENU</button></div>
+<div class="controls">
+<div class="joy" id="joy"><div class="stick" id="stick"></div></div>
+<div style="display:flex;gap:10px;align-items:center">
+<div class="cbtn" id="bTackle" style="border-color:#f1c40f">TACKLE</div>
+<div class="cbtn" id="bShoot" style="border-color:#e74c3c">SHOOT</div>
+<div class="cbtn" id="bPass" style="border-color:#2ecc71">PASS</div>
+</div>
+</div>
 
-function resetBall(){
- let fh=field.clientHeight;
- if(mode==1){
-   let p=myTeam[0]; p.x=120; p.y=fh/2; p.el.style.left=p.x+'px'; p.el.style.top=p.y+'px';
-   ballOwner=p; ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px'; ballV={x:0,y:0};
- } else if(mode==2){
-   let p=myTeam[0]; p.x=100; p.y=fh/2; p.el.style.left=p.x+'px'; p.el.style.top=p.y+'px';
-   let o=oppTeam[0]; o.x=field.clientWidth-150; o.y=fh/2; o.el.style.left=o.x+'px'; o.el.style.top=o.y+'px';
-   ballOwner=p; ballEl.style.left=p.x+25+'px'; ballEl.style.top=p.y+'px'; ballV={x:0,y:0};
- } else {
-   startMode(3); // reset full
- }
+<div id="main" class="screen">
+<div class="card" style="text-align:center">
+<h2 style="color:#2ecc71">FC BD 27 - 500 COIN SYSTEM</h2>
+<p style="font-size:12px;color:#aaa">সব Character 500 Coin + Direct Download</p>
+<div style="font-size:14px;margin:8px 0">তোমার Coin: <b id="menuCoin" style="color:#f1c40f">500</b> | 1 ম্যাচ = 10 coin</div>
+
+<!-- DOWNLOAD SYSTEM -->
+<button class="downloadBtn" onclick="downloadWebsite()">⬇️ DIRECT DOWNLOAD WEBSITE - এক ক্লিকে ডাউনলোড</button>
+<p style="font-size:10px;color:#aaa;margin-bottom:8px">এই বাটনে ক্লিক করলে পুরা গেমটা তোমার ফোনে HTML ফাইল হিসেবে ডাউনলোড হবে, Offline খেলতে পারবা। Chrome Menu > Add to Home Screen দিলে App হয়ে যাবে।</p>
+
+<button class="modeBtn" onclick="openShop()">🛒 CHARACTER SHOP - সব 500 Coin</button>
+<button class="modeBtn" onclick="openTeam()" style="background:#f1c40f">👕 MY TEAM - Hamza, Dybala, Ronaldo সাজাও</button>
+<button class="modeBtn" onclick="openPlay()" style="background:#3498db">▶️ PLAY - 3 Mode</button>
+</div>
+</div>
+
+<div id="shop" class="screen hidden">
+<div class="card"><h3>🛒 SHOP - সব 500 Coin <span class="coin" id="shopCoin" style="float:right">500</span></h3><button onclick="backMain()" style="margin-top:8px;padding:6px 12px;background:#333;color:#fff;border:none;border-radius:6px">← Back</button></div>
+<div class="grid" id="shopGrid"></div>
+</div>
+
+<div id="team" class="screen hidden">
+<div class="card"><h3>👕 MY TEAM - 5 জন বেছে নাও</h3><button onclick="backMain()" style="padding:6px 12px;background:#333;color:#fff;border:none;border-radius:6px">← Back</button></div>
+<div id="slots"></div>
+<div class="card"><h4>Owned (500 coin দিয়ে কেনা):</h4><div id="owned" style="display:flex;flex-wrap:wrap;gap:6px"></div></div>
+</div>
+
+<div id="play" class="screen hidden">
+<div class="card" style="text-align:center"><h3>3 Mode - DLS26 Style Character</h3>
+<button class="modeBtn" onclick="startGame(1)">1. TRAINING - Free Kick Wall</button>
+<button class="modeBtn" onclick="startGame(2)" style="background:#e67e22">2. 1vs1 Match</button>
+<button class="modeBtn" onclick="startGame(3)" style="background:#f1c40f">3. FINAL BRA vs ARS 5v5</button>
+<button onclick="backMain()" style="margin-top:10px;padding:8px;background:#333;color:#fff;border:none;border-radius:8px;width:100%">← Back</button>
+</div>
+</div>
+
+<script>
+// ==================== 500 COIN CHARACTER LIST - তোমার চাওয়া সব ====================
+const CHARS = [
+ {id:'hamza', name:'Hamza Choudhury', price:500, color:'#ff0000', power:84, emoji:'🇧🇩'},
+ {id:'dybala', name:'Dybala', price:500, color:'#fff', power:88, emoji:'💎'},
+ {id:'ronaldo', name:'Ronaldo', price:500, color:'#e74c3c', power:96, emoji:'👑'},
+ {id:'martinez', name:'Martinez', price:500, color:'#3498db', power:87, emoji:'🧤'},
+ {id:'mbappe', name:'Mbappe', price:500, color:'#222', power:94, emoji:'🚀'},
+ {id:'messi', name:'Messi', price:500, color:'#3498db', power:97, emoji:'🐐'},
+ {id:'neymar', name:'Neymar', price:500, color:'#f1c40f', power:90, emoji:'⚡'},
+ {id:'haaland', name:'Haaland', price:500, color:'#2ecc71', power:92, emoji:'💪'},
+ {id:'salah', name:'Salah', price:500, color:'#e74c3c', power:89, emoji:'👑'},
+ {id:'vini', name:'Vinicius', price:500, color:'#fff', power:90, emoji:'⚡'},
+ {id:'kane', name:'Harry Kane', price:500, color:'#fff', power:88, emoji:'🏴'},
+ {id:'bellingham', name:'Bellingham', price:500, color:'#fff', power:87, emoji:'⭐'},
+ {id:'saka', name:'Saka', price:500, color:'#ff0000', power:86, emoji:'🏴'},
+ {id:'pedri', name:'Pedri', price:500, color:'#3498db', power:85, emoji:'🎯'},
+ {id:'gavi', name:'Gavi', price:500, color:'#3498db', power:84, emoji:'🔥'},
+ {id:'fahmidul', name:'Fahmidul BD', price:500, color:'#ff0000', power:78, emoji:'🇧🇩'},
+];
+
+function getD(){let d=JSON.parse(localStorage.getItem('fc500')||'{"coin":500,"owned":["hamza"],"team":["hamza"]}'); return d;}
+function saveD(d){localStorage.setItem('fc500',JSON.stringify(d)); updCoin();}
+function updCoin(){let d=getD(); document.getElementById('coinTxt').innerText='💰 '+d.coin; document.getElementById('menuCoin').innerText=d.coin; let s=document.getElementById('shopCoin'); if(s) s.innerText=d.coin;}
+updCoin();
+
+// DOWNLOAD SYSTEM - Direct Website Download
+function downloadWebsite(){
+ let htmlContent = document.documentElement.outerHTML;
+ let blob = new Blob([htmlContent], {type:'text/html'});
+ let url = URL.createObjectURL(blob);
+ let a = document.createElement('a'); a.href=url; a.download='FC-BD27-500Coin-Game.html';
+ document.body.appendChild(a); a.click(); document.body.removeChild(a);
+ URL.revokeObjectURL(url);
+ alert('✅ Download শুরু হয়েছে! ফাইলটা তোমার Downloads ফোল্ডারে যাবে। ওটা ওপেন করলেই Offline গেম খেলতে পারবা!');
+ // Also share if possible
+ if(navigator.share){ navigator.share({title:'FC BD 27', text:'My football game', files:[]}).catch(()=>{}); }
 }
-function updateScore(){
- if(mode==3) document.getElementById('scoreText').innerText=`BRA ${scoreMe} - ${scoreOpp} ARS`;
- else document.getElementById('scoreText').innerText=`BD ${scoreMe} - ${scoreOpp} OPP`;
-}
-function goMenu(){
- gameOn=false; if(timerInt) clearInterval(timerInt);
- document.getElementById('gameUI').classList.add('hidden');
- document.getElementById('menu').classList.remove('hidden');
- clearPlayers();
-}
+
+function openShop(){ document.getElementById('main').classList.add('hidden'); document.getElementById('shop').classList.remove('hidden'); let d=getD(); let g=document.getElementById('shopGrid'); g.innerHTML=''; CHARS.forEach(ch=>{let ow=d.owned.includes(ch.id); let div=document.createElement('div'); div.className='item '+(ow?'owned':''); div.innerHTML=`<div style="font-size:28px">${ch.emoji}</div><b style="font-size:12px">${ch.name}</b><div style="font-size:11px">Power ${ch.power}</div><div style="color:#f1c40f;font-weight:bold;margin:4px 0">500 coin</div><button class="buy" ${ow?'disabled':''} onclick="buy('${ch.id}')">${ow?'OWNED ✅':'BUY 500'}</button>`; g.appendChild(div);});}
+function buy(id){let d=getD(); let ch=CHARS.find(c=>c.id==id); if(d.owned.includes(id)) return; if(d.coin<500){alert('Coin কম! তোমার আছে '+d.coin+' - ম্যাচ খেলে 10 coin করে জমাও'); return;} d.coin-=500; d.owned.push(id); saveD(d); openShop(); alert(ch.name+' কিনেছো 500 coin দিয়ে!');}
+function openTeam(){document.getElementById('main').classList.add('hidden'); document.getElementById('team').classList.remove('hidden'); renderTeam();}
+function renderTeam(){let d=getD(); let sl=document.getElementById('slots'); sl.innerHTML=''; for(let i=0;i<5;i++){let pid=d.team[i]; let ch=CHARS.find(c=>c.id==pid); let div=document.createElement('div'); div.style.cssText='border:2px dashed #334155;border-radius:8px;padding:10px;margin:5px 0;display:flex;justify-content:space-between;align-items:center'; if(ch){div.style.borderStyle='solid'; div.style.borderColor='#2ecc71'; div.style.background='#123212';} div.innerHTML=`<span>Slot ${i+1}: ${ch?ch.emoji+' '+ch.name:'খালি'}</span><button onclick="clearSlot(${i})" style="padding:4px 8px;background:#333;color:#fff;border:none;border-radius:4px">X</button>`; sl.appendChild(div);} let list=document.getElementById('owned'); list.innerHTML=''; d.owned.forEach(id=>{let ch=CHARS.find(c=>c.id==id); let b=document.createElement('button'); b.style.cssText='padding:6px 10px;background:#222;color:#fff;border:1px solid #2ecc71;border-radius:20px;font-size:12px'; b.innerText=ch.emoji+' '+ch.name; b.onclick=()=>addTeam(id); list.appendChild(b);});}
+function addTeam(id){let d=getD(); if(d.team.includes(id)){alert('Already team এ আছে'); return;} if(d.team.length>=5){alert('Team Full - 5 জন হয়ে গেছে'); return;} d.team.push(id); saveD(d); renderTeam();}
+function clearSlot(i){let d=getD(); d.team.splice(i,1); saveD(d); renderTeam();}
+function openPlay(){document.getElementById('main').classList.add('hidden'); document.getElementById('play').classList.remove('hidden');}
+function backMain(){document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden')); document.getElementById('main').classList.remove('hidden'); updCoin();}
+
+// GAME ENGINE - DLS26 CHARACTER
+const canvas=document.getElementById('cv'), ctx=canvas.getContext('2d'); let W,H; function rs(){W=canvas.width=canvas.parentElement.clientWidth*2; H=canvas.height=canvas.parentElement.clientHeight*2} rs(); window.onresize=rs;
+let mode=1, run=false, players=[], my=[], opp=[], ball={x:0,y:0}, ballV={x:0,y:0}, owner=null, active=0, scoreM=0, scoreO=0, t=0, timer, joy={dx:0,dy:0,a:false};
+class P{constructor(x,y,team,num,color,power){this.x=x;this.y=y;this.team=team;this.num=num;this.color=color;this.power=power;this.vx=0;this.vy=0;this.red=false}
+draw(){if(this.red) return; ctx.save(); ctx.translate(this.x,this.y); ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.beginPath(); ctx.ellipse(0,18,18,7,0,0,Math.PI*2); ctx.fill(); let mv=Math.hypot(this.vx,this.vy)>0.6; let sw=mv?Math.sin(Date.now()*0.015+this.x)*9:0; ctx.fillStyle='#111'; ctx.fillRect(-7+sw,6,6,14); ctx.fillRect(3-sw,6,6,14); ctx.fillStyle=this.team=='my'?'#ffcc00':'#3498db'; ctx.fillRect(-7+sw,6,6,8); ctx.fillRect(3-sw,6,6,8); ctx.fillStyle='#fff'; if(this.team=='opp') ctx.fillStyle='#0022aa'; ctx.fillRect(-9,-2,18,10); ctx.fillStyle=this.color; ctx.fillRect(-12,-18,24,18); ctx.fillStyle='#000'; ctx.font='bold 13px Arial'; ctx.textAlign='center'; ctx.fillText(this.num,0,-5); ctx.fillStyle='#ffdbac'; ctx.beginPath(); ctx.arc(0,-24,9,0,Math.PI*2); ctx.fill(); ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(0,-30,9,0,Math.PI*1); ctx.fill(); ctx.restore(); if(this.team=='my'&&players.indexOf(this)==active){ctx.strokeStyle='#ff0'; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(this.x,this.y-4,22,0,Math.PI*2); ctx.stroke();}}}
+function msg(txt,c='#ff0',ms=1500){let m=document.getElementById('msg'); m.innerHTML=txt; m.style.borderColor=c; m.style.display='block'; setTimeout(()=>m.style.display='none',ms);}
+function initT(){players=[]; my=[]; opp=[]; owner=null; ballV={x:0,y:0}; let d=getD(); let chars=d.team.map(id=>CHARS.find(c=>c.id==id)).filter(Boolean); if(chars.length==0) chars=[CHARS[0]]; let fw=W,fh=H; if(mode==1){let ch=chars[0]; let me=new P(220,fh-120,'my',ch.name.substring(0,2),ch.color,ch.power); players.push(me); my.push(me); active=0; for(let i=0;i<4;i++){let p=new P(fw/2-60+i*35,fh*0.45,'opp',i+2,'#3498db',85); players.push(p); opp.push(p);} let gk=new P(fw-180,fh*0.45,'opp',1,'#f1c40f',85); players.push(gk); opp.push(gk); ball={x:me.x+30,y:me.y}; owner=me;} else if(mode==2){let ch=chars[0]; let me=new P(200,fh/2,'my',ch.name.substring(0,2),ch.color,ch.power); let o=new P(fw-300,fh/2,'opp','OP','#3498db',80); players=[me,o]; my=[me]; opp=[o]; active=0; ball={x:me.x+28,y:me.y}; owner=me;} else {let myPos=[[180,fh/2],[300,fh*0.3],[300,fh*0.7],[420,fh*0.35],[420,fh*0.65]]; let oppPos=[[W-180,fh/2],[W-300,fh*0.3],[W-300,fh*0.7],[W-420,fh*0.35],[W-420,fh*0.65]]; myPos.forEach((p,i)=>{let ch=chars[i%chars.length]; let pl=new P(p[0],p[1],'my',ch.name.substring(0,2),ch.color,ch.power); players.push(pl); my.push(pl)}); oppPos.forEach(p=>{let pl=new P(p[0],p[1],'opp',p[2],'#3498db',80); players.push(pl); opp.push(pl)}); active=0; ball={x:my[0].x+28,y:my[0].y}; owner=my[0];} document.getElementById('score').innerText=mode==3?`BRA ${scoreM}-${scoreO} ARS`:`BD ${scoreM}-${scoreO} OPP`;}
+function startGame(m){mode=m; scoreM=0; scoreO=0; t=0; document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden')); initT(); run=true; clearInterval(timer); timer=setInterval(()=>{t++; let mm=String(Math.floor(t/60)).padStart(2,'0'); let ss=String(t%60).padStart(2,'0'); document.getElementById('time').innerText=mm+':'+ss},1000); loop();}
+function checkG(){let fw=W,fh=H; if(ball.x>fw-40&&ball.y>fh*0.35&&ball.y<fh*0.55){scoreM++; document.getElementById('score').innerText=mode==3?`BRA ${scoreM}-${scoreO} ARS`:`BD ${scoreM}-${scoreO} OPP`; msg('GOAL! ⚽ +10 coin','green',1500); let d=getD(); d.coin+=10; saveD(d); setTimeout(initT,1200); return true;} if(ball.x<40&&ball.y>fh*0.35&&ball.y<fh*0.55){scoreO++; msg('Opp Goal','red'); setTimeout(initT,1200); return true;} if(ball.x<0||ball.x>fw||ball.y<0||ball.y>fh){initT(); return true;} return false;}
+function tackle(){let me=my[active]; if(!me||me.red) return; let tar=owner&&opp.includes(owner)?owner:opp.reduce((a,b)=>Math.hypot(ball.x-a.x,ball.y-a.y)<Math.hypot(ball.x-b.x,ball.y-b.y)?a:b); if(Math.hypot(me.x-tar.x,me.y-tar.y)<60){owner=me; ballV={x:0,y:0}; ball.x=me.x+22; ball.y=me.y; msg('TACKLE!','green',600);}}
+function shoot(){if(!owner||!my.includes(owner)) return; let fw=W,fh=H; let gy=fh*0.45+(Math.random()-0.5)*60; let ang=Math.atan2(gy-ball.y,fw-ball.x); let pow=15+owner.power*0.04; ballV.x=Math.cos(ang)*pow; ballV.y=Math.sin(ang)*pow; owner=null;}
+function pass(){if(!owner||!my.includes(owner)||mode==1) return; let cur=my[active]; let best=null,d=999; my.forEach((p,i)=>{if(i!=active){let dist=Math.hypot(p.x-cur.x,p.y-cur.y); if(dist>50&&dist<d){d=dist; best=p}}}); if(best){let ang=Math.atan2(best.y-ball.y,best.x-ball.x); ballV.x=Math.cos(ang)*10; ballV.y=Math.sin(ang)*10; owner=null;}}
+document.getElementById('bTackle').addEventListener('touchstart',tackle); document.getElementById('bShoot').addEventListener('touchstart',shoot); document.getElementById('bPass').addEventListener('touchstart',pass);
+const joyEl=document.getElementById('joy'), stickEl=document.getElementById('stick'); joyEl.addEventListener('touchstart',e=>{joy.a=true; e.preventDefault()},{passive:false}); joyEl.addEventListener('touchmove',e=>{let r=joyEl.getBoundingClientRect(); let tt=e.touches[0]; let dx=tt.clientX-(r.left+55), dy=tt.clientY-(r.top+55); let d=Math.min(50,Math.hypot(dx,dy)), ang=Math.atan2(dy,dx); joy.dx=Math.cos(ang)*d/50; joy.dy=Math.sin(ang)*d/50; stickEl.style.left=33+joy.dx*32+'px'; stickEl.style.top=33+joy.dy*32+'px'; e.preventDefault();},{passive:false}); joyEl.addEventListener('touchend',()=>{joy.a=false; joy.dx=0; joy.dy=0; stickEl.style.left='33px'; stickEl.style.top='33px';});
+function loop(){if(!run) return; let me=my[active]; if(me&&!me.red&&joy.a){me.vx=joy.dx*4.6; me.vy=joy.dy*4.6; me.x+=me.vx; me.y+=me.vy; me.x=Math.max(30,Math.min(W-30,me.x)); me.y=Math.max(30,Math.min(H-30,me.y)); if(owner==me){ball.x=me.x+26; ball.y=me.y+4;}} if(!owner){ball.x+=ballV.x; ball.y+=ballV.y; ballV.x*=0.983; ballV.y*=0.983; if(checkG()){} for(let p of players){if(Math.hypot(ball.x-p.x,ball.y-p.y)<32&&Math.hypot(ballV.x,ballV.y)<5){owner=p; if(my.includes(p)) active=my.indexOf(p); ballV={x:0,y:0}; break;}}} if(mode>=2){opp.forEach(o=>{if(owner&&my.includes(owner)){o.x+=(ball.x-o.x)*0.03; o.y+=(ball.y-o.y)*0.03;} else if(!owner&&o==opp.reduce((a,b)=>Math.hypot(ball.x-a.x,ball.y-a.y)<Math.hypot(ball.x-b.x,ball.y-b.y)?a:b)){o.x+=(ball.x-o.x)*0.04; o.y+=(ball.y-o.y)*0.04;} else if(owner==o){o.x+=2.8; ball.x=o.x+16; ball.y=o.y; if(Math.random()<0.02){ballV.x=-11; ballV.y=(Math.random()-0.5)*6; owner=null;}}});} ctx.clearRect(0,0,W,H); ctx.fillStyle='#2ea62e'; ctx.fillRect(0,0,W,H); ctx.strokeStyle='#fff'; ctx.lineWidth=4; ctx.strokeRect(20,20,W-40,H-40); ctx.beginPath(); ctx.moveTo(W/2,20); ctx.lineTo(W/2,H-20); ctx.stroke(); ctx.beginPath(); ctx.arc(W/2,H/2,90,0,Math.PI*2); ctx.stroke(); ctx.fillStyle='#fff'; ctx.fillRect(0,H*0.35,14,H*0.2); ctx.fillRect(W-14,H*0.35,14,H*0.2); players.forEach(p=>p.draw()); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(ball.x,ball.y,10,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.stroke(); requestAnimationFrame(loop);}
+function goMenu(){run=false; clearInterval(timer); document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden')); document.getElementById('main').classList.remove('hidden');}
 </script>
 </body>
 </html>
