@@ -1,207 +1,286 @@
+```html
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Car For Sale BD - Showroom Simulator</title>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#000;overflow:hidden;touch-action:none;color:#fff}
-#top{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;padding:8px;background:linear-gradient(#000,#0000);z-index:10}
-.badge{background:rgba(0,0,0,0.7);border:1px solid #333;padding:6px 12px;border-radius:20px;font-weight:bold;font-size:13px}
-.badge span{color:#facc15}
-#worldBtns{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
-.wbtn{background:#111;border:2px solid #facc15;color:#facc15;padding:10px 14px;border-radius:10px;font-weight:bold}
-.wbtn.active{background:#facc15;color:#000}
-#actions{position:fixed;bottom:0;width:100%;background:#0f172a;display:flex;gap:6px;padding:8px;overflow-x:auto;z-index:10;border-top:2px solid #facc15}
-.abtn{background:#1e293b;border:1px solid #334155;color:#fff;padding:10px 12px;border-radius:10px;white-space:nowrap;font-weight:bold}
-.abtn.green{background:#22c55e}
-#joy{position:fixed;bottom:130px;left:15px;width:90px;height:90px;background:rgba(255,255,255,0.08);border-radius:50%;border:2px solid rgba(255,255,255,0.2);z-index:10}
-#stick{width:40px;height:40px;background:#facc15;border-radius:50%;position:absolute;left:25px;top:25px}
-#listPanel{position:fixed;right:10px;top:60px;width:280px;max-height:60vh;overflow-y:auto;background:rgba(10,15,30,0.95);border-radius:12px;padding:10px;border:2px solid #334155;z-index:9}
-.card{background:#1e293b;padding:8px;border-radius:8px;margin-bottom:6px;border-left:3px solid #facc15;font-size:13px}
-canvas{display:block}
-#cross{position:fixed;left:50%;top:50%;width:20px;height:20px;transform:translate(-50%,-50%);z-index:5;opacity:0.5}
-#cross:before,#cross:after{content:'';position:absolute;background:#fff}
-#cross:before{width:20px;height:2px;top:9px;left:0}
-#cross:after{width:2px;height:20px;left:9px;top:0}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>এপেক্স এক্সট্রিম মোটরস - ৩ডি কার ও সুপারবাইক এম্পায়ার</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js for 3D Graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
+        }
+        .glass-red {
+            background: rgba(40, 10, 15, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+        .glass-green {
+            background: rgba(6, 40, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #0b1120; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+
+        .touch-active:active { transform: scale(0.92); filter: brightness(1.2); }
+        .neon-glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+        .neon-glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        .neon-text-gold { text-shadow: 0 0 10px rgba(245, 158, 11, 0.6); }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .pulse-anim { animation: pulse-ring 2s infinite ease-in-out; }
+    </style>
 </head>
-<body>
-<div id="top">
-<div class="badge">৳ <span id="money">75000</span></div>
-<div class="badge">🏢 <span id="show">0/4</span> Showroom</div>
-<div class="badge">⭐ LVL <span id="lvl">1</span></div>
-</div>
+<body class="h-screen w-screen flex flex-col bg-gray-950 text-gray-100 overflow-hidden select-none">
 
-<div id="listPanel">
-<div style="color:#facc15;font-weight:bold;text-align:center;border-bottom:1px solid #333;padding-bottom:5px;margin-bottom:5px" id="locName">🏢 SHOWROOM</div>
-<div id="carList">Loading...</div>
-<button class="abtn" style="width:100%;margin-top:6px" onclick="save()">💾 SAVE</button>
-</div>
+    <!-- TOP GLOBAL NAVIGATION HUD -->
+    <header class="glass-panel z-30 px-3 sm:px-6 py-2.5 flex justify-between items-center border-b border-gray-800">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-emerald-600 via-blue-600 to-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20 pulse-anim">
+                <i class="fa-solid fa-bolt text-xl sm:text-2xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="font-orbitron font-black text-lg sm:text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-200 to-blue-500">
+                    APEX EXTREME MOTORS
+                </h1>
+                <p class="text-[10px] sm:text-xs text-gray-400 font-semibold tracking-wide flex items-center gap-1.5">
+                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    থ্রিডি কার ও কাওয়াসাকি নিনজা ডিলারশিপ ও অকশন
+                </p>
+            </div>
+        </div>
 
-<div id="worldBtns">
-<button class="wbtn active" onclick="gotoShowroom()">🏢 Showroom</button>
-<button class="wbtn" onclick="gotoAuction()">🔥 Auction</button>
-<button class="wbtn" onclick="gotoMarket()">🏪 Market</button>
-<button class="wbtn" onclick="gotoHood()">🏘️ Neighborhood</button>
-</div>
+        <!-- STATS & FINANCIAL HUD -->
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <div class="glass-green px-3 sm:px-5 py-1.5 rounded-2xl flex items-center space-x-2.5">
+                <i class="fa-solid fa-wallet text-emerald-400 text-lg sm:text-xl"></i>
+                <div>
+                    <div class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase">ক্যাশ ব্যালেন্স</div>
+                    <div id="hud-cash" class="font-orbitron font-black text-emerald-400 text-sm sm:text-lg">৳ ১,৫০,০০০</div>
+                </div>
+            </div>
 
-<div id="joy"><div id="stick"></div></div>
-<div id="cross"></div>
+            <div class="glass-panel px-3 sm:px-4 py-1.5 rounded-2xl flex items-center space-x-2 border-blue-500/30">
+                <i class="fa-solid fa-warehouse text-blue-400 text-base sm:text-lg"></i>
+                <div class="hidden sm:block">
+                    <div class="text-[9px] text-gray-400 font-bold uppercase">শোরুম স্পেস</div>
+                    <div id="hud-inventory" class="font-orbitron font-extrabold text-blue-400 text-sm">০ / ৬</div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<div id="actions">
-<button class="abtn" onclick="inspect()">🔍 দেখো</button>
-<button class="abtn" onclick="wash()">🧼 ধোও ৳300</button>
-<button class="abtn" onclick="repair()">🔧 ঠিক ৳1000</button>
-<button class="abtn green" onclick="sell()">💰 বিক্রি / কেনো</button>
-<button class="abtn" onclick="drive()">🚗 চালাও</button>
-</div>
+    <!-- MAIN GAME CANVAS & NAVIGATION WRAPPER -->
+    <div class="flex-1 flex relative overflow-hidden">
+        
+        <!-- SIDEBAR NAVIGATION MENU -->
+        <nav class="glass-panel w-16 md:w-64 p-2 sm:p-4 flex flex-col justify-between z-30 border-r border-gray-800">
+            <div class="space-y-2.5">
+                <button onclick="switchTab('showroom')" id="nav-showroom" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-emerald-400 bg-emerald-500/20 border border-emerald-500/40">
+                    <i class="fa-solid fa-store text-xl"></i>
+                    <span class="hidden md:inline text-sm">মেন শোরুম</span>
+                </button>
+                <button onclick="switchTab('auction')" id="nav-auction" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-red-400 hover:bg-gray-800/80">
+                    <i class="fa-solid fa-gavel text-xl"></i>
+                    <span class="hidden md:inline text-sm">লাইভ গাড়ি ও বাইক নিলাম</span>
+                </button>
+                <button onclick="switchTab('garage')" id="nav-garage" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-amber-400 hover:bg-gray-800/80">
+                    <i class="fa-solid fa-screwdriver-wrench text-xl"></i>
+                    <span class="hidden md:inline text-sm">টিউনিং ও পেইন্ট গ্যারেজ</span>
+                </button>
+                <button onclick="switchTab('city')" id="nav-city" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-cyan-400 hover:bg-gray-800/80">
+                    <i class="fa-solid fa-city text-xl"></i>
+                    <span class="hidden md:inline text-sm">ওপেন-ওয়ার্ল্ড ড্রাইভিং</span>
+                </button>
+                <button onclick="switchTab('bank')" id="nav-bank" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-purple-400 hover:bg-gray-800/80">
+                    <i class="fa-solid fa-building-columns text-xl"></i>
+                    <span class="hidden md:inline text-sm">ব্যাংক ও ফিনান্স লোন</span>
+                </button>
+            </div>
 
-<script type="module">
-import * as THREE from 'three';
-let money=parseInt(localStorage.getItem('bdMoney2')||'75000');
-let myCars=JSON.parse(localStorage.getItem('bdCars2')||'[]');
-let selected=null, location='showroom';
+            <!-- AUDIO & SETTINGS TOGGLE -->
+            <div class="pt-3 border-t border-gray-800 space-y-2">
+                <button onclick="toggleAudio()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-xs text-gray-300 hover:bg-gray-800 transition">
+                    <span class="hidden md:inline"><i class="fa-solid fa-volume-high mr-2"></i> ইঞ্জিনের সাউন্ড</span>
+                    <i class="fa-solid fa-volume-high md:hidden"></i>
+                    <span id="sound-status" class="font-bold text-emerald-400">চালু</span>
+                </button>
+            </div>
+        </nav>
 
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x87ceeb);
-scene.fog=new THREE.Fog(0x87ceeb,40,120);
-const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,500);
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; document.body.appendChild(renderer.domElement);
+        <!-- 3D VIEWPORT CANVAS CONTAINER -->
+        <main class="flex-1 relative bg-gray-950 overflow-hidden">
+            <div id="canvas-container" class="absolute inset-0 z-0"></div>
 
-scene.add(new THREE.AmbientLight(0xffffff,0.8));
-const sun=new THREE.DirectionalLight(0xffffff,1); sun.position.set(20,30,10); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048); scene.add(sun);
+            <!-- VIEW 1: LUXURY SHOWROOM & INVENTORY -->
+            <div id="view-showroom" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none">
+                <div class="pointer-events-auto flex flex-col sm:flex-row justify-between items-start gap-3">
+                    <div class="glass-panel p-4 rounded-2xl max-w-md border border-gray-800">
+                        <h2 class="font-bold text-base sm:text-lg text-emerald-400 flex items-center gap-2">
+                            <i class="fa-solid fa-store"></i> এপেক্স এক্সক্লুসিভ শোরুম
+                        </h2>
+                        <p class="text-xs text-gray-300 mt-1">আপনার সংগ্রহে থাকা লাম্বরগিনি, নিনজা বাইক বা জি-ওয়াগন গাড়িগুলো সাজান। ক্রেতারা পছন্দ হলে কাস্টম দামে কিনে নেবে!</p>
+                    </div>
 
-// --- BUILD SHOWROOM like screenshot 1 ---
-const showroomGroup=new THREE.Group(); scene.add(showroomGroup);
-const floor=new THREE.Mesh(new THREE.PlaneGeometry(60,60), new THREE.MeshStandardMaterial({color:0xe8e8ea, roughness:0.1, metalness:0.1}));
-floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; showroomGroup.add(floor);
+                    <button onclick="expandShowroom()" class="pointer-events-auto glass-panel hover:bg-emerald-600/20 px-4 py-3 rounded-2xl text-xs font-bold text-emerald-300 border border-emerald-500/40 flex items-center gap-2 transition touch-active">
+                        <i class="fa-solid fa-plus-circle text-base"></i> শোরুম স্লট বাড়ান (+১) - ৳ ৫০,০০০
+                    </button>
+                </div>
 
-// Glass walls - screenshot 1 style
-function glassWall(x,z,w,h,rot=0){
- const geo=new THREE.PlaneGeometry(w,h); const mat=new THREE.MeshPhysicalMaterial({color:0xaaddff, transparent:true, opacity:0.2, roughness:0, metalness:0.5, side:2});
- const m=new THREE.Mesh(geo,mat); m.position.set(x,h/2,z); m.rotation.y=rot; showroomGroup.add(m);
- // frame
- const frame=new THREE.Mesh(new THREE.BoxGeometry(w+0.2,0.2,h+0.2), new THREE.MeshStandardMaterial({color:0xffffff})); 
-}
-glassWall(-30,0,60,12,0); glassWall(0,0,60,12,Math.PI/2);
+                <!-- SHOWROOM CARDS INVENTORY -->
+                <div class="pointer-events-auto glass-panel p-4 rounded-3xl border border-gray-800 mt-auto">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">ইনভেন্টরিতে থাকা গাড়ি ও বাইক</span>
+                        <span class="text-[11px] text-gray-400">গাড়িতে ক্লিক করে কাস্টমাইজ বা কুইক-সেল করুন</span>
+                    </div>
+                    <div id="showroom-cards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <!-- Dynamic Inventory Elements -->
+                    </div>
+                </div>
+            </div>
 
-// Platforms with neon like screenshot 1
-const platforms=[];
-function platform(x,z,color){
- const base=new THREE.Mesh(new THREE.BoxGeometry(7,0.3,7), new THREE.MeshStandardMaterial({color:0x111}));
- base.position.set(x,0.15,z); base.receiveShadow=true; showroomGroup.add(base);
- const neon=new THREE.Mesh(new THREE.BoxGeometry(7.2,0.1,7.2), new THREE.MeshStandardMaterial({color:color, emissive:color, emissiveIntensity:2}));
- neon.position.set(x,0.35,z); showroomGroup.add(neon);
- platforms.push({x,z,car:null});
-}
-platform(-12,8,0x00ffff); platform(-2,8,0xff00ff); platform(8,8,0x00ff00); platform(18,8,0xff0000);
+            <!-- VIEW 2: LIVE CAR & SUPERBIKE AUCTION -->
+            <div id="view-auction" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none hidden">
+                <div class="pointer-events-auto flex justify-between items-start gap-3">
+                    <div class="glass-red p-4 rounded-2xl max-w-lg">
+                        <div class="flex items-center space-x-3">
+                            <span class="relative flex h-3 w-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                            <h2 class="font-bold text-lg sm:text-xl text-red-400">লাইভ ভিকল অকশন হাউস</h2>
+                        </div>
+                        <p class="text-xs text-gray-300 mt-1">সময় শেষ হওয়ার আগে কাওয়াসাকি নিনজা বা লাম্বরগিনির জন্য অন্যান্য এআই ডিলারদের হারিয়ে সর্বোচ্চ বিড ডাকুন!</p>
+                    </div>
 
-// --- AUCTION building like screenshot 4 ---
-const auctionGroup=new THREE.Group(); auctionGroup.visible=false; scene.add(auctionGroup);
-const aFloor=new THREE.Mesh(new THREE.PlaneGeometry(100,100), new THREE.MeshStandardMaterial({color:0x444a50})); aFloor.rotation.x=-Math.PI/2; aFloor.receiveShadow=true; auctionGroup.add(aFloor);
-const aucBuilding=new THREE.Mesh(new THREE.BoxGeometry(40,8,6), new THREE.MeshStandardMaterial({color:0x888})); aucBuilding.position.set(0,4,-10); auctionGroup.add(aucBuilding);
-const aucText=createTextSprite("CAR AUCTION",0xFF0000); aucText.position.set(0,10,-10); auctionGroup.add(aucText);
-for(let i=0;i<4;i++){
- const door=new THREE.Mesh(new THREE.BoxGeometry(7,5,0.5), new THREE.MeshStandardMaterial({color:0x222})); door.position.set(-15+i*10,2.5,-7); auctionGroup.add(door);
- const price=new THREE.Mesh(new THREE.PlaneGeometry(5,1), new THREE.MeshStandardMaterial({color:0x000, emissive:0x00ff00, emissiveIntensity:1})); price.position.set(-15+i*10,6,-7.5); auctionGroup.add(price);
- platform(-15+i*10,0,0xff0000); // reuse for auction
-}
+                    <div class="glass-panel p-3.5 rounded-2xl border border-amber-500/40 text-center min-w-[120px]">
+                        <div class="text-[10px] text-amber-400 font-bold uppercase">অবশিষ্ট সময়</div>
+                        <div id="auction-timer" class="font-orbitron font-black text-2xl sm:text-3xl text-amber-300">00:15</div>
+                    </div>
+                </div>
 
-// --- HOOD - like screenshot 3 ---
-const hoodGroup=new THREE.Group(); hoodGroup.visible=false; scene.add(hoodGroup);
-const road=new THREE.Mesh(new THREE.PlaneGeometry(20,200), new THREE.MeshStandardMaterial({color:0x222})); road.rotation.x=-Math.PI/2; road.position.y=0.02; hoodGroup.add(road);
-for(let i=0;i<8;i++){
- const house=new THREE.Mesh(new THREE.BoxGeometry(8,6,10), new THREE.MeshStandardMaterial({color:i%2?0xeee8d5:0xc8d8e8})); house.position.set((i%2?15:-15),3,i*20-40); house.castShadow=true; hoodGroup.add(house);
-}
+                <!-- AUCTION BIDDING CONTROLS -->
+                <div class="pointer-events-auto glass-panel p-5 rounded-3xl max-w-xl mx-auto w-full space-y-4 border border-gray-800 shadow-2xl">
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                        <div>
+                            <div id="auc-car-name" class="font-bold text-lg text-white">Kawasaki Ninja H2R</div>
+                            <div id="auc-car-type" class="text-xs text-emerald-400 font-bold uppercase">শ্রেণী: Superbike (300+ HP)</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[10px] text-gray-400 font-bold">সর্বোচ্চ প্রস্তাবিত বিড</div>
+                            <div id="auc-current-bid" class="font-orbitron font-black text-xl sm:text-2xl text-emerald-400">৳ ১,২০,০০০</div>
+                            <div id="auc-bidder" class="text-xs text-amber-300 font-semibold">ডাকদাতা: ডিলার #২</div>
+                        </div>
+                    </div>
 
-function createTextSprite(text,color){
- const c=document.createElement('canvas'); c.width=512;c.height=128; const ctx=c.getContext('2d'); ctx.fillStyle='#fff'; ctx.font='bold 60px Arial'; ctx.fillText(text,10,80);
- const tex=new THREE.CanvasTexture(c); const mat=new THREE.SpriteMaterial({map:tex}); const s=new THREE.Sprite(mat); s.scale.set(20,5,1); return s;
-}
+                    <div class="flex gap-3">
+                        <button onclick="placeBid(10000)" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 font-bold py-3.5 rounded-2xl text-xs sm:text-sm text-white shadow-lg shadow-emerald-600/30 transition touch-active">
+                            +৳ ১০,০০০ বিড দিন
+                        </button>
+                        <button onclick="placeBid(50000)" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-bold py-3.5 rounded-2xl text-xs sm:text-sm text-white shadow-lg shadow-purple-600/30 transition touch-active">
+                            +৳ ৫০,০০০ বিড দিন
+                        </button>
+                        <button onclick="nextAuctionCar()" class="bg-gray-800 hover:bg-gray-700 px-4 py-3.5 rounded-2xl font-bold text-xs text-gray-300 transition">
+                            পরবর্তী গাড়ি
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-// Cars
-const carMeshes=[]; const carColors=[0xff3300,0xffcc00,0x0088ff,0x22c55e,0x111111,0xffffff];
-function spawnCarMesh(data,x,z){
- const g=new THREE.Group();
- const body=new THREE.Mesh(new THREE.BoxGeometry(1.8,0.8,4), new THREE.MeshStandardMaterial({color:data.color||carColors[Math.floor(Math.random()*carColors.length)], roughness:0.2, metalness:0.6})); body.position.y=0.9; body.castShadow=true; g.add(body);
- const roof=new THREE.Mesh(new THREE.BoxGeometry(1.6,0.6,2), new THREE.MeshStandardMaterial({color:0x111})); roof.position.set(0,1.5,-0.2); g.add(roof);
- const wheelG=new THREE.CylinderGeometry(0.35,0.35,0.2,16); const wheelM=new THREE.MeshStandardMaterial({color:0x111});
- [[-0.9,0.35,1.2],[0.9,0.35,1.2],[-0.9,0.35,-1.2],[0.9,0.35,-1.2]].forEach(p=>{let w=new THREE.Mesh(wheelG,wheelM); w.rotation.z=Math.PI/2; w.position.set(...p); g.add(w)});
- g.position.set(x,0,z); g.userData=data; scene.add(g); carMeshes.push(g); return g;
-}
+            <!-- VIEW 3: TUNING & CUSTOMIZATION GARAGE -->
+            <div id="view-garage" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none hidden">
+                <div class="pointer-events-auto flex justify-between items-start">
+                    <div class="glass-panel p-4 rounded-2xl max-w-md border border-amber-500/40">
+                        <h2 class="font-bold text-base sm:text-lg text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-screwdriver-wrench"></i> টিউনিং ও পেইন্ট গ্যারেজ
+                        </h2>
+                        <p class="text-xs text-gray-300 mt-1">গাড়ির বডি রঙ পরিবর্তন করুন, নিয়ন আন্ডারগ্লো লাইট ও ইঞ্জিনের ক্ষমতা আপডেট করুন!</p>
+                    </div>
+                </div>
 
-// Init my cars on platforms
-myCars.forEach((c,i)=>{ if(i<platforms.length) { spawnCarMesh(c,platforms[i].x,platforms[i].z); platforms[i].car=c; }});
+                <!-- GARAGE CONTROL PANEL -->
+                <div class="pointer-events-auto glass-panel p-5 rounded-3xl max-w-2xl mx-auto w-full border border-gray-800 space-y-4">
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                        <span class="text-xs font-bold text-amber-400 uppercase">পেইন্ট কাস্টমাইজেশন (৳ ১৫,০০০)</span>
+                        <span id="selected-garage-car-name" class="text-xs font-bold text-white">কোনো গাড়ি নির্বাচিত নেই</span>
+                    </div>
 
-// NPC
-function npc(x,z){ const m=new THREE.Mesh(new THREE.CapsuleGeometry(0.4,1.2,4,8), new THREE.MeshStandardMaterial({color:0x222})); m.position.set(x,1,z); scene.add(m); }
+                    <!-- COLOR PALETTE -->
+                    <div class="flex gap-3 justify-center py-2">
+                        <button onclick="applyPaint('#ef4444')" class="w-10 h-10 rounded-full bg-red-600 border-2 border-white shadow-lg touch-active"></button>
+                        <button onclick="applyPaint('#10b981')" class="w-10 h-10 rounded-full bg-emerald-500 border-2 border-white shadow-lg touch-active"></button>
+                        <button onclick="applyPaint('#3b82f6')" class="w-10 h-10 rounded-full bg-blue-600 border-2 border-white shadow-lg touch-active"></button>
+                        <button onclick="applyPaint('#f59e0b')" class="w-10 h-10 rounded-full bg-amber-500 border-2 border-white shadow-lg touch-active"></button>
+                        <button onclick="applyPaint('#8b5cf6')" class="w-10 h-10 rounded-full bg-purple-600 border-2 border-white shadow-lg touch-active"></button>
+                        <button onclick="applyPaint('#18181b')" class="w-10 h-10 rounded-full bg-zinc-900 border-2 border-white shadow-lg touch-active"></button>
+                        <button onclick="applyPaint('#84cc16')" class="w-10 h-10 rounded-full bg-lime-500 border-2 border-white shadow-lg touch-active"></button>
+                    </div>
 
-// Controls - FPS like Car For Sale
-camera.position.set(0,1.7,15);
-let yaw=0,pitch=0,keys={};
-addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);
-addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
-let drag=false,lx=0,ly=0;
-renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY});
-addEventListener('pointerup',()=>drag=false);
-addEventListener('pointermove',e=>{
- if(!drag) return; yaw-=(e.clientX-lx)*0.004; pitch-=(e.clientY-ly)*0.004; pitch=Math.max(-1.3,Math.min(1.3,pitch)); lx=e.clientX;ly=e.clientY;
-});
-let jx=0,jy=0; const joy=document.getElementById('joy'), stick=document.getElementById('stick');
-joy.addEventListener('touchmove',e=>{let r=joy.getBoundingClientRect();let t=e.touches[0];let x=t.clientX-(r.left+45),y=t.clientY-(r.top+45);let d=Math.hypot(x,y);if(d>35){x=x/d*35;y=y/d*35} stick.style.transform=`translate(${x}px,${y}px)`; jx=x/35;jy=y/35;});
-joy.addEventListener('touchend',()=>{stick.style.transform='';jx=0;jy=0});
+                    <!-- NEON LIGHT TOGGLE -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button onclick="toggleNeonUnderglow()" class="bg-gray-800 hover:bg-gray-700 py-3 rounded-2xl font-bold text-xs text-cyan-400 border border-cyan-500/30 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-lightbulb"></i> নিয়োন আন্ডারগ্লো (৳ ২৫,০০০)
+                        </button>
+                        <button onclick="upgradeEnginePerformance()" class="bg-gray-800 hover:bg-gray-700 py-3 rounded-2xl font-bold text-xs text-emerald-400 border border-emerald-500/30 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-gauge-high"></i> ইঞ্জিন টিউনিং (+২০% স্পিড) - ৳ ৪০,০০০
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-function updateMove(){
- let f=new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
- let r=new THREE.Vector3(1,0,0).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
- let sp=0.12;
- if(keys['w']||jy<-0.2) camera.position.addScaledVector(f,sp);
- if(keys['s']||jy>0.2) camera.position.addScaledVector(f,-sp);
- if(keys['a']||jx<-0.2) camera.position.addScaledVector(r,-sp);
- if(keys['d']||jx>0.2) camera.position.addScaledVector(r,sp);
- camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch;
- // ray for selection
- const ray=new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2(0,0),camera);
- const hits=ray.intersectObjects(carMeshes,true); 
- if(hits.length){ let root=hits[0].object.parent; while(root.parent && root.parent.type!='Scene') root=root.parent; selected=root.userData; document.getElementById('carList').innerHTML=`<div class="card" style="border-color:#facc15"><b>${selected.name||'Car'} ${selected.cond||80}%</b><br>Buy ৳${selected.buy||0} Sell ৳${Math.floor((selected.buy||10000)*1.3)}<br><small>Tap actions below</small></div>`; }
-}
+            <!-- VIEW 4: OPEN-WORLD CITY DRIVING & SPEEDOMETER -->
+            <div id="view-city" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none hidden">
+                <div class="pointer-events-auto glass-panel p-4 rounded-2xl max-w-md border border-cyan-500/40">
+                    <h2 class="font-bold text-base sm:text-lg text-cyan-400 flex items-center gap-2">
+                        <i class="fa-solid fa-city"></i> ওপেন-ওয়ার্ল্ড টেস্ট ড্রাইভ সিটি
+                    </h2>
+                    <p class="text-xs text-gray-300 mt-1">পিসিতে <b class="text-white">WASD / Arrow Keys</b> বা মোবাইলের স্ক্রিন কন্ট্রোল দিয়ে চালান!</p>
+                </div>
 
-function gotoShowroom(){location='showroom'; showroomGroup.visible=true; auctionGroup.visible=false; hoodGroup.visible=false; document.querySelectorAll('.wbtn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); document.getElementById('locName').innerText='🏢 SHOWROOM - তোমার দোকান';}
-window.gotoShowroom=()=>{showroomGroup.visible=true; auctionGroup.visible=false; hoodGroup.visible=false; document.getElementById('locName').innerText='🏢 SHOWROOM'; updateBtn(0)};
-window.gotoAuction=()=>{showroomGroup.visible=false; auctionGroup.visible=true; hoodGroup.visible=false; document.getElementById('locName').innerText='🔥 CAR AUCTION - বিডিং'; spawnAuctionCars(); updateBtn(1)};
-window.gotoMarket=()=>{showroomGroup.visible=false; auctionGroup.visible=false; hoodGroup.visible=true; document.getElementById('locName').innerText='🏪 CAR MARKET - রাস্তার হাট'; updateBtn(2)};
-window.gotoHood=()=>{showroomGroup.visible=false; auctionGroup.visible=false; hoodGroup.visible=true; document.getElementById('locName').innerText='🏘️ NEIGHBORHOOD - বাড়ি বাড়ি গাড়ি'; updateBtn(3)};
-function updateBtn(i){document.querySelectorAll('.wbtn').forEach((b,idx)=>b.classList.toggle('active',idx==i))}
+                <!-- MOBILE ON-SCREEN DRIVING CONTROLS -->
+                <div class="pointer-events-auto md:hidden flex justify-between items-end mb-4 px-2">
+                    <div class="flex gap-2">
+                        <button id="btn-left" class="w-16 h-16 bg-gray-800/90 rounded-2xl border border-gray-700 active:bg-cyan-600 text-white font-black text-2xl flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button id="btn-right" class="w-16 h-16 bg-gray-800/90 rounded-2xl border border-gray-700 active:bg-cyan-600 text-white font-black text-2xl flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-col gap-2.5">
+                        <button id="btn-nitro" class="w-16 h-12 bg-purple-600/90 rounded-2xl border border-purple-400 active:bg-purple-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-bolt mr-1"></i> নাইট্রো
+                        </button>
+                        <button id="btn-gas" class="w-16 h-16 bg-emerald-600/90 rounded-2xl border border-emerald-400 active:bg-emerald-500 text-white font-black text-2xl flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-gas-pump"></i>
+                        </button>
+                        <button id="btn-brake" class="w-16 h-12 bg-red-600/90 rounded-2xl border border-red-400 active:bg-red-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">
+                            রিভার্স
+                        </button>
+                    </div>
+                </div>
 
-function spawnAuctionCars(){
- carMeshes.forEach(m=>auctionGroup.remove(m)); // clear
- const names=['G Wagon','Audi R8','Lambo','Supra'];
- for(let i=0;i<3;i++){ let d={name:names[i],cond:60+Math.random()*30|0,buy:40000+i*30000,color:carColors[i]}; let m=spawnCarMesh(d,-15+i*10,0); auctionGroup.add(m); npc(-13+i*10,3); }
-}
-window.inspect=()=>{if(!selected) return alert('গাড়ির দিকে তাকাও + কাছে যাও'); alert(`🚗 ${selected.name}\nCondition: ${selected.cond}%\nতুমি কিনছিলা: ৳${selected.buy}\nএখন বিক্রি দাম: ৳${Math.floor(selected.buy*1.4)}`);};
-window.wash=()=>{if(!selected) return alert('গাড়ি Select করো'); if(money<300) return alert('টাকা নাই'); money-=300; selected.cond=Math.min(100,selected.cond+10); save();};
-window.repair=()=>{if(!selected) return alert('গাড়ি Select করো'); if(money<1000) return alert('টাকা নাই'); money-=1000; selected.cond=Math.min(100,selected.cond+25); save();};
-window.sell=()=>{
- if(!selected) return alert('গাড়ির সামনে যাও');
- if(myCars.includes(selected)){ // sell
-   let price=Math.floor(selected.buy*1.4 + selected.cond*200); money+=price; myCars=myCars.filter(c=>c!=selected); scene.remove(carMeshes.find(m=>m.userData==selected)); alert(`বিক্রি Done! ৳${price} পাইছো! Customer: "Thanks bro!"`); selected=null;
- } else { // buy
-   if(money<selected.buy) return alert('টাকা নাই!'); money-=selected.buy; myCars.push(selected); alert(`কিনে ফেলছো! এখন Showroom এ নিয়ে যাও`); 
- }
- save();
-};
-window.drive=()=>{if(!selected) return; alert('VROOOM! গাড়ি চালাচ্ছো! W দিয়ে সামনে যাও! (Next update এ Driving Physics আসবে)'); camera.position.set(selected.x||0,1.7,selected.z||0);};
-
-window.save=()=>{localStorage.setItem('bdMoney2',money); localStorage.setItem('bdCars2',JSON.stringify(myCars)); document.getElementById('money').innerText=money; document.getElementById('show').innerText=`${myCars.length}/4`; let d=document.createElement('div'); d.textContent='✅ Saved'; d.style.cssText='position:fixed;top:50px;left:50%;transform:translateX(-50%);background:#22c55e;padding:5px 12px;border-radius:20px;z-index:20'; document.body.appendChild(d); setTimeout(()=>d.remove(),1000);};
-
-function loop(){requestAnimationFrame(loop); updateMove(); renderer.render(scene,camera); document.getElementById('money').innerText=money; document.getElementById('show').innerText=myCars.length+'/4';}
-loop();
-save();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight)});
-</script>
-</body>
-</html>
+                <!-- REALISTIC DIGITAL SPEEDOMETER HUD -->
+                <div class="pointer-events-auto glass-panel p-4 rounded-3xl max-w-xs ml-auto border border-emerald-500/40 flex items-center justify-betwe
