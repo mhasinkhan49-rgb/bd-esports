@@ -1,301 +1,132 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Car For Sale BD - PANGO Style</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BD SPORTS - Official</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#0a0e1a;color:#fff}
-#top{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#111827;border-bottom:2px solid #facc15;position:sticky;top:0;z-index:20}
-.money{background:#1f2937;padding:8px 14px;border-radius:20px;font-weight:bold;color:#22c55e;border:1px solid #22c55e}
-#tabs{display:flex;background:#111827;overflow-x:auto;position:sticky;top:52px;z-index:20}
-.tab{padding:12px 16px;white-space:nowrap;cursor:pointer;border-bottom:3px solid transparent;opacity:0.6}
-.tab.active{border-color:#facc15;color:#facc15;opacity:1;font-weight:bold;background:#1f2937}
-.page{display:none;padding:12px;padding-bottom:100px;min-height:100vh}
-.page.active{display:block}
-.card{background:#1e293b;border-radius:14px;padding:12px;margin-bottom:12px;border:1px solid #334155;position:relative;overflow:hidden}
-.card-title{font-weight:bold;font-size:16px;margin-bottom:6px}
-.btn{background:#facc15;color:#000;padding:8px 14px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin:3px}
-.btn-green{background:#22c55e;color:#fff}
-.btn-red{background:#ef4444;color:#fff}
-.btn-blue{background:#3b82f6;color:#fff}
-.btn:disabled{opacity:0.4}
-.badge{background:#334155;padding:3px 8px;border-radius:10px;font-size:11px;display:inline-block;margin:2px}
-.progress{height:10px;background:#334155;border-radius:5px;overflow:hidden;margin:6px 0}
-.bar{height:100%;background:linear-gradient(90deg,#22c55e,#facc15);transition:0.5s}
-.showroom-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.platform{background:linear-gradient(180deg,#1e293b,#0f172a);border-radius:12px;padding:10px;text-align:center;border:2px dashed #334155;min-height:180px;display:flex;flex-direction:column;justify-content:center;align-items:center}
-.platform.has-car{border-style:solid;border-color:#22c55e;background:radial-gradient(#1e293b,#0f172a);box-shadow:0 0 15px rgba(34,197,94,0.3)}
-.platform .emoji{font-size:50px}
-.auction-lane{display:flex;gap:8px;overflow-x:auto;padding:10px 0}
-.auction-car{min-width:200px;background:#111827;border-radius:12px;padding:10px;border:2px solid #facc15;text-align:center}
-.timer{color:#ef4444;font-weight:bold;animation:blink 1s infinite}
-@keyframes blink{50%{opacity:0.4}}
-.staff-working{position:absolute;right:10px;top:10px;font-size:10px;background:#22c55e;color:#fff;padding:2px 6px;border-radius:10px;animation:blink 1s infinite}
-.npc{display:flex;gap:10px;align-items:center}
-.npc-avatar{width:50px;height:50px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px}
+:root{--a:#00ffcc;--b:#ff00ff;--bg:#080a14}
+body{margin:0;background:var(--bg);color:#fff;font-family:sans-serif}
+.header{background:#000;padding:12px 15px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--a);position:sticky;top:0;z-index:10}
+.logo{font-weight:900;font-size:22px;color:var(--a)} .logo span{color:var(--b)}
+.btn{padding:10px 18px;border-radius:20px;background:linear-gradient(90deg,var(--a),var(--b));color:#fff;text-decoration:none;font-weight:bold;border:0;cursor:pointer}
+.card{background:#14172a;margin:12px;border-radius:15px;padding:15px;border:1px solid #222}
+.match{border-left:4px solid var(--a)}
+.match h3{margin:0} .profit{color:#00ff88;font-weight:bold} .price{color:#ffcc00}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:0;background:#1f2340;color:#fff}
+.bkash-box{background:#e6007e;padding:12px;border-radius:10px;text-align:center}
+.admin{display:none} .ai-box{position:fixed;bottom:10px;right:10px;width:300px;background:#111;border-radius:12px;border:1px solid var(--a);padding:10px}
+.leader table{width:100%;border-collapse:collapse} .leader th{color:var(--a)}
 </style>
 </head>
 <body>
-<div id="top">
-<div style="font-weight:bold">🚗 BD CAR BAZAAR</div>
-<div class="money">৳ <span id="money">80000</span></div>
-<div class="badge">LVL <span id="lvl">1</span> | ⭐ <span id="fame">0</span></div>
+
+<div class="header">
+<div class="logo">BD <span>SPORTS</span></div>
+<div><a href="#download" class="btn">APP DOWNLOAD</a></div>
 </div>
 
-<div id="tabs">
-<div class="tab active" onclick="openTab('dealership')">🏢 Dealership</div>
-<div class="tab" onclick="openTab('repair')">🔧 AutoRepair</div>
-<div class="tab" onclick="openTab('auction')">🔥 Auction</div>
-<div class="tab" onclick="openTab('market')">🏘️ Market Place</div>
-<div class="tab" onclick="openTab('staff')">👷 Staff</div>
+<div class="card" style="text-align:center">
+<h2 style="color:var(--a)">🔴 LIVE TOURNAMENT</h2>
+<p>Helpline: সকাল 8 টা - রাত 9 টা | Free Match: সকাল 6 টা থেকে</p>
+<a class="btn" href="https://wa.me/8801756596482">WhatsApp: 01756596482</a>
+<a class="btn" style="background:#e6007e" href="#">bKash: 01756596482</a>
 </div>
 
-<!-- DEALERSHIP - Like screenshot BUILD YOUR DEALERSHIP -->
-<div id="dealership" class="page active">
-<div class="card" style="background:linear-gradient(90deg,#facc15,#f59e0b);color:#000;text-align:center;font-weight:bold">🏢 YOUR DEALERSHIP - তোমার শোরুম</div>
-<div class="showroom-grid" id="showroom"></div>
-<div class="card"><b>💡 কিভাবে খেলবা:</b><br>Market Place থেকে কম দামে গাড়ি কিনে আনো -> AutoRepair এ ঠিক করো -> এখানে সাজিয়ে বেশি দামে বিক্রি করো।</div>
+<div id="matches"></div>
+
+<div class="card leader">
+<h3>🏆 লিডার বোর্ড (Top Earners)</h3>
+<table>
+<tr><th>Rank</th><th>Player</th><th>Win</th></tr>
+<tr><td>1</td><td>Team Tiger BD</td><td>৳12,500</td></tr>
+<tr><td>2</td><td>Dhaka Kings</td><td>৳9,800</td></tr>
+<tr><td>3</td><td>Chittagong Claws</td><td>৳8,200</td></tr>
+</table>
 </div>
 
-<!-- REPAIR - Like screenshot REPAIR CARS -->
-<div id="repair" class="page">
-<div class="card" style="border-color:#3b82f6">
-<div class="card-title">🔧 AutoRepair - গাড়ি ঠিক করার জায়গা</div>
-<div id="repairBay" style="text-align:center;padding:20px;background:#0f172a;border-radius:10px;border:2px solid #334155;min-height:200px">
-<p style="color:#94a3b8">গাড়ি Select করো Dealership থেকে, তারপর এখানে ঠিক করতে পারবা</p>
-<div id="repairCarView" style="font-size:80px;margin:15px 0">🚗</div>
-<div id="repairStats"></div>
-</div>
-</div>
+<div class="card" id="download">
+<h3>📲 BD SPORTS APP DOWNLOAD</h3>
+<p>আমাদের অফিসিয়াল অ্যাপ ডাউনলোড করুন, দ্রুত ম্যাচ জয়েন করুন</p>
+<a class="btn" href="#">⬇️ Download APK (15MB)</a>
+<p style="font-size:12px;color:gray">Version 2.5 | Safe & Verified</p>
 </div>
 
-<!-- AUCTION - Like screenshot CAR AUCTION -->
-<div id="auction" class="page">
-<div class="card" style="background:#dc2626;color:#fff;text-align:center;font-size:20px;font-weight:bold">CAR AUCTION - বিডিং হাউজ</div>
 <div class="card">
-<div style="display:flex;justify-content:space-between"><span>⏱️ পরের Auction: <span id="aucTimer" class="timer">30s</span></span><button class="btn btn-blue" onclick="startAuction()">নতুন Auction শুরু</button></div>
-<div class="auction-lane" id="auctionLane"></div>
+<h3>🎫 ম্যাচে জয়েন করুন</h3>
+<input id="pname" placeholder="আপনার নাম / Team Name">
+<input id="uid" placeholder="Game UID">
+<select id="mtype">
+<option>Bear Match - 10 Profit 50</option>
+<option>Bear Duo - 20 Profit 100</option>
+<option>Lone Off - 10 Profit 15</option>
+<option>Lone Off Duo - 20 Profit 30</option>
+<option>Free Match - সকাল 6 টা</option>
+</select>
+<div class="bkash-box">
+bKash Send Money: <b>01756596482</b> (Personal)<br>টাকা পাঠিয়ে TrxID দিন
 </div>
+<input id="trxid" placeholder="bKash TrxID">
+<button class="btn" onclick="joinMatch()">JOIN NOW - WhatsApp এ পাঠান</button>
 </div>
 
-<!-- MARKET PLACE - Like screenshot Neighborhood -->
-<div id="market" class="page">
-<div class="card" style="background:#1e40af;color:#fff">🏘️ MARKET PLACE - পাড়ার লোকজন গাড়ি বিক্রি করছে, কম দামে কিনে আনো!</div>
-<div id="marketList"></div>
-<button class="btn" onclick="refreshMarket()">🔄 নতুন লোক খুঁজো (৳200)</button>
-</div>
-
-<!-- STAFF -->
-<div id="staff" class="page">
-<div class="card" style="background:#065f46">👷 তোমার Staff - এরা অটো কাজ করবে</div>
-<div id="staffList"></div>
+<!-- ADMIN SYSTEM -->
 <div class="card">
-<b>💰 বেতন সিস্টেম:</b> প্রত্যেক দিন রাত 12 টায় বেতন কাটবে। Guard না থাকলে রাতে 30% Chance এ গাড়ির পার্টস চুরি হবে!
-<br><span style="font-size:12px;color:#facc15">Staff থাকলে তোমার কিছুই করতে হবে না, ওরা অটো Wash/Repair/Sell করবে</span>
+<h3>🔐 Admin Login</h3>
+<input id="adminpass" type="password" placeholder="Admin Password">
+<button class="btn" onclick="adminLogin()">Login</button>
+<div id="adminpanel" class="admin">
+<h4>Admin Panel - দাম চেঞ্জ করুন</h4>
+<p>এখান থেকে তুমি প্রফিট চেঞ্জ করে Save করলে সবার কাছে আপডেট হবে</p>
+<div id="editArea"></div>
+<button class="btn" onclick="savePrices()">SAVE & UPDATE SITE</button>
 </div>
+</div>
+
+<div class="ai-box">
+<b>🤖 BD SPORTS AI - অটো রিপ্লাই</b>
+<div id="chat" style="height:80px;overflow:auto;font-size:13px;margin:6px 0;background:#000;padding:5px;border-radius:5px">AI: হ্যালো! ম্যাচ নিয়ে প্রশ্ন করুন, অটো উত্তর পাবেন।</div>
+<input id="q" placeholder="যেমন: Bear match কত?" onkeydown="if(event.key==='Enter')askAI()">
 </div>
 
 <script>
-let money=80000, fame=0, level=1;
-let myCars=[], marketCars=[], auctionCars=[], selectedCar=null;
-let staff={}, timerInt=null, aucTime=30;
-
-const carPool=[
- {name:"Toyota Corolla",emoji:"🚙",base:35000},
- {name:"Premio G",emoji:"🚗",base:70000},
- {name:"Axio Hybrid",emoji:"🚕",base:85000},
- {name:"Noah",emoji:"🚐",base:60000},
- {name:"Hiace",emoji:"🚐",base:90000},
- {name:"R15 V4",emoji:"🏍️",base:25000},
- {name:"Audi R8",emoji:"🏎️",base:150000},
- {name:"G-Wagon",emoji:"🚙",base:180000},
- {name:"Lamborghini",emoji:"🏎️",base:250000},
- {name:"CNG",emoji:"🛺",base:15000}
+let games=[
+{t:"Bear Match",e:"10",p:"50",icon:"🎯"},
+{t:"Bear Duo",e:"20",p:"100",icon:"🔥"},
+{t:"Lone Off",e:"10",p:"15",icon:"⚔️"},
+{t:"Lone Off Duo",e:"20",p:"30",icon:"👥"},
+{t:"Free Match",e:"0",p:"Reward",icon:"🎁",time:"সকাল 6 টা থেকে"}
 ];
-const staffPool=[
- {id:"washer",name:"🧼 Washer - জামাল",price:6000,salary:400,desc:"গাড়ি ধোয়া অটো করবে, Wash +40% দ্রুত, কন্ডিশন +10%"},
- {id:"cleaner",name:"🧹 Cleaner - রহিমা",price:5000,salary:350,desc:"গাড়ির ভিতর পরিষ্কার, কাস্টমার বেশি দাম দেবে"},
- {id:"mechanic",name:"🔧 Mechanic - করিম",price:15000,salary:900,desc:"Repair অটো করবে, +35% ফাস্ট, ইঞ্জিন ভালো হবে"},
- {id:"guard",name:"💂 Guard - সিকান্দার",price:9000,salary:500,desc:"রাতে চুরি 100% বন্ধ, শোরুম সেফ"},
- {id:"manager",name:"👔 Manager - সাকিব",price:25000,salary:1500,desc:"অটো বিক্রি করবে, তোমার ঘুমানোর সময়ও গাড়ি বিক্রি হবে!"}
-];
-const npcNames=["রফিক চাচা","জব্বার ভাই","বিদেশি আংকেল","পাশের বাড়ির আন্টি","কলেজের ছাত্র"];
-
-function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-function genCar(isCheap=false){
- let t=carPool[rnd(0,carPool.length-1)];
- let cond=rnd(isCheap?15:35,80);
- let price=Math.floor(t.base * (cond/100) * (isCheap?0.5:0.75));
- return {id:Date.now()+rnd(1,99999),name:t.name,emoji:t.emoji,cond,wash:rnd(0,40),repair:rnd(0,30),buyPrice:price,owner:npcNames[rnd(0,4)],story:["বাপের গাড়ি","টাকার দরকার","বিদেশ যাবো","নতুন গাড়ি কিনবো"][rnd(0,3)]}
+function render(){
+let h=""; games.forEach((g,i)=>{
+h+=`<div class="card match"><h3>${g.icon} ${g.t}</h3><p>Entry: <span class="price">৳${g.e}</span> | Profit: <span class="profit">৳${g.p}</span> ${g.time?'| '+g.time:''}</p><button class="btn" onclick="selectMatch(${i})">PLAY NOW</button></div>`;
+});
+document.getElementById("matches").innerHTML=h;
+let eh=""; games.forEach((g,i)=>{
+eh+=` ${g.t} Entry <input id="e${i}" value="${g.e}"> Profit <input id="p${i}" value="${g.p}"><br>`;
+});
+document.getElementById("editArea").innerHTML=eh;
 }
-
-function openTab(id){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- event.target.classList.add('active');
- renderAll();
+function selectMatch(i){document.getElementById("mtype").selectedIndex=i; window.scrollTo(0,600)}
+function joinMatch(){
+let name=document.getElementById("pname").value;
+let trx=document.getElementById("trxid").value;
+let type=document.getElementById("mtype").value;
+if(!name||!trx){alert("নাম ও TrxID দিন");return}
+let msg=`BD SPORTS JOIN%0AName: ${name}%0AType: ${type}%0ATrxID: ${trx}%0AUid: ${document.getElementById("uid").value}`;
+window.open(`https://wa.me/8801756596482?text=${msg}`,"_blank");
 }
-
-function renderAll(){
- document.getElementById('money').innerText=money;
- document.getElementById('fame').innerText=fame;
- document.getElementById('lvl').innerText=level;
- // Showroom
- let shtml='';
- for(let i=0;i<4;i++){
-   let c=myCars[i];
-   if(c){
-     let sell=Math.floor(c.buyPrice*0.9 + c.cond*800 + c.wash*200 + c.repair*400 + fame*200);
-     shtml+=`<div class="platform has-car" onclick="selectCar(${i})">
-       <div class="emoji">${c.emoji}</div>
-       <b>${c.name}</b><br>
-       <span class="badge">Cond ${c.cond}%</span>
-       <div class="progress" style="width:80%"><div class="bar" style="width:${c.cond}%"></div></div>
-       <small>Buy ৳${c.buyPrice}</small><br>
-       <small style="color:#facc15">Sell ৳${sell}</small><br>
-       <button class="btn btn-green" onclick="event.stopPropagation();sellCar(${i})">💰 বিক্রি</button>
-       <button class="btn btn-blue" onclick="event.stopPropagation();goRepair(${i})">🔧 Repair Bay</button>
-       ${staff.washer?'<span class="staff-working">Washer কাজ করছে</span>':''}
-     </div>`;
-   } else {
-     shtml+=`<div class="platform"><div class="emoji">➕</div><small>খালি<br>Market থেকে কিনে আনো</small></div>`;
-   }
- }
- document.getElementById('showroom').innerHTML=shtml;
-
- // Market Place
- let mhtml='';
- marketCars.forEach((c,i)=>{
-   mhtml+=`<div class="card"><div class="npc"><div class="npc-avatar">🧑</div><div><b>${c.owner}</b><br><small>"ভাই ${c.story}, তাই ${c.name} টা বিক্রি করবো"</small><br><span class="badge">${c.name} ${c.cond}%</span> <span class="badge">Wash ${c.wash}%</span></div></div><div style="text-align:center;margin:8px 0"><div style="font-size:50px">${c.emoji}</div><b style="color:#facc15">দাম ৳${c.buyPrice}</b> <small>(Market Value ৳${Math.floor(c.buyPrice*1.8)})</small></div><button class="btn btn-green" onclick="buyMarket(${i})">💬 দরদাম করে কিনো</button><button class="btn btn-blue" onclick="bargain(${i})">🤝 15% কমাতে বলো</button></div>`;
- });
- document.getElementById('marketList').innerHTML=mhtml||'<p style="color:#94a3b8">লোড হচ্ছে...</p>';
-
- // Staff
- let sthtml='';
- staffPool.forEach(s=>{
-   let owned=staff[s.id];
-   sthtml+=`<div class="card"><b>${s.name}</b><br><small style="color:#94a3b8">${s.desc}</small><br><div style="margin-top:6px"><span class="badge">Hire: ৳${s.price}</span> <span class="badge">বেতন: ৳${s.salary}/দিন</span></div>${owned?`<div style="margin-top:6px"><span class="badge" style="background:#22c55e">✅ কাজ করছে - আজ বেতন দিছো ৳${owned.paid}</span><br><small>কাজ: ${owned.work} টা গাড়ি</small></div>`:`<button class="btn btn-green" style="margin-top:6px" onclick="hireStaff('${s.id}')">Hire করো</button>`}</div>`;
- });
- document.getElementById('staffList').innerHTML=sthtml;
-
- // Auction
- let ahtml='';
- auctionCars.forEach((c,i)=>{
-   ahtml+=`<div class="auction-car"><div style="font-size:40px">${c.emoji}</div><b>${c.name}</b><br>Cond ${c.cond}%<br><b style="color:#facc15">Bid: ৳${c.bid}</b><br><small>Top: ${c.topBidder}</small><br><button class="btn btn-green" onclick="placeBid(${i})">+৳2000 Bid</button></div>`;
- });
- document.getElementById('auctionLane').innerHTML=ahtml||'<p style="color:#94a3b8">Auction শুরু করো</p>';
-
- if(selectedCar!==null && myCars[selectedCar]){
-   let c=myCars[selectedCar];
-   document.getElementById('repairCarView').innerText=c.emoji;
-   document.getElementById('repairStats').innerHTML=`<b>${c.name}</b><br>Condition: ${c.cond}%<br><div class="progress"><div class="bar" style="width:${c.cond}%"></div></div>Wash ${c.wash}% Repair ${c.repair}%<br><button class="btn" onclick="doWash(${selectedCar})">🧼 ধোও ৳300</button><button class="btn" onclick="doRepair(${selectedCar})">🔧 ঠিক করো ৳1000</button>`;
- }
+function adminLogin(){if(document.getElementById("adminpass").value==="bdsports123"){document.getElementById("adminpanel").style.display="block";}else alert("ভুল পাসওয়ার্ড! Default: bdsports123")}
+function savePrices(){games.forEach((g,i)=>{g.e=document.getElementById(`e${i}`).value; g.p=document.getElementById(`p${i}`).value}); render(); alert("দাম আপডেট হয়েছে! এখন Netlify তে নতুন ফাইল আপলোড করলেই সবার কাছে নতুন দাম দেখাবে।")}
+function askAI(){
+let q=document.getElementById("q").value.toLowerCase(); let ans="Helpline সকাল 8-রাত 9 টা। WhatsApp 01756596482 তে মেসেজ দিন।";
+if(q.includes("bear")) ans="Bear Match Entry 10 Taka, Profit 50 Taka। Bear Duo Entry 20 Profit 100।";
+else if(q.includes("lone")) ans="Lone Off Entry 10 Profit 15। Lone Off Duo Entry 20 Profit 30।";
+else if(q.includes("free")) ans="Free Match প্রতিদিন সকাল 6 টা থেকে শুরু হয়, Entry ফ্রি!";
+else if(q.includes("bkash")) ans="bKash Personal 01756596482 তে Send Money করুন।";
+document.getElementById("chat").innerHTML+=`<br>You: ${q}<br>AI: ${ans}`; document.getElementById("q").value="";
 }
-
-function selectCar(i){selectedCar=i; openTab('repair'); renderAll();}
-function goRepair(i){selectedCar=i; openTab('repair'); renderAll();}
-
-function refreshMarket(){
- if(money<200){alert('টাকা নাই');return;}
- money-=200;
- marketCars=[genCar(true),genCar(true),genCar(false),genCar(false)];
- renderAll();
-}
-function buyMarket(i){
- let c=marketCars[i];
- if(myCars.length>=4){alert('Showroom Full! আগে বিক্রি করো');return;}
- if(money<c.buyPrice){alert('টাকা নাই');return;}
- money-=c.buyPrice; c.buyPrice=c.buyPrice; myCars.push(c); marketCars.splice(i,1);
- fame+=1; renderAll();
- alert(`✅ কিনে ফেলছো! ${c.name} এখন তোমার Showroom এ!`);
-}
-function bargain(i){
- let c=marketCars[i];
- let newPrice=Math.floor(c.buyPrice*0.85);
- if(Math.random()>0.5){c.buyPrice=newPrice; alert(`🤝 ${c.owner}: "আচ্ছা ঠিক আছে ভাই, ৳${newPrice} এ নেন"`);} else {alert(`${c.owner}: "না ভাই, এই দামেই, কম হবে না!"`);}
- renderAll();
-}
-function sellCar(i){
- let c=myCars[i];
- let sell=Math.floor(c.buyPrice*0.9 + c.cond*800 + c.wash*200 + c.repair*400 + fame*200);
- if(staff.manager) sell=Math.floor(sell*1.1);
- // Bargain simulation
- let offer=Math.floor(sell*(0.85+Math.random()*0.3));
- if(confirm(`🧑‍💼 Customer আসছে!\nতুমি: "ভাই ${sell} টাকা"\nCustomer: "ভাই ${offer} দিবো?"\n\nOK চাপলে ${offer} টাকায় বিক্রি হবে, Cancel করলে ${sell} টাকায় জোর করবা`)){
-   money+=offer; fame+=2; myCars.splice(i,1); alert(`💰 বিক্রি Done! ৳${offer} পাইছো! Profit: ৳${offer-c.buyPrice}`);
- } else {
-   money+=sell; fame+=1; myCars.splice(i,1); alert(`💰 ${sell} টাকায় বিক্রি হলো!`);
- }
- if(money>150000) level=2; if(money>400000) level=3;
- renderAll(); saveGame();
-}
-function doWash(i){ if(money<300) return alert('টাকা নাই'); money-=300; myCars[i].wash=Math.min(100,myCars[i].wash+35); myCars[i].cond=Math.min(100,myCars[i].cond+10); renderAll(); saveGame();}
-function doRepair(i){ if(money<1000) return alert('টাকা নাই'); money-=1000; myCars[i].repair=Math.min(100,myCars[i].repair+40); myCars[i].cond=Math.min(100,myCars[i].cond+25); renderAll(); saveGame();}
-
-function startAuction(){
- auctionCars=[genCar(),genCar(),genCar()].map(c=>({...c,bid:Math.floor(c.buyPrice*0.6),topBidder:"রফিক"}));
- aucTime=30;
- if(timerInt) clearInterval(timerInt);
- timerInt=setInterval(()=>{
-   aucTime--; document.getElementById('aucTimer').innerText=aucTime+'s';
-   // AI bidders
-   auctionCars.forEach(c=>{ if(Math.random()>0.6){c.bid+=rnd(1000,3000); c.topBidder=["জব্বার","বিদেশি বায়ার","রফিক"][rnd(0,2)];}});
-   if(aucTime<=0){
-     clearInterval(timerInt);
-     alert('Auction শেষ! যে গাড়িতে তুমি Top Bidder ছিলা সেগুলো তোমার হবে');
-     auctionCars.forEach(c=>{ if(c.topBidder==="তুমি" && money>=c.bid){money-=c.bid; myCars.push(c);} });
-     auctionCars=[]; document.getElementById('aucTimer').innerText='শেষ';
-   }
-   renderAll();
- },1000);
- renderAll();
-}
-function placeBid(i){
- if(money<2000) return alert('টাকা নাই');
- let c=auctionCars[i];
- if(money<c.bid+2000) return alert('আরো টাকা লাগবে');
- c.bid+=2000; c.topBidder="তুমি"; renderAll();
-}
-
-function hireStaff(id){
- let s=staffPool.find(x=>x.id==id);
- if(money<s.price) return alert('টাকা নাই');
- money-=s.price; staff[id]={paid:0,work:0};
- alert(`✅ ${s.name} Hire করছো! সে বলছে: "বস, কাজ শুরু!"`);
- renderAll(); saveGame();
-}
-
-// Auto work by staff
-setInterval(()=>{
- if(staff.washer && myCars.length){ let c=myCars.find(x=>x.wash<100); if(c){c.wash=Math.min(100,c.wash+5); c.cond=Math.min(100,c.cond+1); staff.washer.work++;}}
- if(staff.mechanic && myCars.length){ let c=myCars.find(x=>x.cond<90); if(c){c.repair=Math.min(100,c.repair+4); c.cond=Math.min(100,c.cond+2); staff.mechanic.work++;}}
- if(staff.manager && myCars.length && Math.random()>0.7){ // auto sell low cond
-   let idx=myCars.findIndex(x=>x.cond>85); if(idx!=-1){ let c=myCars[idx]; let sell=Math.floor(c.buyPrice*1.2); money+=sell; myCars.splice(idx,1); staff.manager.work++; fame+=1; }
- }
- // Guard check - theft at night
- if(!staff.guard && Math.random()>0.98 && myCars.length){ alert('💀 চুরি! Guard নাই তাই রাতে একটা গাড়ির পার্টস চুরি হয়ে গেছে! Cond -15%'); myCars[rnd(0,myCars.length-1)].cond=Math.max(10,myCars[rnd(0,myCars.length-1)].cond-15); }
- renderAll();
-},4000);
-
-// Daily salary - every 2 mins = 1 day
-setInterval(()=>{
- let totalSal=0; Object.keys(staff).forEach(k=>{let s=staffPool.find(x=>x.id==k); totalSal+=s.salary; staff[k].paid+=s.salary;});
- if(totalSal>0){ money-=totalSal; if(money<0) money=0; alert(`🌙 রাত 12 টা - Staff বেতন কাটা হলো ৳${totalSal}`); renderAll(); saveGame();}
-},120000);
-
-function saveGame(){localStorage.setItem('bdCarMoney',money); localStorage.setItem('bdCarCars',JSON.stringify(myCars)); localStorage.setItem('bdCarStaff',JSON.stringify(staff));}
-function loadGame(){
- let m=localStorage.getItem('bdCarMoney'); if(m) money=parseInt(m);
- let ca=localStorage.getItem('bdCarCars'); if(ca) myCars=JSON.parse(ca);
- let st=localStorage.getItem('bdCarStaff'); if(st) staff=JSON.parse(st);
-}
-loadGame();
-refreshMarket();
-renderAll();
-setInterval(saveGame,10000);
+render();
 </script>
 </body>
 </html>
