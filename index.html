@@ -3,284 +3,299 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GARIR HUT - BD Supercar Dealership</title>
+<title>GARIR HUT 4K - Realistic Auction</title>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans Bengali',sans-serif}
-body{background:#050a14;color:#fff;overflow-x:hidden}
-#top{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,#111827,#1f2937);padding:10px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #facc15}
-.logo{font-size:20px;font-weight:900;color:#facc15;letter-spacing:1px}
-.money{font-size:18px;background:#000;padding:6px 14px;border-radius:20px;border:2px solid #22c55e;color:#22c55e}
-#tabs{display:flex;background:#111827;overflow-x:auto;position:sticky;top:54px;z-index:20}
-.tab{padding:12px 16px;white-space:nowrap;opacity:0.6;border-bottom:3px solid transparent;cursor:pointer}
-.tab.active{opacity:1;border-color:#facc15;color:#facc15;font-weight:bold;background:#1e293b}
-.page{display:none;padding:12px;padding-bottom:120px}
-.page.active{display:block}
-.card{background:linear-gradient(180deg,#1e293b,#0f172a);border-radius:16px;padding:12px;margin-bottom:12px;border:1px solid #334155}
-.card.supercar{border:2px solid #facc15;box-shadow:0 0 20px rgba(250,204,21,0.3);background:linear-gradient(180deg,#2a2210,#1e293b)}
-.btn{background:#facc15;color:#000;padding:9px 15px;border:none;border-radius:10px;font-weight:900;cursor:pointer;margin:3px}
-.btn-green{background:#22c55e;color:#fff}
-.btn-red{background:#ef4444;color:#fff}
-.btn-blue{background:#3b82f6;color:#fff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.emoji{font-size:48px;text-align:center}
-.badge{background:#334155;padding:3px 8px;border-radius:10px;font-size:11px;display:inline-block}
-.badge.gold{background:#facc15;color:#000;font-weight:bold}
-.progress{height:10px;background:#334155;border-radius:10px;overflow:hidden;margin:6px 0}
-.bar{height:100%;background:linear-gradient(90deg,#22c55e,#facc15);transition:0.5s}
-.auctionBox{background:#000;border:2px solid #ef4444;border-radius:12px;padding:10px;text-align:center}
-.timer{font-size:22px;color:#ef4444;font-weight:900;animation:blink 0.8s infinite}
-@keyframes blink{50%{opacity:0.3}}
-.voiceBar{background:#111827;border:1px solid #22c55e;border-radius:20px;padding:8px 12px;display:flex;gap:8px;align-items:center;margin:8px 0}
-.voiceBar button{background:#22c55e;border:none;border-radius:50%;width:32px;height:32px;color:#fff}
-.npcRow{display:flex;gap:10px;align-items:center}
-.npcAv{width:46px;height:46px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#000;color:#fff;overflow:hidden}
+#top{position:fixed;top:0;width:100%;z-index:20;display:flex;justify-content:space-between;padding:10px;background:rgba(0,0,0,0.8);border-bottom:2px solid #facc15}
+.b{font-weight:900}
+#auctionStage{position:fixed;bottom:0;left:0;width:100%;height:45%;background:linear-gradient(#111827,#000);border-top:3px solid #ef4444;z-index:15;display:none;padding:10px}
+.auctioneer{display:flex;gap:12px;align-items:center}
+.av{width:80px;height:80px;background:#facc15;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;animation:talk 0.5s infinite}
+@keyframes talk{0%{transform:scale(1)}50%{transform:scale(1.1)}}
+.bidRow{display:flex;gap:8px;overflow-x:auto;margin-top:10px}
+.bidCard{min-width:220px;background:#1e293b;border-radius:12px;padding:10px;border:2px solid #334155;text-align:center}
+.bidCard.top{border-color:#facc15;box-shadow:0 0 15px #facc15}
+.btn{background:#facc15;color:#000;padding:10px 16px;border:none;border-radius:10px;font-weight:900;margin:3px}
+.btn-g{background:#22c55e;color:#fff}
+#marketTalk{position:fixed;top:60px;right:10px;width:300px;background:rgba(15,23,42,0.95);border-radius:12px;padding:10px;border:2px solid #3b82f6;z-index:15;display:none}
+.voiceBtn{background:#3b82f6;color:#fff;border:none;padding:8px 12px;border-radius:20px;margin:4px}
+#canvas{width:100vw;height:100vh;display:block}
+#joy{position:fixed;bottom:20px;left:20px;width:90px;height:90px;background:rgba(255,255,255,0.1);border-radius:50%;border:2px solid #fff3;z-index:10}
+#stick{width:40px;height:40px;background:#facc15;border-radius:50%;position:absolute;left:25px;top:25px}
+#hud{position:fixed;top:60px;left:10px;z-index:10;background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:10px;font-size:13px}
 </style>
 </head>
 <body>
 <div id="top">
-<div class="logo">🚗 GARIR HUT</div>
-<div class="money">৳ <span id="money">250000</span></div>
-<div class="badge gold">LVL <span id="lvl">1</span></div>
-</div>
-<div id="tabs">
-<div class="tab active" onclick="openTab('showroom')">🏢 Showroom</div>
-<div class="tab" onclick="openTab('auction')">🔥 Auction</div>
-<div class="tab" onclick="openTab('market')">🏪 Market (8 Cars)</div>
-<div class="tab" onclick="openTab('staff')">👷 Staff</div>
+<div class="b">🚗 GARIR HUT 4K</div>
+<div>৳ <span id="money">800000</span></div>
+<div><span id="loc">SHOWROOM</span> | <span id="cars">0/6</span></div>
 </div>
 
-<div id="showroom" class="page active">
-<div class="card" style="text-align:center;background:linear-gradient(90deg,#facc15,#f59e0b);color:#000;font-weight:900">🏆 GARIR HUT - BD SUPERCAR DEALERSHIP</div>
-<div class="grid" id="showroomGrid"></div>
+<div id="hud">
+WASD / Joy হাঁটো<br>
+Mouse Drag তাকাও<br>
+Car কাছে গিয়ে E চাপো<br>
+<span style="color:#facc15">M=Market, A=Auction, S=Showroom</span>
 </div>
 
-<div id="auction" class="page">
-<div class="card auctionBox">
-<div style="font-size:18px;font-weight:900;color:#ef4444">🔥 LIVE CAR AUCTION - 4 CARS</div>
-<div class="timer">⏱️ <span id="aucTime">30</span>s - বিড চলছে!</div>
-<div>AI বায়াররা বিড করছে, তুমি Top এ থাকলে গাড়ি তোমার!</div>
-<button class="btn btn-blue" onclick="startAuction()">🚀 নতুন Auction শুরু করো</button>
+<div id="auctionStage">
+<div class="auctioneer">
+<div class="av" id="aucAv">🎤</div>
+<div>
+<div id="aucName" style="font-weight:900;color:#facc15;font-size:18px">Auctioneer: Loading...</div>
+<div id="aucSpeech" style="font-size:14px;color:#ccc;margin-top:4px">Ladies & Gentlemen, Get Ready!</div>
+<div style="margin-top:6px">⏱️ <span id="aucTimer" style="color:#ef4444;font-weight:900;font-size:22px">10</span>s | Last Price: ৳<span id="lastPrice">500000</span></div>
 </div>
-<div class="grid" id="auctionGrid"></div>
 </div>
-
-<div id="market" class="page">
-<div class="card" style="background:#1e40af">🏪 MARKET PLACE - 8 জন বিক্রেতা - দামি গাড়ি থেকে CNG পর্যন্ত</div>
-<div id="marketGrid"></div>
-<button class="btn" onclick="refreshMarket()">🔄 নতুন মাল আনো (৳500)</button>
-</div>
-
-<div id="staff" class="page">
-<div id="staffGrid"></div>
-</div>
-
-<!-- Customer Talk Modal -->
-<div id="talkModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99;justify-content:center;align-items:center">
-<div style="background:#1e293b;width:92%;max-width:380px;border-radius:16px;padding:16px;border:2px solid #facc15">
-<div style="text-align:center;font-weight:900;color:#facc15;margin-bottom:8px">💬 কাস্টমার কথা বলছে</div>
-<div id="customerEmoji" style="font-size:60px;text-align:center">🧑‍💼</div>
-<div class="voiceBar"><button onclick="speakNow()">🔊</button><div id="customerText" style="font-size:14px">ভাই গাড়িটা কত? একদম ফ্রেশ তো?</div></div>
-<div id="talkOptions"></div>
-<button class="btn btn-red" style="width:100%;margin-top:8px" onclick="closeTalk()">❌ বন্ধ করো</button>
+<div class="bidRow" id="bidRow"></div>
+<div style="margin-top:8px">
+<button class="btn" onclick="placeBid(5000)">+৳5K Bid</button>
+<button class="btn" onclick="placeBid(10000)">+৳10K Bid</button>
+<button class="btn" onclick="placeBid(25000)">+৳25K Bid</button>
+<button class="btn-g" onclick="closeAuction()">❌ Auction থেকে বের হও</button>
 </div>
 </div>
 
-<script>
-let money=parseInt(localStorage.getItem('hutMoney')||'250000'), fame=0, level=1;
-let myCars=JSON.parse(localStorage.getItem('hutCars')||'[]');
-let marketCars=[], auctionCars=[], staff={}, aucTimer=null, timeLeft=30, currentCustomerCar=null;
+<div id="marketTalk">
+<div style="font-weight:900;color:#3b82f6">🏪 Seller কথা বলছে</div>
+<div id="sellerAv" style="font-size:50px;text-align:center">🧑‍🌾</div>
+<div id="sellerText" style="margin:8px 0;background:#111827;padding:8px;border-radius:8px">ভাই গাড়িটা নিবেন? ১০ হাজার টাকা দাম, একদম ফ্রেশ!</div>
+<button class="voiceBtn" onclick="startListening()">🎤 Mic দিয়ে দরদাম করো</button>
+<button class="voiceBtn" onclick="speakSeller()">🔊 আবার শুনো</button>
+<div id="bargainBtns" style="margin-top:8px"></div>
+</div>
 
-const supercars=[
-{name:"Lamborghini Aventador",emoji:"🏎️",base:450000,color:"gold"},
-{name:"Ferrari 488",emoji:"🏎️",base:400000,color:"gold"},
-{name:"Rolls Royce Phantom",emoji:"🚘",base:600000,color:"gold"},
-{name:"Bugatti Chiron",emoji:"🏎️",base:800000,color:"gold"},
-{name:"Kawasaki Ninja H2",emoji:"🏍️",base:120000,color:"gold"},
-{name:"Hayabusa GSX",emoji:"🏍️",base:90000,color:"gold"},
-{name:"G-Wagon AMG",emoji:"🚙",base:350000,color:"gold"},
-{name:"Toyota Supra MK4",emoji:"🚗",base:180000,color:"gold"},
-{name:"Nissan GTR R34",emoji:"🚗",base:220000,color:"gold"},
-{name:"Audi R8",emoji:"🚗",base:200000,color:"gold"},
-// normal
-{name:"Premio G",emoji:"🚗",base:70000},{name:"Axio",emoji:"🚕",base:85000},{name:"Corolla",emoji:"🚙",base:40000},{name:"Noah",emoji:"🚐",base:60000},{name:"CNG",emoji:"🛺",base:15000}
+<canvas id="canvas"></canvas>
+<div id="joy"><div id="stick"></div></div>
+
+<script type="module">
+import * as THREE from 'three';
+let money=800000, myCars=[];
+let selectedCar=null, mode='showroom';
+let auctionCars=[], auctionTime=10, auctionInt=null, currentBids={};
+
+// --- THREE JS 4K SETUP ---
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x101624);
+scene.fog=new THREE.Fog(0x101624,20,90);
+const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,500);
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('canvas'),antialias:true});
+renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.2;
+
+scene.add(new THREE.AmbientLight(0xffffff,0.5));
+const sun=new THREE.DirectionalLight(0xffffff,1.5); sun.position.set(20,30,15); sun.castShadow=true; sun.shadow.mapSize.set(4096,4096); scene.add(sun);
+const fill=new THREE.DirectionalLight(0x8888ff,0.4); fill.position.set(-10,10,-10); scene.add(fill);
+
+// Showroom floor - 4K reflective
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(100,100), new THREE.MeshStandardMaterial({color:0x1a1a1a, roughness:0.1, metalness:0.8}));
+floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+
+// Platforms
+const platforms=[]; [[-12,5],[-4,5],[4,5],[12,5],[-8,-3],[8,-3]].forEach((p,i)=>{
+ const base=new THREE.Mesh(new THREE.BoxGeometry(6.5,0.4,6.5), new THREE.MeshStandardMaterial({color:0x111, roughness:0.2, metalness:0.9}));
+ base.position.set(p[0],0.2,p[1]); base.receiveShadow=true; scene.add(base);
+ const neon=new THREE.Mesh(new THREE.BoxGeometry(6.7,0.1,6.7), new THREE.MeshStandardMaterial({color:i<3?0x00ffff:0xff00ff, emissive:i<3?0x00ffff:0xff00ff, emissiveIntensity:1.5}));
+ neon.position.set(p[0],0.45,p[1]); scene.add(neon);
+ platforms.push({x:p[0],z:p[1],car:null});
+});
+
+// --- DIFFERENT 3D CAR MODELS (Not same) ---
+function createLambo(x,z,color=0xff3300){
+ const g=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.BoxGeometry(1.7,0.5,4.2), new THREE.MeshStandardMaterial({color, roughness:0.1, metalness:0.9})); body.position.y=0.7; body.castShadow=true; g.add(body);
+ const wedge=new THREE.Mesh(new THREE.CylinderGeometry(0,0.85,1.7,3), new THREE.MeshStandardMaterial({color})); wedge.rotation.z=Math.PI/2; wedge.rotation.y=Math.PI/2; wedge.position.set(0,0.7,2); g.add(wedge);
+ g.position.set(x,0,z); scene.add(g); return g;
+}
+function createFerrari(x,z,color=0xff0000){
+ const g=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.BoxGeometry(1.8,0.6,4), new THREE.MeshStandardMaterial({color, roughness:0.2, metalness:0.7})); body.position.y=0.75; body.castShadow=true; g.add(body);
+ const roof=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.4,1.5), new THREE.MeshStandardMaterial({color:0x111})); roof.position.y=1.2; g.add(roof);
+ g.position.set(x,0,z); scene.add(g); return g;
+}
+function createRolls(x,z){
+ const g=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.BoxGeometry(2,1,5), new THREE.MeshStandardMaterial({color:0x222222, roughness:0.3, metalness:0.2})); body.position.y=0.9; body.castShadow=true; g.add(body);
+ g.position.set(x,0,z); scene.add(g); return g;
+}
+function createBike(x,z){
+ const g=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,2.2), new THREE.MeshStandardMaterial({color:0x00ff00})); body.position.y=0.8; g.add(body);
+ g.position.set(x,0,z); scene.add(g); return g;
+}
+
+// Supercars pool with distinct creators
+const superPool=[
+ {name:"Lamborghini Aventador 2024",model:"Aventador SVJ",creator:createLambo,color:0xffa500,base:650000},
+ {name:"Ferrari 488 Pista",model:"488 Pista 2023",creator:createFerrari,color:0xff0000,base:600000},
+ {name:"Rolls Royce Phantom 2024",model:"Phantom VIII",creator:createRolls,color:0x111111,base:800000},
+ {name:"Bugatti Chiron 2024",model:"Chiron Super Sport",creator:createLambo,color:0x0000ff,base:900000},
+ {name:"Kawasaki Ninja H2R",model:"Ninja H2R 2024",creator:createBike,color:0x00ff00,base:150000},
+ {name:"G-Wagon AMG 2024",model:"G63 AMG",creator:createRolls,color:0xffffff,base:500000}
 ];
 
-const staffList=[
-{id:"washer",name:"🧼 Washer Jamal",price:8000,sal:500,desc:"অটো ধোয়া, Wash ফাস্ট"},
-{id:"mechanic",name:"🔧 Mechanic Karim",price:18000,sal:1000,desc:"অটো Repair, Cond +30%"},
-{id:"guard",name:"💂 Guard Sikandar",price:10000,sal:600,desc:"চুরি বন্ধ, রাত সেফ"},
-{id:"manager",name:"👔 Manager Shakib",price:30000,sal:1800,desc:"অটো বিক্রি, তুমি ঘুমালেও বিক্রি হবে"}
-];
+let carMeshes=[];
+// spawn initial
+myCars=[{...superPool[0],buy:500000,cond:85},{...superPool[1],buy:480000,cond:80}];
+myCars.forEach((c,i)=>{let m=c.creator(platforms[i].x,platforms[i].z,c.color); m.userData=c; carMeshes.push(m); platforms[i].car=c;});
 
-function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-function genCar(tier="any"){
- let pool=tier==="super"?supercars.filter(c=>c.color==="gold"):tier==="normal"?supercars.filter(c=>!c.color):supercars;
- let t=pool[rnd(0,pool.length-1)];
- let cond=rnd(20,90);
- let price=Math.floor(t.base * (cond/100) * (tier==="super"?0.55:0.65));
- return {id:Date.now()+rnd(1,99999),name:t.name,emoji:t.emoji,cond,wash:rnd(0,40),repair:rnd(0,30),buyPrice:price,isSuper:t.color==="gold",owner:["রফিক","জব্বার","সাকিব","বিদেশি আংকেল"][rnd(0,3)]}
-}
-
-function openTab(id){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- event.target.classList.add('active');
- render();
-}
-
-function render(){
- document.getElementById('money').innerText=money;
- // showroom
- let shtml='';
- for(let i=0;i<6;i++){
-   let c=myCars[i];
-   if(c){
-     let sell=Math.floor(c.buyPrice*0.9 + c.cond*1000 + c.wash*400 + c.repair*600 + (c.isSuper?50000:0));
-     shtml+=`<div class="card ${c.isSuper?'supercar':''}"><div class="emoji">${c.emoji}</div><b>${c.name}</b> ${c.isSuper?'<span class="badge gold">SUPERCAR</span>':''}<br><span class="badge">Cond ${c.cond}%</span><div class="progress"><div class="bar" style="width:${c.cond}%"></div></div>Buy ৳${c.buyPrice}<br><b style="color:#facc15">Sell ৳${sell}</b><br><button class="btn btn-green" onclick="talkToCustomer(${i})">💬 কাস্টমার ডাকো (Voice)</button><button class="btn btn-blue" onclick="washCar(${i})">🧼</button><button class="btn" onclick="repairCar(${i})">🔧</button></div>`;
-   } else shtml+=`<div class="card" style="border-style:dashed;opacity:0.5"><div class="emoji">➕</div><center>খালি Slot<br><small>Market থেকে আনো</small></center></div>`;
- }
- document.getElementById('showroomGrid').innerHTML=shtml;
-
- // market 8 cars
- let mhtml='';
- marketCars.forEach((c,i)=>{
-   mhtml+=`<div class="card ${c.isSuper?'supercar':''}"><div class="npcRow"><div class="npcAv">🧑</div><div><b>${c.owner}</b><br><small>"${c.isSuper?'দামি গাড়ি, টাকার দরকার':'বাপের গাড়ি, বিক্রি করবো'}"</small></div></div><div class="emoji">${c.emoji}</div><b>${c.name}</b> ${c.isSuper?'<span class="badge gold">SUPER</span>':''}<br>Cond ${c.cond}%<br><b style="color:#facc15">৳${c.buyPrice}</b> <small>(Value ৳${Math.floor(c.buyPrice*1.9)})</small><br><button class="btn btn-green" onclick="buyMarket(${i})">কিনো</button><button class="btn" onclick="bargain(${i})">দরদাম</button></div>`;
- });
- document.getElementById('marketGrid').innerHTML=mhtml;
-
- // auction 4 cars
- let ahtml='';
- auctionCars.forEach((c,i)=>{
-   ahtml+=`<div class="card ${c.isSuper?'supercar':''}"><div class="emoji">${c.emoji}</div><b>${c.name}</b> ${c.isSuper?'<span class="badge gold">SUPER</span>':''}<br>Cond ${c.cond}%<br>Bid: <b style="color:#facc15">৳${c.bid}</b><br><small>Top: ${c.top}</small><br><button class="btn btn-green" onclick="bid(${i})">+৳3000 Bid</button></div>`;
- });
- document.getElementById('auctionGrid').innerHTML=ahtml;
-
- // staff
- let sthtml='';
- staffList.forEach(s=>{
-   let o=staff[s.id];
-   sthtml+=`<div class="card"><b>${s.name}</b><br><small>${s.desc}</small><br><span class="badge">Hire ৳${s.price}</span> <span class="badge">Salary ৳${s.sal}/দিন</span><br>${o?`<span class="badge" style="background:#22c55e">✅ কাজ করছে - ${o.work} টা</span>`:`<button class="btn btn-green" onclick="hire('${s.id}')">Hire</button>`}</div>`;
- });
- document.getElementById('staffGrid').innerHTML=sthtml;
-}
-
-function refreshMarket(){
- if(money<500 && marketCars.length>0){alert('টাকা নাই');return;}
- if(marketCars.length>0) money-=500;
- // 8 cars, at least 2 supercars
- marketCars=[genCar("super"),genCar("super"),genCar("any"),genCar("any"),genCar("normal"),genCar("normal"),genCar("any"),genCar("super")];
- render(); save();
-}
-function buyMarket(i){
- let c=marketCars[i];
- if(myCars.length>=6){alert('Showroom Full! আগে বিক্রি করো');return;}
- if(money<c.buyPrice){alert('টাকা নাই');return;}
- money-=c.buyPrice; myCars.push(c); marketCars.splice(i,1); render(); save(); speak(`গাড়ি কিনেছেন, ${c.name}`);
-}
-function bargain(i){
- let c=marketCars[i]; c.buyPrice=Math.floor(c.buyPrice*0.85); render(); speak(`ঠিক আছে ভাই, ${c.buyPrice} টাকায় নেন`);
-}
-
-function startAuction(){
- // 4 cars, 2 super guaranteed
- auctionCars=[genCar("super"),genCar("super"),genCar("any"),genCar("any")].map(c=>({...c,bid:Math.floor(c.buyPrice*0.5),top:["জব্বার","রফিক","বিদেশি"][rnd(0,2)]}));
- timeLeft=30;
- if(aucTimer) clearInterval(aucTimer);
- aucTimer=setInterval(()=>{
-   timeLeft--; document.getElementById('aucTime').innerText=timeLeft;
-   auctionCars.forEach(c=>{ if(Math.random()>0.5){c.bid+=rnd(2000,5000); c.top=["জব্বার","বিদেশি বায়ার","রফিক"][rnd(0,2)];}});
-   if(timeLeft<=0){
-     clearInterval(aucTimer);
-     // FIXED: Add cars where you are top bidder
-     let won=0;
-     auctionCars.forEach(c=>{ if(c.top==="তুমি"){ if(money>=c.bid && myCars.length<6){money-=c.bid; myCars.push(c); won++;} } });
-     alert(won>0?`🎉 তুমি ${won} টা গাড়ি জিতছো! Showroom এ চলে গেছে!`:`😢 তুমি একটাও জিতো নাই, আবার চেষ্টা করো!`);
-     auctionCars=[]; document.getElementById('aucTime').innerText="শেষ";
-     render(); save();
+// --- AUCTIONEER SYSTEM - 10 sec, 3 cars ---
+function startAuctionEvent(){
+ mode='auction'; document.getElementById('auctionStage').style.display='block'; document.getElementById('loc').innerText='AUCTION';
+ auctionCars= [superPool[0],superPool[1],superPool[2]].map(s=>({...s,bid:500000+Math.floor(Math.random()*100000),top:"রফিক",sold:false}));
+ auctionTime=10; renderAuction();
+ speak(`Ladies and gentlemen! Welcome to Garir Hut Auction! Today we have three supercars! First car, ${auctionCars[0].name}, model ${auctionCars[0].model}, starting price 5 lakh taka! Who is interested?`);
+ if(auctionInt) clearInterval(auctionInt);
+ auctionInt=setInterval(()=>{
+   auctionTime--; document.getElementById('aucTimer').innerText=auctionTime;
+   // AI bidders increase
+   auctionCars.forEach(c=>{if(!c.sold && Math.random()>0.4){c.bid+=Math.floor(Math.random()*20000)+5000; c.top=["জব্বার","বিদেশি বায়ার","রফিক"][Math.floor(Math.random()*3)];}});
+   if(auctionTime<=0){
+     // next car or end
+     let current=auctionCars.find(c=>!c.sold);
+     if(current){
+       if(current.top==="তুমি" && money>=current.bid){money-=current.bid; myCars.push(current); let p=platforms.find(pl=>!pl.car); if(p){let m=current.creator(p.x,p.z,current.color); m.userData=current; carMeshes.push(m); p.car=current;}}
+       current.sold=true;
+       let next=auctionCars.find(c=>!c.sold);
+       if(next){auctionTime=10; speak(`Next car! ${next.name}, model ${next.model}! Starting at ${next.bid} taka!`); renderAuction();}
+       else {speak(`Auction finished! Thank you everyone!`); setTimeout(closeAuction,2000);}
+     } else closeAuction();
    }
-   render();
+   renderAuction();
  },1000);
- render();
-}
-function bid(i){
- let c=auctionCars[i];
- if(money<c.bid+3000){alert('টাকা লাগবে');return;}
- c.bid+=3000; c.top="তুমি"; render(); speak("বিড করেছেন");
 }
 
-function washCar(i){ if(money<300) return; money-=300; myCars[i].wash=Math.min(100,myCars[i].wash+40); myCars[i].cond=Math.min(100,myCars[i].cond+12); render(); save();}
-function repairCar(i){ if(money<1000) return; money-=1000; myCars[i].repair=Math.min(100,myCars[i].repair+50); myCars[i].cond=Math.min(100,myCars[i].cond+30); render(); save();}
+function renderAuction(){
+ let h=''; auctionCars.forEach((c,i)=>{
+   if(c.sold) return;
+   h+=`<div class="bidCard ${c.top==='তুমি'?'top':''}"><div style="font-size:30px">🏎️</div><b>${c.name}</b><br><small>${c.model}</small><br>Bid: <b style="color:#facc15">৳${c.bid}</b><br>Top: ${c.top}</div>`;
+   document.getElementById('aucName').innerText=`Now: ${c.name} - ${c.model}`;
+ });
+ document.getElementById('bidRow').innerHTML=h;
+ document.getElementById('lastPrice').innerText=auctionCars[0]?.bid||500000;
+}
 
-// AI Voice Customer - Bangla
-let lastText="";
-function talkToCustomer(i){
- currentCustomerCar=i;
- let c=myCars[i];
- let sell=Math.floor(c.buyPrice*0.9 + c.cond*1000 + (c.isSuper?50000:0));
- let texts=[
-  `ভাই ${c.name} টা কত? একদম ফ্রেশ তো?`,
-  `ভাই গাড়িটা আমার পছন্দ হইছে, দাম কত রাখবেন?`,
-  `ওয়াও ${c.name}! এইটা কি বিক্রি করবেন? কত টাকা?`,
-  `ভাই ${c.isSuper?'সুপারকারটা':'গাড়িটা'} দেখতে সেই! কত হইলে দিবেন?`
- ];
- lastText=texts[rnd(0,texts.length-1)];
- document.getElementById('customerText').innerText=lastText;
- document.getElementById('talkOptions').innerHTML=`
-   <button class="btn" style="width:100%" onclick="replySell(${sell},true)">বলো: "ভাই ${sell} টাকা, একদম ফিক্সড!"</button>
-   <button class="btn btn-green" style="width:100%" onclick="replySell(${Math.floor(sell*0.9)},false)">বলো: "আপনার জন্য ${Math.floor(sell*0.9)} টাকা!"</button>
-   <button class="btn btn-blue" style="width:100%" onclick="replySell(${Math.floor(sell*1.2)},true)">বলো: "${Math.floor(sell*1.2)} টাকা, দামি গাড়ি ভাই!"</button>
+function placeBid(amt){
+ let cur=auctionCars.find(c=>!c.sold);
+ if(!cur) return;
+ if(money<cur.bid+amt) return alert('টাকা নাই');
+ cur.bid+=amt; cur.top="তুমি"; renderAuction(); speak(`Bid! ${cur.bid} taka!`);
+}
+window.placeBid=placeBid;
+window.closeAuction=()=>{mode='showroom'; document.getElementById('auctionStage').style.display='none'; document.getElementById('loc').innerText='SHOWROOM'; if(auctionInt) clearInterval(auctionInt);};
+
+// --- MARKETPLACE VOICE BARGAIN ---
+let marketSellers=[];
+function spawnMarket(){
+ marketSellers= [superPool[3],superPool[4],superPool[5]].map(s=>({...s,price:Math.floor(s.base*0.6),seller:["করিম চাচা","জব্বার ভাই","রহিমা আপা"][Math.floor(Math.random()*3)]}));
+}
+spawnMarket();
+
+function openMarketTalk(idx){
+ let s=marketSellers[idx];
+ document.getElementById('marketTalk').style.display='block';
+ document.getElementById('sellerText').innerText=`${s.seller}: ভাই ${s.name} টা নিবেন? ${s.price} টাকা দাম, মডেল ${s.model}, একদম ফ্রেশ! লাস্ট ${Math.floor(s.price*0.85)} টাকা দিবো!`;
+ speakSeller();
+ document.getElementById('bargainBtns').innerHTML=`
+   <button class="voiceBtn" onclick="buyFromSeller(${idx})">💰 ${s.price} টাকায় কিনো</button>
+   <button class="voiceBtn" onclick="bargainSeller(${idx},0.85)">🤝 ${Math.floor(s.price*0.85)} টাকা বলো</button>
+   <button class="voiceBtn" onclick="bargainSeller(${idx},0.7)">😤 ${Math.floor(s.price*0.7)} টাকা - কমাও!</button>
  `;
- document.getElementById('talkModal').style.display='flex';
- speakNow();
 }
-function speakNow(){ speak(lastText); }
+
+function speakSeller(){
+ let txt=document.getElementById('sellerText').innerText;
+ speak(txt);
+}
+window.speakSeller=speakSeller;
+
+function bargainSeller(idx,ratio){
+ let s=marketSellers[idx];
+ let newPrice=Math.floor(s.price*ratio);
+ if(Math.random()>0.3){s.price=newPrice; document.getElementById('sellerText').innerText=`${s.seller}: আচ্ছা ঠিক আছে ভাই, ${newPrice} টাকায় নেন, লাস্ট দাম!`; speak(`${newPrice} টাকায় নেন`);}
+ else {document.getElementById('sellerText').innerText=`${s.seller}: না ভাই, এই দামে হবে না! ${s.price} টাকাই লাগবে!`; speak(`না ভাই, ${s.price} টাকাই লাগবে`);}
+ renderMarketTalk();
+}
+function buyFromSeller(idx){
+ let s=marketSellers[idx];
+ if(money<s.price) return alert('টাকা নাই');
+ if(myCars.length>=6) return alert('Showroom Full');
+ money-=s.price; myCars.push(s); marketSellers.splice(idx,1);
+ let p=platforms.find(pl=>!pl.car); if(p){let m=s.creator(p.x,p.z,s.color); m.userData=s; carMeshes.push(m); p.car=s;}
+ document.getElementById('marketTalk').style.display='none'; updateHUD();
+ speak(`ধন্যবাদ ভাই, গাড়ি বিক্রি হলো`);
+}
+
+function renderMarketTalk(){}
+window.bargainSeller=bargainSeller; window.buyFromSeller=buyFromSeller;
+
+// Voice Recognition for bargaining
+let recognition=null;
+window.startListening=()=>{
+ if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)){alert('Mic support নাই, Chrome ব্যবহার করো');return;}
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ recognition=new SR(); recognition.lang='bn-BD'; recognition.start();
+ recognition.onresult=(e)=>{
+   let text=e.results[0][0].transcript.toLowerCase();
+   document.getElementById('sellerText').innerText=`তুমি বলছো: "${text}"`;
+   // parse price
+   let num=text.match(/\d+/); if(num){let price=parseInt(num[0])*1000; let s=marketSellers[0]; if(price < s.price*0.6){speak(`না ভাই, এত কমে হবে না, ${s.price} টাকা লাগবে`);} else {s.price=price; speak(`ঠিক আছে ${price} টাকায় নেন`); renderMarketTalk();}}
+   else if(text.includes('কম')||text.includes('কমান')){bargainSeller(0,0.85);}
+ };
+};
+
 function speak(text){
  if('speechSynthesis' in window){
    speechSynthesis.cancel();
-   let u=new SpeechSynthesisUtterance(text);
-   u.lang='bn-BD'; u.rate=0.9; u.pitch=1;
-   // Try to find Bangla voice
-   let voices=speechSynthesis.getVoices();
-   let bn=voices.find(v=>v.lang.includes('bn')||v.lang.includes('Bangla'));
-   if(bn) u.voice=bn;
+   let u=new SpeechSynthesisUtterance(text); u.lang='bn-BD'; u.rate=0.9; 
+   let v=speechSynthesis.getVoices().find(v=>v.lang.includes('bn')); if(v) u.voice=v;
    speechSynthesis.speak(u);
  }
 }
-function replySell(price,isFirm){
- let c=myCars[currentCustomerCar];
- let customerOffer=Math.floor(price*(isFirm?0.85+Math.random()*0.15:0.9+Math.random()*0.1));
- document.getElementById('customerText').innerText=`কাস্টমার: "ভাই ${customerOffer} টাকা দিবো, দেন?"`;
- speak(`ভাই ${customerOffer} টাকা দিবো, দেন?`);
- document.getElementById('talkOptions').innerHTML=`
-   <button class="btn btn-green" style="width:100%" onclick="finalSell(${customerOffer})">✅ ${customerOffer} টাকায় দিয়ে দাও</button>
-   <button class="btn" style="width:100%" onclick="finalSell(${price})">😤 না, ${price} টাকাই লাগবে</button>
- `;
-}
-function finalSell(price){
- let c=myCars[currentCustomerCar];
- money+=price; myCars.splice(currentCustomerCar,1);
- closeTalk(); render(); save();
- speak(`ধন্যবাদ ভাই, গাড়ি কিনলাম`);
- alert(`💰 বিক্রি Done! ৳${price} পাইছো! Profit ৳${price-c.buyPrice}`);
-}
-function closeTalk(){document.getElementById('talkModal').style.display='none'}
 
-function hire(id){
- let s=staffList.find(x=>x.id==id);
- if(money<s.price){alert('টাকা নাই');return;}
- money-=s.price; staff[id]={work:0}; render(); save(); speak(`${s.name} হায়ার করেছেন`);
-}
+// Controls
+camera.position.set(0,1.7,12); let yaw=0,pitch=0,keys={};
+addEventListener('keydown',e=>{
+ keys[e.key.toLowerCase()]=true;
+ if(e.key==='a'||e.key==='A') startAuctionEvent();
+ if(e.key==='m'||e.key==='M'){mode='market'; document.getElementById('loc').innerText='MARKET'; openMarketTalk(0);}
+ if(e.key==='s'||e.key==='S'){mode='showroom'; document.getElementById('loc').innerText='SHOWROOM'; document.getElementById('marketTalk').style.display='none'; document.getElementById('auctionStage').style.display='none';}
+ if(e.key==='e'||e.key==='E'){// interact near car
+   let ray=new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2(0,0),camera);
+   let hits=ray.intersectObjects(carMeshes,true); if(hits.length){let root=hits[0].object.parent; while(root.parent && root.parent.type!='Scene') root=root.parent; selectedCar=root.userData; alert(`Selected: ${selectedCar.name} - Press M for market talk`);}
+ }
+});
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+let drag=false,lx=0,ly=0;
+renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY});
+addEventListener('pointerup',()=>drag=false);
+addEventListener('pointermove',e=>{if(!drag) return; yaw-=(e.clientX-lx)*0.003; pitch-=(e.clientY-ly)*0.003; pitch=Math.max(-1.2,Math.min(1.2,pitch)); lx=e.clientX;ly=e.clientY;});
+let jx=0,jy=0; const joy=document.getElementById('joy'), stick=document.getElementById('stick');
+joy.addEventListener('touchmove',e=>{let r=joy.getBoundingClientRect();let t=e.touches[0];let x=t.clientX-(r.left+45),y=t.clientY-(r.top+45);let d=Math.hypot(x,y);if(d>35){x=x/d*35;y=y/d*35} stick.style.transform=`translate(${x}px,${y}px)`; jx=x/35;jy=y/35;});
+joy.addEventListener('touchend',()=>{stick.style.transform='';jx=0;jy=0;});
 
-function save(){localStorage.setItem('hutMoney',money); localStorage.setItem('hutCars',JSON.stringify(myCars)); localStorage.setItem('hutStaff',JSON.stringify(staff));}
-refreshMarket(); render();
-setInterval(save,5000);
-// Auto staff work
+function update(){
+ let f=new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
+ let r=new THREE.Vector3(1,0,0).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
+ let sp=0.1;
+ if(keys['w']||jy<-0.2) camera.position.addScaledVector(f,sp);
+ if(keys['s']||jy>0.2) camera.position.addScaledVector(f,-sp);
+ if(keys['a']||jx<-0.2) camera.position.addScaledVector(r,-sp);
+ if(keys['d']||jx>0.2) camera.position.addScaledVector(r,sp);
+ camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch;
+}
+function updateHUD(){document.getElementById('money').innerText=money; document.getElementById('cars').innerText=myCars.length+'/6';}
+function loop(){requestAnimationFrame(loop); update(); renderer.render(scene,camera); updateHUD();}
+loop();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);});
+
+// Auto staff repair
 setInterval(()=>{
- if(staff.washer){let c=myCars.find(x=>x.wash<90); if(c){c.wash+=3;c.cond+=1;staff.washer.work++;}}
- if(staff.mechanic){let c=myCars.find(x=>x.cond<90); if(c){c.cond+=2;c.repair+=2;staff.mechanic.work++;}}
- render();
-},3000);
+ if(myCars.length){let c=myCars.find(x=>x.cond<90); if(c) c.cond=Math.min(100,c.cond+1);}
+},2000);
 </script>
 </body>
 </html>
