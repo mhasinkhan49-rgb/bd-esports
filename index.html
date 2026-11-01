@@ -1,286 +1,298 @@
-```html
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>এপেক্স এক্সট্রিম মোটরস - ৩ডি কার ও সুপারবাইক এম্পায়ার</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js for 3D Graphics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বিডি কার For Sale</title>
     <style>
-        * { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #030712; color: #f3f4f6; overflow: hidden; }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #050505; color: #fff; user-select: none; }
+        #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        #ui-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; box-sizing: border-box; }
+        .interactive { pointer-events: auto; }
         
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
-        }
-        .glass-red {
-            background: rgba(40, 10, 15, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(239, 68, 68, 0.35);
-        }
-        .glass-green {
-            background: rgba(6, 40, 20, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-        }
+        /* Header & Logo */
+        #header { display: flex; justify-content: space-between; align-items: start; }
+        #logo-container { text-align: center; background: rgba(0, 0, 0, 0.8); padding: 15px 30px; border-radius: 12px; border: 2px solid #00d2ff; box-shadow: 0 0 25px rgba(0, 210, 255, 0.5); }
+        h1 { font-size: 38px; margin: 0; letter-spacing: 4px; color: #fff; text-transform: uppercase; background: linear-gradient(45deg, #fff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #shop-name-display { font-size: 20px; color: #00d2ff; margin-top: 5px; font-weight: bold; }
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #0b1120; }
-        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        /* Dashboard & Controls */
+        #dashboard { background: rgba(0, 0, 0, 0.85); border: 1px solid #333; padding: 20px; border-radius: 15px; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
+        .input-group { margin-bottom: 15px; }
+        input[type="text"] { width: 100%; padding: 10px; box-sizing: border-box; background: #111; border: 1px solid #444; color: #fff; border-radius: 6px; font-size: 14px; margin-top: 5px; }
+        input[type="text"]:focus { border-color: #00d2ff; outline: none; }
+        .btn { background: linear-gradient(45deg, #00d2ff, #0099ff); color: #fff; border: none; padding: 12px 20px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 6px; transition: 0.3s; margin-top: 10px; width: 100%; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0, 153, 255, 0.3); }
+        .btn:hover { background: linear-gradient(45deg, #0099ff, #00d2ff); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5); }
+        .btn-secondary { background: #222; box-shadow: none; }
+        .btn-secondary:hover { background: #333; }
+        
+        /* Stats & Info */
+        #stats { margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; font-size: 15px; line-height: 1.8; }
+        .stat-item { display: flex; justify-content: space-between; }
+        .stat-value { color: #00d2ff; font-weight: bold; }
 
-        .touch-active:active { transform: scale(0.92); filter: brightness(1.2); }
-        .neon-glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
-        .neon-glow-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
-        .neon-text-gold { text-shadow: 0 0 10px rgba(245, 158, 11, 0.6); }
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); }
+        .modal-content { background: #111; border: 1px solid #444; padding: 30px; border-radius: 15px; width: 400px; text-align: center; box-shadow: 0 0 30px #00d2ff; }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-btn:hover { color: #fff; }
 
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
-        .pulse-anim { animation: pulse-ring 2s infinite ease-in-out; }
+        /* Notification */
+        #notification { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9); color: #00d2ff; padding: 15px 30px; border-radius: 8px; border: 1px solid #00d2ff; display: none; font-weight: bold; z-index: 20; animation: fadeInOut 3s; }
+        @keyframes fadeInOut { 0%, 100% { opacity: 0; } 10%, 90% { opacity: 1; } }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col bg-gray-950 text-gray-100 overflow-hidden select-none">
-
-    <!-- TOP GLOBAL NAVIGATION HUD -->
-    <header class="glass-panel z-30 px-3 sm:px-6 py-2.5 flex justify-between items-center border-b border-gray-800">
-        <div class="flex items-center space-x-3">
-            <div class="bg-gradient-to-tr from-emerald-600 via-blue-600 to-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20 pulse-anim">
-                <i class="fa-solid fa-bolt text-xl sm:text-2xl text-white"></i>
+<body>
+    <div id="canvas-container"></div>
+    <div id="ui-container">
+        <div id="header">
+            <div id="logo-container">
+                <h1>বিডি কার For Sale</h1>
+                <div id="shop-name-display">আমার শপ</div>
             </div>
-            <div>
-                <h1 class="font-orbitron font-black text-lg sm:text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-200 to-blue-500">
-                    APEX EXTREME MOTORS
-                </h1>
-                <p class="text-[10px] sm:text-xs text-gray-400 font-semibold tracking-wide flex items-center gap-1.5">
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    থ্রিডি কার ও কাওয়াসাকি নিনজা ডিলারশিপ ও অকশন
-                </p>
-            </div>
-        </div>
-
-        <!-- STATS & FINANCIAL HUD -->
-        <div class="flex items-center space-x-2 sm:space-x-4">
-            <div class="glass-green px-3 sm:px-5 py-1.5 rounded-2xl flex items-center space-x-2.5">
-                <i class="fa-solid fa-wallet text-emerald-400 text-lg sm:text-xl"></i>
-                <div>
-                    <div class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase">ক্যাশ ব্যালেন্স</div>
-                    <div id="hud-cash" class="font-orbitron font-black text-emerald-400 text-sm sm:text-lg">৳ ১,৫০,০০০</div>
+            <div id="dashboard" class="interactive">
+                <div class="input-group">
+                    <label for="shop-name-input">দোকানের নাম পরিবর্তন:</label>
+                    <input type="text" id="shop-name-input" placeholder="নতুন নাম লিখুন">
+                    <button class="btn btn-secondary" onclick="updateShopName()">নাম পরিবর্তন করুন</button>
                 </div>
-            </div>
-
-            <div class="glass-panel px-3 sm:px-4 py-1.5 rounded-2xl flex items-center space-x-2 border-blue-500/30">
-                <i class="fa-solid fa-warehouse text-blue-400 text-base sm:text-lg"></i>
-                <div class="hidden sm:block">
-                    <div class="text-[9px] text-gray-400 font-bold uppercase">শোরুম স্পেস</div>
-                    <div id="hud-inventory" class="font-orbitron font-extrabold text-blue-400 text-sm">০ / ৬</div>
+                
+                <div id="stats">
+                    <div class="stat-item"><span class="stat-label">ক্যাশ:</span> <span class="stat-value" id="cash">৫০,০০০ ৳</span></div>
+                    <div class="stat-item"><span class="stat-label">আবহাওয়া:</span> <span class="stat-value" id="weather-display">পরিষ্কার</span></div>
+                    <div class="stat-item"><span class="stat-label">লেভেল:</span> <span class="stat-value" id="level-display">১</span></div>
                 </div>
             </div>
         </div>
-    </header>
 
-    <!-- MAIN GAME CANVAS & NAVIGATION WRAPPER -->
-    <div class="flex-1 flex relative overflow-hidden">
+        <div id="actions-panel" class="interactive" style="width: 320px; align-self: flex-end;">
+            <button class="btn" onclick="openGarage()">গ্যারেজ খুলুন</button>
+            <button class="btn" onclick="visitMarketplace()">কার মার্কেটপ্লেস</button>
+            <button class="btn" onclick="startCareer()">ক্যারিয়ার মিশন</button>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="garage-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('garage-modal')">&times;</span>
+            <h2>গ্যারেজ সিস্টেম</h2>
+            <p>এখানে আপনি গাড়ির রঙ ও টিউনিং পরিবর্তন করতে পারবেন।</p>
+            <button class="btn" onclick="paintCar()">গাড়ির রঙ বদলান</button>
+            <button class="btn btn-secondary" onclick="closeModal('garage-modal')">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <div id="marketplace-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('marketplace-modal')">&times;</span>
+            <h2>কার মার্কেটপ্লেস</h2>
+            <p>কমদামী ও ভাঙাচোরা গাড়ি কিনুন এবং মেরামত করুন।</p>
+            <button class="btn" onclick="buyCar()">গাড়ি কিনুন</button>
+            <button class="btn btn-secondary" onclick="closeModal('marketplace-modal')">বন্ধ করুন</button>
+        </div>
+    </div>
+
+    <div id="notification"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Three.js Scene Setup
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Lighting & Environment
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
         
-        <!-- SIDEBAR NAVIGATION MENU -->
-        <nav class="glass-panel w-16 md:w-64 p-2 sm:p-4 flex flex-col justify-between z-30 border-r border-gray-800">
-            <div class="space-y-2.5">
-                <button onclick="switchTab('showroom')" id="nav-showroom" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-emerald-400 bg-emerald-500/20 border border-emerald-500/40">
-                    <i class="fa-solid fa-store text-xl"></i>
-                    <span class="hidden md:inline text-sm">মেন শোরুম</span>
-                </button>
-                <button onclick="switchTab('auction')" id="nav-auction" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-red-400 hover:bg-gray-800/80">
-                    <i class="fa-solid fa-gavel text-xl"></i>
-                    <span class="hidden md:inline text-sm">লাইভ গাড়ি ও বাইক নিলাম</span>
-                </button>
-                <button onclick="switchTab('garage')" id="nav-garage" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-amber-400 hover:bg-gray-800/80">
-                    <i class="fa-solid fa-screwdriver-wrench text-xl"></i>
-                    <span class="hidden md:inline text-sm">টিউনিং ও পেইন্ট গ্যারেজ</span>
-                </button>
-                <button onclick="switchTab('city')" id="nav-city" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-cyan-400 hover:bg-gray-800/80">
-                    <i class="fa-solid fa-city text-xl"></i>
-                    <span class="hidden md:inline text-sm">ওপেন-ওয়ার্ল্ড ড্রাইভিং</span>
-                </button>
-                <button onclick="switchTab('bank')" id="nav-bank" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-2xl font-bold transition-all text-gray-400 hover:text-purple-400 hover:bg-gray-800/80">
-                    <i class="fa-solid fa-building-columns text-xl"></i>
-                    <span class="hidden md:inline text-sm">ব্যাংক ও ফিনান্স লোন</span>
-                </button>
-            </div>
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        dirLight.position.set(15, 25, 15);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 4096;
+        dirLight.shadow.mapSize.height = 4096;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 100;
+        dirLight.shadow.camera.left = -30;
+        dirLight.shadow.camera.right = 30;
+        dirLight.shadow.camera.top = 30;
+        dirLight.shadow.camera.bottom = -30;
+        scene.add(dirLight);
 
-            <!-- AUDIO & SETTINGS TOGGLE -->
-            <div class="pt-3 border-t border-gray-800 space-y-2">
-                <button onclick="toggleAudio()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-xs text-gray-300 hover:bg-gray-800 transition">
-                    <span class="hidden md:inline"><i class="fa-solid fa-volume-high mr-2"></i> ইঞ্জিনের সাউন্ড</span>
-                    <i class="fa-solid fa-volume-high md:hidden"></i>
-                    <span id="sound-status" class="font-bold text-emerald-400">চালু</span>
-                </button>
-            </div>
-        </nav>
+        // Environment (Showroom Floor)
+        const floorGeo = new THREE.PlaneGeometry(100, 100);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.05, metalness: 0.9 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        scene.add(floor);
 
-        <!-- 3D VIEWPORT CANVAS CONTAINER -->
-        <main class="flex-1 relative bg-gray-950 overflow-hidden">
-            <div id="canvas-container" class="absolute inset-0 z-0"></div>
+        const gridHelper = new THREE.GridHelper(100, 50, 0x00d2ff, 0x333333);
+        gridHelper.position.y = 0.01;
+        scene.add(gridHelper);
 
-            <!-- VIEW 1: LUXURY SHOWROOM & INVENTORY -->
-            <div id="view-showroom" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none">
-                <div class="pointer-events-auto flex flex-col sm:flex-row justify-between items-start gap-3">
-                    <div class="glass-panel p-4 rounded-2xl max-w-md border border-gray-800">
-                        <h2 class="font-bold text-base sm:text-lg text-emerald-400 flex items-center gap-2">
-                            <i class="fa-solid fa-store"></i> এপেক্স এক্সক্লুসিভ শোরুম
-                        </h2>
-                        <p class="text-xs text-gray-300 mt-1">আপনার সংগ্রহে থাকা লাম্বরগিনি, নিনজা বাইক বা জি-ওয়াগন গাড়িগুলো সাজান। ক্রেতারা পছন্দ হলে কাস্টম দামে কিনে নেবে!</p>
-                    </div>
+        // Car Model Generation (Procedural Supercar)
+        const carGroup = new THREE.Group();
+        
+        // Body
+        const bodyGeo = new THREE.BoxGeometry(2.2, 0.8, 4.8);
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xff0000, metalness: 0.8, roughness: 0.1 });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.position.y = 0.7;
+        body.castShadow = true;
+        carGroup.add(body);
 
-                    <button onclick="expandShowroom()" class="pointer-events-auto glass-panel hover:bg-emerald-600/20 px-4 py-3 rounded-2xl text-xs font-bold text-emerald-300 border border-emerald-500/40 flex items-center gap-2 transition touch-active">
-                        <i class="fa-solid fa-plus-circle text-base"></i> শোরুম স্লট বাড়ান (+১) - ৳ ৫০,০০০
-                    </button>
-                </div>
+        // Cockpit
+        const cockpitGeo = new THREE.BoxGeometry(1.6, 0.6, 2.5);
+        const cockpitMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.1 });
+        const cockpit = new THREE.Mesh(cockpitGeo, cockpitMat);
+        cockpit.position.set(0, 1.4, -0.2);
+        cockpit.castShadow = true;
+        carGroup.add(cockpit);
 
-                <!-- SHOWROOM CARDS INVENTORY -->
-                <div class="pointer-events-auto glass-panel p-4 rounded-3xl border border-gray-800 mt-auto">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">ইনভেন্টরিতে থাকা গাড়ি ও বাইক</span>
-                        <span class="text-[11px] text-gray-400">গাড়িতে ক্লিক করে কাস্টমাইজ বা কুইক-সেল করুন</span>
-                    </div>
-                    <div id="showroom-cards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                        <!-- Dynamic Inventory Elements -->
-                    </div>
-                </div>
-            </div>
+        // Wheels
+        const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.6, 32);
+        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
+        
+        for (let i = -1; i <= 1; i += 2) {
+            for (let j = -1; j <= 1; j += 2) {
+                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                wheel.rotation.z = Math.PI / 2;
+                wheel.position.set(i * 1.3, 0.4, j * 1.6);
+                wheel.castShadow = true;
+                carGroup.add(wheel);
+            }
+        }
+        
+        scene.add(carGroup);
+        camera.position.set(5, 5, 8);
+        camera.lookAt(0, 1, 0);
 
-            <!-- VIEW 2: LIVE CAR & SUPERBIKE AUCTION -->
-            <div id="view-auction" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none hidden">
-                <div class="pointer-events-auto flex justify-between items-start gap-3">
-                    <div class="glass-red p-4 rounded-2xl max-w-lg">
-                        <div class="flex items-center space-x-3">
-                            <span class="relative flex h-3 w-3">
-                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                            </span>
-                            <h2 class="font-bold text-lg sm:text-xl text-red-400">লাইভ ভিকল অকশন হাউস</h2>
-                        </div>
-                        <p class="text-xs text-gray-300 mt-1">সময় শেষ হওয়ার আগে কাওয়াসাকি নিনজা বা লাম্বরগিনির জন্য অন্যান্য এআই ডিলারদের হারিয়ে সর্বোচ্চ বিড ডাকুন!</p>
-                    </div>
+        // Game State & Systems
+        let cash = 50000;
+        let level = 1;
+        let isRaining = false;
 
-                    <div class="glass-panel p-3.5 rounded-2xl border border-amber-500/40 text-center min-w-[120px]">
-                        <div class="text-[10px] text-amber-400 font-bold uppercase">অবশিষ্ট সময়</div>
-                        <div id="auction-timer" class="font-orbitron font-black text-2xl sm:text-3xl text-amber-300">00:15</div>
-                    </div>
-                </div>
+        // Day-Night Cycle
+        let time = 0;
+        function updateLighting() {
+            time += 0.001;
+            const intensity = (Math.sin(time) + 1.5) / 2;
+            dirLight.intensity = intensity;
+            renderer.setClearColor(new THREE.Color(intensity * 0.05, intensity * 0.1, intensity * 0.15));
+        }
 
-                <!-- AUCTION BIDDING CONTROLS -->
-                <div class="pointer-events-auto glass-panel p-5 rounded-3xl max-w-xl mx-auto w-full space-y-4 border border-gray-800 shadow-2xl">
-                    <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                        <div>
-                            <div id="auc-car-name" class="font-bold text-lg text-white">Kawasaki Ninja H2R</div>
-                            <div id="auc-car-type" class="text-xs text-emerald-400 font-bold uppercase">শ্রেণী: Superbike (300+ HP)</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-[10px] text-gray-400 font-bold">সর্বোচ্চ প্রস্তাবিত বিড</div>
-                            <div id="auc-current-bid" class="font-orbitron font-black text-xl sm:text-2xl text-emerald-400">৳ ১,২০,০০০</div>
-                            <div id="auc-bidder" class="text-xs text-amber-300 font-semibold">ডাকদাতা: ডিলার #২</div>
-                        </div>
-                    </div>
+        // Weather System (Rain)
+        const rainParticles = new THREE.Group();
+        const rainCount = 1000;
+        const rainGeo = new THREE.BufferGeometry();
+        const rainPositions = [];
+        for(let i=0; i<rainCount; i++) {
+            rainPositions.push(
+                (Math.random() - 0.5) * 60,
+                Math.random() * 30,
+                (Math.random() - 0.5) * 60
+            );
+        }
+        rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(rainPositions, 3));
+        const rainMat = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.05, transparent: true, opacity: 0.5 });
+        const rain = new THREE.Points(rainGeo, rainMat);
+        rainParticles.add(rain);
 
-                    <div class="flex gap-3">
-                        <button onclick="placeBid(10000)" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 font-bold py-3.5 rounded-2xl text-xs sm:text-sm text-white shadow-lg shadow-emerald-600/30 transition touch-active">
-                            +৳ ১০,০০০ বিড দিন
-                        </button>
-                        <button onclick="placeBid(50000)" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 font-bold py-3.5 rounded-2xl text-xs sm:text-sm text-white shadow-lg shadow-purple-600/30 transition touch-active">
-                            +৳ ৫০,০০০ বিড দিন
-                        </button>
-                        <button onclick="nextAuctionCar()" class="bg-gray-800 hover:bg-gray-700 px-4 py-3.5 rounded-2xl font-bold text-xs text-gray-300 transition">
-                            পরবর্তী গাড়ি
-                        </button>
-                    </div>
-                </div>
-            </div>
+        function toggleWeather() {
+            isRaining = !isRaining;
+            if (isRaining) {
+                scene.add(rainParticles);
+                document.getElementById('weather-display').innerText = "বৃষ্টি";
+            } else {
+                scene.remove(rainParticles);
+                document.getElementById('weather-display').innerText = "পরিষ্কার";
+            }
+        }
+        
+        function animateRain() {
+            if (isRaining) {
+                const positions = rainGeo.attributes.position.array;
+                for (let i = 1; i < positions.length; i += 3) {
+                    positions[i] -= 0.2;
+                    if (positions[i] < 0) positions[i] = 30;
+                }
+                rainGeo.attributes.position.needsUpdate = true;
+            }
+        }
 
-            <!-- VIEW 3: TUNING & CUSTOMIZATION GARAGE -->
-            <div id="view-garage" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none hidden">
-                <div class="pointer-events-auto flex justify-between items-start">
-                    <div class="glass-panel p-4 rounded-2xl max-w-md border border-amber-500/40">
-                        <h2 class="font-bold text-base sm:text-lg text-amber-400 flex items-center gap-2">
-                            <i class="fa-solid fa-screwdriver-wrench"></i> টিউনিং ও পেইন্ট গ্যারেজ
-                        </h2>
-                        <p class="text-xs text-gray-300 mt-1">গাড়ির বডি রঙ পরিবর্তন করুন, নিয়ন আন্ডারগ্লো লাইট ও ইঞ্জিনের ক্ষমতা আপডেট করুন!</p>
-                    </div>
-                </div>
+        // UI Logic & Interactions
+        function updateShopName() {
+            const input = document.getElementById('shop-name-input').value;
+            if (input.trim() !== "") {
+                document.getElementById('shop-name-display').innerText = input;
+                showNotification("দোকানের নাম পরিবর্তন করা হয়েছে!");
+            }
+        }
 
-                <!-- GARAGE CONTROL PANEL -->
-                <div class="pointer-events-auto glass-panel p-5 rounded-3xl max-w-2xl mx-auto w-full border border-gray-800 space-y-4">
-                    <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                        <span class="text-xs font-bold text-amber-400 uppercase">পেইন্ট কাস্টমাইজেশন (৳ ১৫,০০০)</span>
-                        <span id="selected-garage-car-name" class="text-xs font-bold text-white">কোনো গাড়ি নির্বাচিত নেই</span>
-                    </div>
+        function showNotification(message) {
+            const note = document.getElementById('notification');
+            note.innerText = message;
+            note.style.display = 'block';
+            setTimeout(() => { note.style.display = 'none'; }, 3000);
+        }
 
-                    <!-- COLOR PALETTE -->
-                    <div class="flex gap-3 justify-center py-2">
-                        <button onclick="applyPaint('#ef4444')" class="w-10 h-10 rounded-full bg-red-600 border-2 border-white shadow-lg touch-active"></button>
-                        <button onclick="applyPaint('#10b981')" class="w-10 h-10 rounded-full bg-emerald-500 border-2 border-white shadow-lg touch-active"></button>
-                        <button onclick="applyPaint('#3b82f6')" class="w-10 h-10 rounded-full bg-blue-600 border-2 border-white shadow-lg touch-active"></button>
-                        <button onclick="applyPaint('#f59e0b')" class="w-10 h-10 rounded-full bg-amber-500 border-2 border-white shadow-lg touch-active"></button>
-                        <button onclick="applyPaint('#8b5cf6')" class="w-10 h-10 rounded-full bg-purple-600 border-2 border-white shadow-lg touch-active"></button>
-                        <button onclick="applyPaint('#18181b')" class="w-10 h-10 rounded-full bg-zinc-900 border-2 border-white shadow-lg touch-active"></button>
-                        <button onclick="applyPaint('#84cc16')" class="w-10 h-10 rounded-full bg-lime-500 border-2 border-white shadow-lg touch-active"></button>
-                    </div>
+        function openGarage() {
+            document.getElementById('garage-modal').style.display = 'flex';
+        }
 
-                    <!-- NEON LIGHT TOGGLE -->
-                    <div class="grid grid-cols-2 gap-3 pt-2">
-                        <button onclick="toggleNeonUnderglow()" class="bg-gray-800 hover:bg-gray-700 py-3 rounded-2xl font-bold text-xs text-cyan-400 border border-cyan-500/30 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-lightbulb"></i> নিয়োন আন্ডারগ্লো (৳ ২৫,০০০)
-                        </button>
-                        <button onclick="upgradeEnginePerformance()" class="bg-gray-800 hover:bg-gray-700 py-3 rounded-2xl font-bold text-xs text-emerald-400 border border-emerald-500/30 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-gauge-high"></i> ইঞ্জিন টিউনিং (+২০% স্পিড) - ৳ ৪০,০০০
-                        </button>
-                    </div>
-                </div>
-            </div>
+        function visitMarketplace() {
+            document.getElementById('marketplace-modal').style.display = 'flex';
+        }
 
-            <!-- VIEW 4: OPEN-WORLD CITY DRIVING & SPEEDOMETER -->
-            <div id="view-city" class="view-panel absolute inset-0 z-10 p-4 sm:p-6 flex flex-col justify-between pointer-events-none hidden">
-                <div class="pointer-events-auto glass-panel p-4 rounded-2xl max-w-md border border-cyan-500/40">
-                    <h2 class="font-bold text-base sm:text-lg text-cyan-400 flex items-center gap-2">
-                        <i class="fa-solid fa-city"></i> ওপেন-ওয়ার্ল্ড টেস্ট ড্রাইভ সিটি
-                    </h2>
-                    <p class="text-xs text-gray-300 mt-1">পিসিতে <b class="text-white">WASD / Arrow Keys</b> বা মোবাইলের স্ক্রিন কন্ট্রোল দিয়ে চালান!</p>
-                </div>
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
 
-                <!-- MOBILE ON-SCREEN DRIVING CONTROLS -->
-                <div class="pointer-events-auto md:hidden flex justify-between items-end mb-4 px-2">
-                    <div class="flex gap-2">
-                        <button id="btn-left" class="w-16 h-16 bg-gray-800/90 rounded-2xl border border-gray-700 active:bg-cyan-600 text-white font-black text-2xl flex items-center justify-center shadow-lg">
-                            <i class="fa-solid fa-arrow-left"></i>
-                        </button>
-                        <button id="btn-right" class="w-16 h-16 bg-gray-800/90 rounded-2xl border border-gray-700 active:bg-cyan-600 text-white font-black text-2xl flex items-center justify-center shadow-lg">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                    <div class="flex flex-col gap-2.5">
-                        <button id="btn-nitro" class="w-16 h-12 bg-purple-600/90 rounded-2xl border border-purple-400 active:bg-purple-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">
-                            <i class="fa-solid fa-bolt mr-1"></i> নাইট্রো
-                        </button>
-                        <button id="btn-gas" class="w-16 h-16 bg-emerald-600/90 rounded-2xl border border-emerald-400 active:bg-emerald-500 text-white font-black text-2xl flex items-center justify-center shadow-lg">
-                            <i class="fa-solid fa-gas-pump"></i>
-                        </button>
-                        <button id="btn-brake" class="w-16 h-12 bg-red-600/90 rounded-2xl border border-red-400 active:bg-red-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">
-                            রিভার্স
-                        </button>
-                    </div>
-                </div>
+        function paintCar() {
+            const randomColor = Math.random() * 0xffffff;
+            body.material.color.setHex(randomColor);
+            showNotification("গাড়ির রঙ পরিবর্তন করা হয়েছে!");
+        }
 
-                <!-- REALISTIC DIGITAL SPEEDOMETER HUD -->
-                <div class="pointer-events-auto glass-panel p-4 rounded-3xl max-w-xs ml-auto border border-emerald-500/40 flex items-center justify-betwe
+        function buyCar() {
+            if (cash >= 20000) {
+                cash -= 20000;
+                document.getElementById('cash').innerText = cash.toLocaleString() + " ৳";
+                showNotification("একটি নতুন গাড়ি কেনা হয়েছে!");
+            } else {
+                showNotification("পর্যাপ্ত ক্যাশ নেই!");
+            }
+        }
+
+        function startCareer() {
+            level++;
+            document.getElementById('level-display').innerText = level;
+            showNotification("নতুন ক্যারিয়ার মিশন শুরু হয়েছে!");
+            toggleWeather();
+        }
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            carGroup.rotation.y += 0.002;
+            updateLighting();
+            animateRain();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
