@@ -3,277 +3,583 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>বিডি কার For Sale</title>
+    <title>BD Car Dealership & Showroom 3D</title>
     <style>
-        body { margin: 0; padding: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #050505; color: #fff; user-select: none; }
-        #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
-        #ui-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; box-sizing: border-box; }
-        .interactive { pointer-events: auto; }
-        
-        #header { display: flex; justify-content: space-between; align-items: start; }
-        #logo-container { text-align: center; background: rgba(0, 0, 0, 0.8); padding: 15px 30px; border-radius: 12px; border: 2px solid #00d2ff; box-shadow: 0 0 25px rgba(0, 210, 255, 0.5); }
-        h1 { font-size: 38px; margin: 0; letter-spacing: 4px; color: #fff; text-transform: uppercase; background: linear-gradient(45deg, #fff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        #shop-name-display { font-size: 20px; color: #00d2ff; margin-top: 5px; font-weight: bold; }
+        :root {
+            --primary-color: #00f0ff;
+            --secondary-color: #ff0055;
+            --bg-glass: rgba(10, 14, 23, 0.85);
+            --border-glass: rgba(0, 240, 255, 0.3);
+            --text-main: #f0f4f8;
+        }
 
-        #dashboard { background: rgba(0, 0, 0, 0.85); border: 1px solid #333; padding: 20px; border-radius: 15px; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
-        .input-group { margin-bottom: 15px; }
-        input[type="text"] { width: 100%; padding: 10px; box-sizing: border-box; background: #111; border: 1px solid #444; color: #fff; border-radius: 6px; font-size: 14px; margin-top: 5px; }
-        input[type="text"]:focus { border-color: #00d2ff; outline: none; }
-        .btn { background: linear-gradient(45deg, #00d2ff, #0099ff); color: #fff; border: none; padding: 12px 20px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 6px; transition: 0.3s; margin-top: 10px; width: 100%; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0, 153, 255, 0.3); }
-        .btn:hover { background: linear-gradient(45deg, #0099ff, #00d2ff); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5); }
-        .btn-secondary { background: #222; box-shadow: none; }
-        .btn-secondary:hover { background: #333; }
-        
-        #stats { margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; font-size: 15px; line-height: 1.8; }
-        .stat-item { display: flex; justify-content: space-between; }
-        .stat-value { color: #00d2ff; font-weight: bold; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); }
-        .modal-content { background: #111; border: 1px solid #444; padding: 30px; border-radius: 15px; width: 400px; text-align: center; box-shadow: 0 0 30px #00d2ff; }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close-btn:hover { color: #fff; }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #05070a;
+            color: var(--text-main);
+        }
 
-        #notification { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9); color: #00d2ff; padding: 15px 30px; border-radius: 8px; border: 1px solid #00d2ff; display: none; font-weight: bold; z-index: 20; animation: fadeInOut 3s; }
-        @keyframes fadeInOut { 0%, 100% { opacity: 0; } 10%, 90% { opacity: 1; } }
+        #webgl-container {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            pointer-events: none;
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            grid-template-rows: 90px 1fr 100px;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Glassmorphism Panel Base */
+        .glass-panel {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        /* Top Header Area */
+        .header-left {
+            grid-column: 1;
+            grid-row: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .shop-tag {
+            font-size: 13px;
+            color: var(--primary-color);
+            margin-top: 2px;
+            font-weight: 600;
+        }
+
+        /* Stats HUD */
+        .stats-hud {
+            grid-column: 3;
+            grid-row: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #8a99ad;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 2px;
+            font-family: monospace;
+        }
+
+        .stat-value.highlight {
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Left Control Panel */
+        .control-panel {
+            grid-column: 1;
+            grid-row: 2 / 4;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .panel-section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            color: #a0aec0;
+        }
+
+        input[type="text"] {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 100, 255, 0.4));
+            border: 1px solid var(--primary-color);
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--primary-color), #0064ff);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, rgba(255, 0, 85, 0.2), rgba(150, 0, 50, 0.4));
+            border-color: var(--secondary-color);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, var(--secondary-color), #960032);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+        }
+
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .color-dot {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.15);
+            border-color: #fff;
+        }
+
+        /* Bottom Controls/Nav */
+        .bottom-nav {
+            grid-column: 2;
+            grid-row: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-body {
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #8a99ad;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .car-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .car-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        /* Toast Notifications */
+        #notification {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-glass);
+            border: 1px solid var(--primary-color);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            display: none;
+            z-index: 50;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
-    <div id="canvas-container"></div>
-    <div id="ui-container">
-        <div id="header">
-            <div id="logo-container">
-                <h1>বিডি কার For Sale</h1>
-                <div id="shop-name-display">আমার শপ</div>
-            </div>
-            <div id="dashboard" class="interactive">
-                <div class="input-group">
-                    <label for="shop-name-input">দোকানের নাম পরিবর্তন:</label>
-                    <input type="text" id="shop-name-input" placeholder="নতুন নাম লিখুন">
-                    <button class="btn btn-secondary" onclick="updateShopName()">নাম পরিবর্তন করুন</button>
-                </div>
-                
-                <div id="stats">
-                    <div class="stat-item"><span class="stat-label">ক্যাশ:</span> <span class="stat-value" id="cash">৫০,০০০ ৳</span></div>
-                    <div class="stat-item"><span class="stat-label">আবহাওয়া:</span> <span class="stat-value" id="weather-display">পরিষ্কার</span></div>
-                    <div class="stat-item"><span class="stat-label">লেভেল:</span> <span class="stat-value" id="level-display">১</span></div>
-                </div>
+
+    <div id="webgl-container"></div>
+
+    <div id="ui-layer">
+        <!-- Header Left -->
+        <div class="header-left glass-panel interactive">
+            <div>
+                <div class="brand-title">BD Auto Showroom</div>
+                <div class="shop-tag" id="display-shop-name">আমার সুপার শোরুম</div>
             </div>
         </div>
 
-        <div id="actions-panel" class="interactive" style="width: 320px; align-self: flex-end;">
-            <button class="btn" onclick="openGarage()">গ্যারেজ খুলুন</button>
-            <button class="btn" onclick="visitMarketplace()">কার মার্কেটপ্লেস</button>
-            <button class="btn" onclick="startCareer()">ক্যারিয়ার মিশন</button>
+        <!-- Stats Top Right -->
+        <div class="stats-hud glass-panel interactive">
+            <div class="stat-box">
+                <div class="stat-label">ব্যালেন্স</div>
+                <div class="stat-value highlight" id="ui-cash">৳১,৫০,০০০</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">লেভেল</div>
+                <div class="stat-value" id="ui-level">1</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">আবহাওয়া</div>
+                <div class="stat-value" id="ui-weather">Clean</div>
+            </div>
+        </div>
+
+        <!-- Left Sidebar Controls -->
+        <div class="control-panel glass-panel interactive">
+            <div class="panel-section-title">শোরুম সেটিংস</div>
+            <div class="input-group">
+                <label for="shop-name-input">দোকানের নাম বদলান</label>
+                <input type="text" id="shop-name-input" placeholder="নতুন শোরুমের নাম...">
+                <button class="btn" onclick="changeShopName()">সেভ করুন</button>
+            </div>
+
+            <div class="panel-section-title" style="margin-top: 15px;">গ্যারেজ কাস্টমাইজেশন</div>
+            <label>গাড়ির পেইন্ট নির্বাচন করুন</label>
+            <div class="color-picker-grid">
+                <div class="color-dot" style="background: #ff0000;" onclick="setCarColor(0xff0000)"></div>
+                <div class="color-dot" style="background: #00f0ff;" onclick="setCarColor(0x00f0ff)"></div>
+                <div class="color-dot" style="background: #111111;" onclick="setCarColor(0x111111)"></div>
+                <div class="color-dot" style="background: #ffffff;" onclick="setCarColor(0xffffff)"></div>
+                <div class="color-dot" style="background: #ffaa00;" onclick="setCarColor(0xffaa00)"></div>
+                <div class="color-dot" style="background: #00ff66;" onclick="setCarColor(0x00ff66)"></div>
+                <div class="color-dot" style="background: #7b00ff;" onclick="setCarColor(0x7b00ff)"></div>
+                <div class="color-dot" style="background: #ff00ab;" onclick="setCarColor(0xff00ab)"></div>
+                <div class="color-dot" style="background: #888888;" onclick="setCarColor(0x888888)"></div>
+                <div class="color-dot" style="background: #002244;" onclick="setCarColor(0x002244)"></div>
+            </div>
+
+            <div class="panel-section-title" style="margin-top: 15px;">পরিবেশ ও মিশন</div>
+            <button class="btn" onclick="toggleWeather()">আবহাওয়া পরিবর্তন</button>
+            <button class="btn btn-danger" onclick="startMission()">ক্যারিয়ার মিশন শুরু</button>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="bottom-nav interactive">
+            <button class="btn glass-panel" onclick="openModal('market-modal')" style="padding: 15px 30px;">
+                🛒 নতুন গাড়ি কিনুন
+            </button>
+            <button class="btn glass-panel" onclick="switchCarDisplay()" style="padding: 15px 30px;">
+                🔄 গাড়ি পরিবর্তন করুন
+            </button>
         </div>
     </div>
 
-    <div id="garage-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('garage-modal')">&times;</span>
-            <h2>গ্যারেজ সিস্টেম</h2>
-            <p>এখানে আপনি গাড়ির রঙ ও টিউনিং পরিবর্তন করতে পারবেন।</p>
-            <button class="btn" onclick="paintCar()">গাড়ির রঙ বদলান</button>
-            <button class="btn btn-secondary" onclick="closeModal('garage-modal')">বন্ধ করুন</button>
+    <!-- Modals -->
+    <div class="modal" id="market-modal">
+        <div class="modal-body glass-panel interactive">
+            <div class="modal-header">
+                <h3 style="color: var(--primary-color);">কার মার্কেটপ্লেস</h3>
+                <span class="close-btn" onclick="closeModal('market-modal')">&times;</span>
+            </div>
+            <p style="font-size: 13px; color: #a0aec0;">আপনার শোরুমের জন্য নতুন এক্সক্লুসিভ স্পোর্টস কার কিনুন:</p>
+            <div class="car-list">
+                <div class="car-card">
+                    <div>
+                        <strong>Apex HyperGT 2026</strong>
+                        <div style="font-size: 12px; color: var(--primary-color);">মূল্য: ৳৫০,০০০</div>
+                    </div>
+                    <button class="btn" onclick="buyCar('Apex HyperGT', 50000)">কিনুন</button>
+                </div>
+                <div class="car-card">
+                    <div>
+                        <strong>CyberTruck Phantom</strong>
+                        <div style="font-size: 12px; color: var(--primary-color);">মূল্য: ৳৮۰,০০০</div>
+                    </div>
+                    <button class="btn" onclick="buyCar('CyberTruck Phantom', 80000)">কিনুন</button>
+                </div>
+                <div class="car-card">
+                    <div>
+                        <strong>Vision Roadster Z</strong>
+                        <div style="font-size: 12px; color: var(--primary-color);">মূল্য: ৳১,২০,০০০</div>
+                    </div>
+                    <button class="btn" onclick="buyCar('Vision Roadster Z', 120000)">কিনুন</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="marketplace-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('marketplace-modal')">&times;</span>
-            <h2>কার মার্কেটপ্লেস</h2>
-            <p>কমদামী ও ভাঙাচোরা গাড়ি কিনুন এবং মেরামত করুন।</p>
-            <button class="btn" onclick="buyCar()">গাড়ি কিনুন</button>
-            <button class="btn btn-secondary" onclick="closeModal('marketplace-modal')">বন্ধ করুন</button>
-        </div>
-    </div>
-
-    <div id="notification"></div>
+    <div id="notification">বার্তা এখানে দেখা যাবে</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
     <script>
-        const container = document.getElementById('canvas-container');
+        // Game State Variables
+        let gameState = {
+            cash: 150000,
+            level: 1,
+            shopName: "আমার সুপার শোরুম",
+            weather: "Clean",
+            currentCarIndex: 0,
+            carsOwned: [
+                { name: "Apex HyperGT", color: 0xff0000, type: "sports" },
+                { name: "CyberTruck Phantom", color: 0x111111, type: "cyber" }
+            ]
+        };
+
+        // Three.js Engine Setup
+        const container = document.getElementById('webgl-container');
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        scene.background = new THREE.Color(0x05070a);
+        scene.fog = new THREE.FogExp2(0x05070a, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(12, 6, 14);
+
         const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
         container.appendChild(renderer.domElement);
 
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 - 0.01;
+        controls.minDistance = 5;
+        controls.maxDistance = 25;
+        controls.target.set(0, 1.2, 0);
+
+        // Lighting Architecture
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
-        
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
-        dirLight.position.set(15, 25, 15);
-        dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 4096;
-        dirLight.shadow.mapSize.height = 4096;
-        dirLight.shadow.camera.near = 0.5;
-        dirLight.shadow.camera.far = 100;
-        dirLight.shadow.camera.left = -30;
-        dirLight.shadow.camera.right = 30;
-        dirLight.shadow.camera.top = 30;
-        dirLight.shadow.camera.bottom = -30;
-        scene.add(dirLight);
 
-        const floorGeo = new THREE.PlaneGeometry(100, 100);
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.05, metalness: 0.9 });
-        const floor = new THREE.Mesh(floorGeo, floorMat);
-        floor.rotation.x = -Math.PI / 2;
-        floor.receiveShadow = true;
-        scene.add(floor);
+        const mainSpot = new THREE.SpotLight(0xffffff, 2.5);
+        mainSpot.position.set(0, 15, 0);
+        mainSpot.angle = Math.PI / 3;
+        mainSpot.penumbra = 0.8;
+        mainSpot.castShadow = true;
+        mainSpot.shadow.mapSize.width = 2048;
+        mainSpot.shadow.mapSize.height = 2048;
+        scene.add(mainSpot);
 
-        const gridHelper = new THREE.GridHelper(100, 50, 0x00d2ff, 0x333333);
-        gridHelper.position.y = 0.01;
-        scene.add(gridHelper);
+        const cyanRimLight = new THREE.PointLight(0x00f0ff, 3, 20);
+        cyanRimLight.position.set(-10, 4, -8);
+        scene.add(cyanRimLight);
 
-        const carGroup = new THREE.Group();
-        const bodyGeo = new THREE.BoxGeometry(2.2, 0.8, 4.8);
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xff0000, metalness: 0.8, roughness: 0.1 });
-        const body = new THREE.Mesh(bodyGeo, bodyMat);
-        body.position.y = 0.7;
-        body.castShadow = true;
-        carGroup.add(body);
+        const magentaRimLight = new THREE.PointLight(0xff0055, 3, 20);
+        magentaRimLight.position.set(10, 4, -8);
+        scene.add(magentaRimLight);
 
-        const cockpitGeo = new THREE.BoxGeometry(1.6, 0.6, 2.5);
-        const cockpitMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.1 });
-        const cockpit = new THREE.Mesh(cockpitGeo, cockpitMat);
-        cockpit.position.set(0, 1.4, -0.2);
-        cockpit.castShadow = true;
-        carGroup.add(cockpit);
+        // Showroom Structure
+        function buildShowroomEnvironment() {
+            const floorGeo = new THREE.PlaneGeometry(60, 60);
+            const floorMat = new THREE.MeshStandardMaterial({
+                color: 0x0a0d14,
+                roughness: 0.1,
+                metalness: 0.8
+            });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            scene.add(floor);
 
-        const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.6, 32);
-        const wheelMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
-        
-        for (let i = -1; i <= 1; i += 2) {
-            for (let j = -1; j <= 1; j += 2) {
-                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-                wheel.rotation.z = Math.PI / 2;
-                wheel.position.set(i * 1.3, 0.4, j * 1.6);
-                wheel.castShadow = true;
-                carGroup.add(wheel);
-            }
+            const grid = new THREE.GridHelper(60, 40, 0x00f0ff, 0x1e293b);
+            grid.position.y = 0.01;
+            scene.add(grid);
+
+            const podiumGeo = new THREE.CylinderGeometry(4.5, 4.8, 0.3, 64);
+            const podiumMat = new THREE.MeshStandardMaterial({
+                color: 0x161d2a,
+                roughness: 0.2,
+                metalness: 0.5
+            });
+            const podium = new THREE.Mesh(podiumGeo, podiumMat);
+            podium.position.y = 0.15;
+            podium.receiveShadow = true;
+            podium.castShadow = true;
+            scene.add(podium);
+
+            const ringGeo = new THREE.TorusGeometry(4.65, 0.04, 16, 100);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            ring.position.y = 0.31;
+            scene.add(ring);
         }
-        
+
+        buildShowroomEnvironment();
+
+        let carGroup = new THREE.Group();
         scene.add(carGroup);
-        camera.position.set(5, 5, 8);
-        camera.lookAt(0, 1, 0);
 
-        let cash = 50000;
-        let level = 1;
-        let isRaining = false;
-        let time = 0;
+        let currentCarMesh = null;
 
-        function updateLighting() {
-            time += 0.001;
-            const intensity = (Math.sin(time) + 1.5) / 2;
-            dirLight.intensity = intensity;
-            renderer.setClearColor(new THREE.Color(intensity * 0.05, intensity * 0.1, intensity * 0.15));
-        }
+        function createSportsCar(paintColor) {
+            const car = new THREE.Group();
 
-        const rainParticles = new THREE.Group();
-        const rainCount = 1000;
-        const rainGeo = new THREE.BufferGeometry();
-        const rainPositions = [];
-        for(let i=0; i<rainCount; i++) {
-            rainPositions.push(
-                (Math.random() - 0.5) * 60,
-                Math.random() * 30,
-                (Math.random() - 0.5) * 60
-            );
-        }
-        rainGeo.setAttribute('position', new THREE.Float32BufferAttribute(rainPositions, 3));
-        const rainMat = new THREE.PointsMaterial({ color: 0xaaaaaa, size: 0.05, transparent: true, opacity: 0.5 });
-        const rain = new THREE.Points(rainGeo, rainMat);
-        rainParticles.add(rain);
+            const bodyMaterial = new THREE.MeshPhysicalPhysicalMaterial({
+                color: paintColor,
+                metalness: 0.9,
+                roughness: 0.1,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.03
+            });
 
-        function toggleWeather() {
-            isRaining = !isRaining;
-            if (isRaining) {
-                scene.add(rainParticles);
-                document.getElementById('weather-display').innerText = "বৃষ্টি";
-            } else {
-                scene.remove(rainParticles);
-                document.getElementById('weather-display').innerText = "পরিষ্কার";
-            }
-        }
-        
-        function animateRain() {
-            if (isRaining) {
-                const positions = rainGeo.attributes.position.array;
-                for (let i = 1; i < positions.length; i += 3) {
-                    positions[i] -= 0.2;
-                    if (positions[i] < 0) positions[i] = 30;
-                }
-                rainGeo.attributes.position.needsUpdate = true;
-            }
-        }
+            const glassMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x111111,
+                metalness: 0.1,
+                roughness: 0.0,
+                transmission: 0.9,
+                transparent: true,
+                opacity: 0.8
+            });
 
-        function updateShopName() {
-            const input = document.getElementById('shop-name-input').value;
-            if (input.trim() !== "") {
-                document.getElementById('shop-name-display').innerText = input;
-                showNotification("দোকানের নাম পরিবর্তন করা হয়েছে!");
-            }
-        }
+            const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.5, metalness: 0.8 });
+            const rimMaterial = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.1 });
 
-        function showNotification(message) {
-            const note = document.getElementById('notification');
-            note.innerText = message;
-            note.style.display = 'block';
-            setTimeout(() => { note.style.display = 'none'; }, 3000);
-        }
+            const bodyGeo = new THREE.BoxGeometry(2.4, 0.65, 5.0);
+            const body = new THREE.Mesh(bodyGeo, bodyMaterial);
+            body.position.y = 0.65;
+            body.castShadow = true;
+            car.add(body);
 
-        function openGarage() {
-            document.getElementById('garage-modal').style.display = 'flex';
-        }
+            const cabinGeo = new THREE.BoxGeometry(1.8, 0.55, 2.4);
+            const cabin = new THREE.Mesh(cabinGeo, glassMaterial);
+            cabin.position.set(0, 1.15, -0.2);
+            cabin.castShadow = true;
+            car.add(cabin);
 
-        function visitMarketplace() {
-            document.getElementById('marketplace-modal').style.display = 'flex';
-        }
+            const wheelRadius = 0.45;
+            const wheelThickness = 0.35;
+            const wheelPositions = [
+                [-1.25, wheelRadius, 1.6],
+                [1.25, wheelRadius, 1.6],
+                [-1.25, wheelRadius, -1.6],
+                [1.25, wheelRadius, -1.6]
+            ];
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+            wheelPositions.forEach(pos => {
+                const wGroup = new THREE.Group();
+                const tire = new THREE.Mesh(new THREE.CylinderGeometry(wheelRadius, wheelRadius, wheelThickness, 32), wheelMaterial);
+                tire.rotation.z = Math.PI / 2;
+                tire.castShadow = true;
+                wGroup.add(tire);
 
-        function paintCar() {
-            const randomColor = Math.random() * 0xffffff;
-            body.material.color.setHex(randomColor);
-            showNotification("গাড়ির রঙ পরিবর্তন করা হয়েছে!");
-        }
+                const rim = new THREE.Mesh(new THREE.CylinderGeometry(wheelRadius * 0.6, wheelRadius * 0.6, wheelThickness + 0.02, 16), rimMaterial);
+                rim.rotation.z = Math.PI / 2;
+                wGroup.add(rim);
 
-        function buyCar() {
-            if (cash >= 20000) {
-                cash -= 20000;
-                document.getElementById('cash').innerText = cash.toLocaleString() + " ৳";
-                showNotification("একটি নতুন গাড়ি কেনা হয়েছে!");
-            } else {
-                showNotification("পর্যাপ্ত ক্যাশ নেই!");
-            }
-        }
-
-        function startCareer() {
-            level++;
-            document.getElementById('level-display').innerText = level;
-            showNotification("নতুন ক্যারিয়ার মিশন শুরু হয়েছে!");
-            toggleWeather();
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            carGroup.rotation.y += 0.002;
-            updateLighting();
-            animateRain();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
-</body>
-</html>
+                wGroup.posi
