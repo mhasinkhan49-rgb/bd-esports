@@ -1,585 +1,301 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BD Car Dealership & Showroom 3D</title>
-    <style>
-        :root {
-            --primary-color: #00f0ff;
-            --secondary-color: #ff0055;
-            --bg-glass: rgba(10, 14, 23, 0.85);
-            --border-glass: rgba(0, 240, 255, 0.3);
-            --text-main: #f0f4f8;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #05070a;
-            color: var(--text-main);
-        }
-
-        #webgl-container {
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-
-        #ui-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 10;
-            pointer-events: none;
-            display: grid;
-            grid-template-columns: 320px 1fr 340px;
-            grid-template-rows: 90px 1fr 100px;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .interactive {
-            pointer-events: auto;
-        }
-
-        /* Glassmorphism Panel Base */
-        .glass-panel {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 14px;
-            padding: 18px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-        }
-
-        /* Top Header Area */
-        .header-left {
-            grid-column: 1;
-            grid-row: 1;
-            display: flex;
-            align-items: center;
-        }
-
-        .brand-title {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(90deg, #fff, var(--primary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-        }
-
-        .shop-tag {
-            font-size: 13px;
-            color: var(--primary-color);
-            margin-top: 2px;
-            font-weight: 600;
-        }
-
-        /* Stats HUD */
-        .stats-hud {
-            grid-column: 3;
-            grid-row: 1;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .stat-box {
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #8a99ad;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-top: 2px;
-            font-family: monospace;
-        }
-
-        .stat-value.highlight {
-            color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-        }
-
-        /* Left Control Panel */
-        .control-panel {
-            grid-column: 1;
-            grid-row: 2 / 4;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-        }
-
-        .panel-section-title {
-            font-size: 14px;
-            text-transform: uppercase;
-            color: var(--primary-color);
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 6px;
-            margin-bottom: 6px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        label {
-            font-size: 12px;
-            color: #a0aec0;
-        }
-
-        input[type="text"] {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            padding: 10px 12px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-        }
-
-        .btn {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 100, 255, 0.4));
-            border: 1px solid var(--primary-color);
-            color: #fff;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            background: linear-gradient(135deg, var(--primary-color), #0064ff);
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, rgba(255, 0, 85, 0.2), rgba(150, 0, 50, 0.4));
-            border-color: var(--secondary-color);
-        }
-
-        .btn-danger:hover {
-            background: linear-gradient(135deg, var(--secondary-color), #960032);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
-        }
-
-        .color-picker-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-        }
-
-        .color-dot {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.2s;
-        }
-
-        .color-dot:hover {
-            transform: scale(1.15);
-            border-color: #fff;
-        }
-
-        /* Bottom Controls/Nav */
-        .bottom-nav {
-            grid-column: 2;
-            grid-row: 3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* Modals */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-body {
-            width: 500px;
-            max-width: 90%;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .close-btn {
-            font-size: 24px;
-            cursor: pointer;
-            color: #8a99ad;
-        }
-
-        .close-btn:hover {
-            color: #fff;
-        }
-
-        .car-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .car-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        /* Toast Notifications */
-        #notification {
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-glass);
-            border: 1px solid var(--primary-color);
-            color: #fff;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: 600;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-            display: none;
-            z-index: 50;
-            pointer-events: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car For Sale BD - PANGO Style</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#0a0e1a;color:#fff}
+#top{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#111827;border-bottom:2px solid #facc15;position:sticky;top:0;z-index:20}
+.money{background:#1f2937;padding:8px 14px;border-radius:20px;font-weight:bold;color:#22c55e;border:1px solid #22c55e}
+#tabs{display:flex;background:#111827;overflow-x:auto;position:sticky;top:52px;z-index:20}
+.tab{padding:12px 16px;white-space:nowrap;cursor:pointer;border-bottom:3px solid transparent;opacity:0.6}
+.tab.active{border-color:#facc15;color:#facc15;opacity:1;font-weight:bold;background:#1f2937}
+.page{display:none;padding:12px;padding-bottom:100px;min-height:100vh}
+.page.active{display:block}
+.card{background:#1e293b;border-radius:14px;padding:12px;margin-bottom:12px;border:1px solid #334155;position:relative;overflow:hidden}
+.card-title{font-weight:bold;font-size:16px;margin-bottom:6px}
+.btn{background:#facc15;color:#000;padding:8px 14px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin:3px}
+.btn-green{background:#22c55e;color:#fff}
+.btn-red{background:#ef4444;color:#fff}
+.btn-blue{background:#3b82f6;color:#fff}
+.btn:disabled{opacity:0.4}
+.badge{background:#334155;padding:3px 8px;border-radius:10px;font-size:11px;display:inline-block;margin:2px}
+.progress{height:10px;background:#334155;border-radius:5px;overflow:hidden;margin:6px 0}
+.bar{height:100%;background:linear-gradient(90deg,#22c55e,#facc15);transition:0.5s}
+.showroom-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.platform{background:linear-gradient(180deg,#1e293b,#0f172a);border-radius:12px;padding:10px;text-align:center;border:2px dashed #334155;min-height:180px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.platform.has-car{border-style:solid;border-color:#22c55e;background:radial-gradient(#1e293b,#0f172a);box-shadow:0 0 15px rgba(34,197,94,0.3)}
+.platform .emoji{font-size:50px}
+.auction-lane{display:flex;gap:8px;overflow-x:auto;padding:10px 0}
+.auction-car{min-width:200px;background:#111827;border-radius:12px;padding:10px;border:2px solid #facc15;text-align:center}
+.timer{color:#ef4444;font-weight:bold;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0.4}}
+.staff-working{position:absolute;right:10px;top:10px;font-size:10px;background:#22c55e;color:#fff;padding:2px 6px;border-radius:10px;animation:blink 1s infinite}
+.npc{display:flex;gap:10px;align-items:center}
+.npc-avatar{width:50px;height:50px;background:#334155;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px}
+</style>
 </head>
 <body>
+<div id="top">
+<div style="font-weight:bold">🚗 BD CAR BAZAAR</div>
+<div class="money">৳ <span id="money">80000</span></div>
+<div class="badge">LVL <span id="lvl">1</span> | ⭐ <span id="fame">0</span></div>
+</div>
 
-    <div id="webgl-container"></div>
+<div id="tabs">
+<div class="tab active" onclick="openTab('dealership')">🏢 Dealership</div>
+<div class="tab" onclick="openTab('repair')">🔧 AutoRepair</div>
+<div class="tab" onclick="openTab('auction')">🔥 Auction</div>
+<div class="tab" onclick="openTab('market')">🏘️ Market Place</div>
+<div class="tab" onclick="openTab('staff')">👷 Staff</div>
+</div>
 
-    <div id="ui-layer">
-        <!-- Header Left -->
-        <div class="header-left glass-panel interactive">
-            <div>
-                <div class="brand-title">BD Auto Showroom</div>
-                <div class="shop-tag" id="display-shop-name">আমার সুপার শোরুম</div>
-            </div>
-        </div>
+<!-- DEALERSHIP - Like screenshot BUILD YOUR DEALERSHIP -->
+<div id="dealership" class="page active">
+<div class="card" style="background:linear-gradient(90deg,#facc15,#f59e0b);color:#000;text-align:center;font-weight:bold">🏢 YOUR DEALERSHIP - তোমার শোরুম</div>
+<div class="showroom-grid" id="showroom"></div>
+<div class="card"><b>💡 কিভাবে খেলবা:</b><br>Market Place থেকে কম দামে গাড়ি কিনে আনো -> AutoRepair এ ঠিক করো -> এখানে সাজিয়ে বেশি দামে বিক্রি করো।</div>
+</div>
 
-        <!-- Stats Top Right -->
-        <div class="stats-hud glass-panel interactive">
-            <div class="stat-box">
-                <div class="stat-label">ব্যালেন্স</div>
-                <div class="stat-value highlight" id="ui-cash">৳১,৫০,০০০</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">লেভেল</div>
-                <div class="stat-value" id="ui-level">1</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">আবহাওয়া</div>
-                <div class="stat-value" id="ui-weather">Clean</div>
-            </div>
-        </div>
+<!-- REPAIR - Like screenshot REPAIR CARS -->
+<div id="repair" class="page">
+<div class="card" style="border-color:#3b82f6">
+<div class="card-title">🔧 AutoRepair - গাড়ি ঠিক করার জায়গা</div>
+<div id="repairBay" style="text-align:center;padding:20px;background:#0f172a;border-radius:10px;border:2px solid #334155;min-height:200px">
+<p style="color:#94a3b8">গাড়ি Select করো Dealership থেকে, তারপর এখানে ঠিক করতে পারবা</p>
+<div id="repairCarView" style="font-size:80px;margin:15px 0">🚗</div>
+<div id="repairStats"></div>
+</div>
+</div>
+</div>
 
-        <!-- Left Sidebar Controls -->
-        <div class="control-panel glass-panel interactive">
-            <div class="panel-section-title">শোরুম সেটিংস</div>
-            <div class="input-group">
-                <label for="shop-name-input">দোকানের নাম বদলান</label>
-                <input type="text" id="shop-name-input" placeholder="নতুন শোরুমের নাম...">
-                <button class="btn" onclick="changeShopName()">সেভ করুন</button>
-            </div>
+<!-- AUCTION - Like screenshot CAR AUCTION -->
+<div id="auction" class="page">
+<div class="card" style="background:#dc2626;color:#fff;text-align:center;font-size:20px;font-weight:bold">CAR AUCTION - বিডিং হাউজ</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between"><span>⏱️ পরের Auction: <span id="aucTimer" class="timer">30s</span></span><button class="btn btn-blue" onclick="startAuction()">নতুন Auction শুরু</button></div>
+<div class="auction-lane" id="auctionLane"></div>
+</div>
+</div>
 
-            <div class="panel-section-title" style="margin-top: 15px;">গ্যারেজ কাস্টমাইজেশন</div>
-            <label>গাড়ির পেইন্ট নির্বাচন করুন</label>
-            <div class="color-picker-grid">
-                <div class="color-dot" style="background: #ff0000;" onclick="setCarColor(0xff0000)"></div>
-                <div class="color-dot" style="background: #00f0ff;" onclick="setCarColor(0x00f0ff)"></div>
-                <div class="color-dot" style="background: #111111;" onclick="setCarColor(0x111111)"></div>
-                <div class="color-dot" style="background: #ffffff;" onclick="setCarColor(0xffffff)"></div>
-                <div class="color-dot" style="background: #ffaa00;" onclick="setCarColor(0xffaa00)"></div>
-                <div class="color-dot" style="background: #00ff66;" onclick="setCarColor(0x00ff66)"></div>
-                <div class="color-dot" style="background: #7b00ff;" onclick="setCarColor(0x7b00ff)"></div>
-                <div class="color-dot" style="background: #ff00ab;" onclick="setCarColor(0xff00ab)"></div>
-                <div class="color-dot" style="background: #888888;" onclick="setCarColor(0x888888)"></div>
-                <div class="color-dot" style="background: #002244;" onclick="setCarColor(0x002244)"></div>
-            </div>
+<!-- MARKET PLACE - Like screenshot Neighborhood -->
+<div id="market" class="page">
+<div class="card" style="background:#1e40af;color:#fff">🏘️ MARKET PLACE - পাড়ার লোকজন গাড়ি বিক্রি করছে, কম দামে কিনে আনো!</div>
+<div id="marketList"></div>
+<button class="btn" onclick="refreshMarket()">🔄 নতুন লোক খুঁজো (৳200)</button>
+</div>
 
-            <div class="panel-section-title" style="margin-top: 15px;">পরিবেশ ও মিশন</div>
-            <button class="btn" onclick="toggleWeather()">আবহাওয়া পরিবর্তন</button>
-            <button class="btn btn-danger" onclick="startMission()">ক্যারিয়ার মিশন শুরু</button>
-        </div>
+<!-- STAFF -->
+<div id="staff" class="page">
+<div class="card" style="background:#065f46">👷 তোমার Staff - এরা অটো কাজ করবে</div>
+<div id="staffList"></div>
+<div class="card">
+<b>💰 বেতন সিস্টেম:</b> প্রত্যেক দিন রাত 12 টায় বেতন কাটবে। Guard না থাকলে রাতে 30% Chance এ গাড়ির পার্টস চুরি হবে!
+<br><span style="font-size:12px;color:#facc15">Staff থাকলে তোমার কিছুই করতে হবে না, ওরা অটো Wash/Repair/Sell করবে</span>
+</div>
+</div>
 
-        <!-- Bottom Action Bar -->
-        <div class="bottom-nav interactive">
-            <button class="btn glass-panel" onclick="openModal('market-modal')" style="padding: 15px 30px;">
-                🛒 নতুন গাড়ি কিনুন
-            </button>
-            <button class="btn glass-panel" onclick="switchCarDisplay()" style="padding: 15px 30px;">
-                🔄 গাড়ি পরিবর্তন করুন
-            </button>
-        </div>
-    </div>
+<script>
+let money=80000, fame=0, level=1;
+let myCars=[], marketCars=[], auctionCars=[], selectedCar=null;
+let staff={}, timerInt=null, aucTime=30;
 
-    <!-- Modals -->
-    <div class="modal" id="market-modal">
-        <div class="modal-body glass-panel interactive">
-            <div class="modal-header">
-                <h3 style="color: var(--primary-color);">কার মার্কেটপ্লেস</h3>
-                <span class="close-btn" onclick="closeModal('market-modal')">&times;</span>
-            </div>
-            <p style="font-size: 13px; color: #a0aec0;">আপনার শোরুমের জন্য নতুন এক্সক্লুসিভ স্পোর্টস কার কিনুন:</p>
-            <div class="car-list">
-                <div class="car-card">
-                    <div>
-                        <strong>Apex HyperGT 2026</strong>
-                        <div style="font-size: 12px; color: var(--primary-color);">মূল্য: ৳৫০,০০০</div>
-                    </div>
-                    <button class="btn" onclick="buyCar('Apex HyperGT', 50000)">কিনুন</button>
-                </div>
-                <div class="car-card">
-                    <div>
-                        <strong>CyberTruck Phantom</strong>
-                        <div style="font-size: 12px; color: var(--primary-color);">মূল্য: ৳৮۰,০০০</div>
-                    </div>
-                    <button class="btn" onclick="buyCar('CyberTruck Phantom', 80000)">কিনুন</button>
-                </div>
-                <div class="car-card">
-                    <div>
-                        <strong>Vision Roadster Z</strong>
-                        <div style="font-size: 12px; color: var(--primary-color);">মূল্য: ৳১,২০,০০০</div>
-                    </div>
-                    <button class="btn" onclick="buyCar('Vision Roadster Z', 120000)">কিনুন</button>
-                </div>
-            </div>
-        </div>
-    </div>
+const carPool=[
+ {name:"Toyota Corolla",emoji:"🚙",base:35000},
+ {name:"Premio G",emoji:"🚗",base:70000},
+ {name:"Axio Hybrid",emoji:"🚕",base:85000},
+ {name:"Noah",emoji:"🚐",base:60000},
+ {name:"Hiace",emoji:"🚐",base:90000},
+ {name:"R15 V4",emoji:"🏍️",base:25000},
+ {name:"Audi R8",emoji:"🏎️",base:150000},
+ {name:"G-Wagon",emoji:"🚙",base:180000},
+ {name:"Lamborghini",emoji:"🏎️",base:250000},
+ {name:"CNG",emoji:"🛺",base:15000}
+];
+const staffPool=[
+ {id:"washer",name:"🧼 Washer - জামাল",price:6000,salary:400,desc:"গাড়ি ধোয়া অটো করবে, Wash +40% দ্রুত, কন্ডিশন +10%"},
+ {id:"cleaner",name:"🧹 Cleaner - রহিমা",price:5000,salary:350,desc:"গাড়ির ভিতর পরিষ্কার, কাস্টমার বেশি দাম দেবে"},
+ {id:"mechanic",name:"🔧 Mechanic - করিম",price:15000,salary:900,desc:"Repair অটো করবে, +35% ফাস্ট, ইঞ্জিন ভালো হবে"},
+ {id:"guard",name:"💂 Guard - সিকান্দার",price:9000,salary:500,desc:"রাতে চুরি 100% বন্ধ, শোরুম সেফ"},
+ {id:"manager",name:"👔 Manager - সাকিব",price:25000,salary:1500,desc:"অটো বিক্রি করবে, তোমার ঘুমানোর সময়ও গাড়ি বিক্রি হবে!"}
+];
+const npcNames=["রফিক চাচা","জব্বার ভাই","বিদেশি আংকেল","পাশের বাড়ির আন্টি","কলেজের ছাত্র"];
 
-    <div id="notification">বার্তা এখানে দেখা যাবে</div>
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function genCar(isCheap=false){
+ let t=carPool[rnd(0,carPool.length-1)];
+ let cond=rnd(isCheap?15:35,80);
+ let price=Math.floor(t.base * (cond/100) * (isCheap?0.5:0.75));
+ return {id:Date.now()+rnd(1,99999),name:t.name,emoji:t.emoji,cond,wash:rnd(0,40),repair:rnd(0,30),buyPrice:price,owner:npcNames[rnd(0,4)],story:["বাপের গাড়ি","টাকার দরকার","বিদেশ যাবো","নতুন গাড়ি কিনবো"][rnd(0,3)]}
+}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+function openTab(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ event.target.classList.add('active');
+ renderAll();
+}
 
-    <script>
-        // Game State Variables
-        let gameState = {
-            cash: 150000,
-            level: 1,
-            shopName: "আমার সুপার শোরুম",
-            weather: "Clean",
-            currentCarIndex: 0,
-            carsOwned: [
-                { name: "Apex HyperGT", color: 0xff0000, type: "sports" },
-                { name: "CyberTruck Phantom", color: 0x111111, type: "cyber" }
-            ]
-        };
+function renderAll(){
+ document.getElementById('money').innerText=money;
+ document.getElementById('fame').innerText=fame;
+ document.getElementById('lvl').innerText=level;
+ // Showroom
+ let shtml='';
+ for(let i=0;i<4;i++){
+   let c=myCars[i];
+   if(c){
+     let sell=Math.floor(c.buyPrice*0.9 + c.cond*800 + c.wash*200 + c.repair*400 + fame*200);
+     shtml+=`<div class="platform has-car" onclick="selectCar(${i})">
+       <div class="emoji">${c.emoji}</div>
+       <b>${c.name}</b><br>
+       <span class="badge">Cond ${c.cond}%</span>
+       <div class="progress" style="width:80%"><div class="bar" style="width:${c.cond}%"></div></div>
+       <small>Buy ৳${c.buyPrice}</small><br>
+       <small style="color:#facc15">Sell ৳${sell}</small><br>
+       <button class="btn btn-green" onclick="event.stopPropagation();sellCar(${i})">💰 বিক্রি</button>
+       <button class="btn btn-blue" onclick="event.stopPropagation();goRepair(${i})">🔧 Repair Bay</button>
+       ${staff.washer?'<span class="staff-working">Washer কাজ করছে</span>':''}
+     </div>`;
+   } else {
+     shtml+=`<div class="platform"><div class="emoji">➕</div><small>খালি<br>Market থেকে কিনে আনো</small></div>`;
+   }
+ }
+ document.getElementById('showroom').innerHTML=shtml;
 
-        // Three.js Engine Setup
-        const container = document.getElementById('webgl-container');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x05070a);
-        scene.fog = new THREE.FogExp2(0x05070a, 0.015);
+ // Market Place
+ let mhtml='';
+ marketCars.forEach((c,i)=>{
+   mhtml+=`<div class="card"><div class="npc"><div class="npc-avatar">🧑</div><div><b>${c.owner}</b><br><small>"ভাই ${c.story}, তাই ${c.name} টা বিক্রি করবো"</small><br><span class="badge">${c.name} ${c.cond}%</span> <span class="badge">Wash ${c.wash}%</span></div></div><div style="text-align:center;margin:8px 0"><div style="font-size:50px">${c.emoji}</div><b style="color:#facc15">দাম ৳${c.buyPrice}</b> <small>(Market Value ৳${Math.floor(c.buyPrice*1.8)})</small></div><button class="btn btn-green" onclick="buyMarket(${i})">💬 দরদাম করে কিনো</button><button class="btn btn-blue" onclick="bargain(${i})">🤝 15% কমাতে বলো</button></div>`;
+ });
+ document.getElementById('marketList').innerHTML=mhtml||'<p style="color:#94a3b8">লোড হচ্ছে...</p>';
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(12, 6, 14);
+ // Staff
+ let sthtml='';
+ staffPool.forEach(s=>{
+   let owned=staff[s.id];
+   sthtml+=`<div class="card"><b>${s.name}</b><br><small style="color:#94a3b8">${s.desc}</small><br><div style="margin-top:6px"><span class="badge">Hire: ৳${s.price}</span> <span class="badge">বেতন: ৳${s.salary}/দিন</span></div>${owned?`<div style="margin-top:6px"><span class="badge" style="background:#22c55e">✅ কাজ করছে - আজ বেতন দিছো ৳${owned.paid}</span><br><small>কাজ: ${owned.work} টা গাড়ি</small></div>`:`<button class="btn btn-green" style="margin-top:6px" onclick="hireStaff('${s.id}')">Hire করো</button>`}</div>`;
+ });
+ document.getElementById('staffList').innerHTML=sthtml;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
-        container.appendChild(renderer.domElement);
+ // Auction
+ let ahtml='';
+ auctionCars.forEach((c,i)=>{
+   ahtml+=`<div class="auction-car"><div style="font-size:40px">${c.emoji}</div><b>${c.name}</b><br>Cond ${c.cond}%<br><b style="color:#facc15">Bid: ৳${c.bid}</b><br><small>Top: ${c.topBidder}</small><br><button class="btn btn-green" onclick="placeBid(${i})">+৳2000 Bid</button></div>`;
+ });
+ document.getElementById('auctionLane').innerHTML=ahtml||'<p style="color:#94a3b8">Auction শুরু করো</p>';
 
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.maxPolarAngle = Math.PI / 2 - 0.01;
-        controls.minDistance = 5;
-        controls.maxDistance = 25;
-        controls.target.set(0, 1.2, 0);
+ if(selectedCar!==null && myCars[selectedCar]){
+   let c=myCars[selectedCar];
+   document.getElementById('repairCarView').innerText=c.emoji;
+   document.getElementById('repairStats').innerHTML=`<b>${c.name}</b><br>Condition: ${c.cond}%<br><div class="progress"><div class="bar" style="width:${c.cond}%"></div></div>Wash ${c.wash}% Repair ${c.repair}%<br><button class="btn" onclick="doWash(${selectedCar})">🧼 ধোও ৳300</button><button class="btn" onclick="doRepair(${selectedCar})">🔧 ঠিক করো ৳1000</button>`;
+ }
+}
 
-        // Lighting Architecture
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
+function selectCar(i){selectedCar=i; openTab('repair'); renderAll();}
+function goRepair(i){selectedCar=i; openTab('repair'); renderAll();}
 
-        const mainSpot = new THREE.SpotLight(0xffffff, 2.5);
-        mainSpot.position.set(0, 15, 0);
-        mainSpot.angle = Math.PI / 3;
-        mainSpot.penumbra = 0.8;
-        mainSpot.castShadow = true;
-        mainSpot.shadow.mapSize.width = 2048;
-        mainSpot.shadow.mapSize.height = 2048;
-        scene.add(mainSpot);
+function refreshMarket(){
+ if(money<200){alert('টাকা নাই');return;}
+ money-=200;
+ marketCars=[genCar(true),genCar(true),genCar(false),genCar(false)];
+ renderAll();
+}
+function buyMarket(i){
+ let c=marketCars[i];
+ if(myCars.length>=4){alert('Showroom Full! আগে বিক্রি করো');return;}
+ if(money<c.buyPrice){alert('টাকা নাই');return;}
+ money-=c.buyPrice; c.buyPrice=c.buyPrice; myCars.push(c); marketCars.splice(i,1);
+ fame+=1; renderAll();
+ alert(`✅ কিনে ফেলছো! ${c.name} এখন তোমার Showroom এ!`);
+}
+function bargain(i){
+ let c=marketCars[i];
+ let newPrice=Math.floor(c.buyPrice*0.85);
+ if(Math.random()>0.5){c.buyPrice=newPrice; alert(`🤝 ${c.owner}: "আচ্ছা ঠিক আছে ভাই, ৳${newPrice} এ নেন"`);} else {alert(`${c.owner}: "না ভাই, এই দামেই, কম হবে না!"`);}
+ renderAll();
+}
+function sellCar(i){
+ let c=myCars[i];
+ let sell=Math.floor(c.buyPrice*0.9 + c.cond*800 + c.wash*200 + c.repair*400 + fame*200);
+ if(staff.manager) sell=Math.floor(sell*1.1);
+ // Bargain simulation
+ let offer=Math.floor(sell*(0.85+Math.random()*0.3));
+ if(confirm(`🧑‍💼 Customer আসছে!\nতুমি: "ভাই ${sell} টাকা"\nCustomer: "ভাই ${offer} দিবো?"\n\nOK চাপলে ${offer} টাকায় বিক্রি হবে, Cancel করলে ${sell} টাকায় জোর করবা`)){
+   money+=offer; fame+=2; myCars.splice(i,1); alert(`💰 বিক্রি Done! ৳${offer} পাইছো! Profit: ৳${offer-c.buyPrice}`);
+ } else {
+   money+=sell; fame+=1; myCars.splice(i,1); alert(`💰 ${sell} টাকায় বিক্রি হলো!`);
+ }
+ if(money>150000) level=2; if(money>400000) level=3;
+ renderAll(); saveGame();
+}
+function doWash(i){ if(money<300) return alert('টাকা নাই'); money-=300; myCars[i].wash=Math.min(100,myCars[i].wash+35); myCars[i].cond=Math.min(100,myCars[i].cond+10); renderAll(); saveGame();}
+function doRepair(i){ if(money<1000) return alert('টাকা নাই'); money-=1000; myCars[i].repair=Math.min(100,myCars[i].repair+40); myCars[i].cond=Math.min(100,myCars[i].cond+25); renderAll(); saveGame();}
 
-        const cyanRimLight = new THREE.PointLight(0x00f0ff, 3, 20);
-        cyanRimLight.position.set(-10, 4, -8);
-        scene.add(cyanRimLight);
+function startAuction(){
+ auctionCars=[genCar(),genCar(),genCar()].map(c=>({...c,bid:Math.floor(c.buyPrice*0.6),topBidder:"রফিক"}));
+ aucTime=30;
+ if(timerInt) clearInterval(timerInt);
+ timerInt=setInterval(()=>{
+   aucTime--; document.getElementById('aucTimer').innerText=aucTime+'s';
+   // AI bidders
+   auctionCars.forEach(c=>{ if(Math.random()>0.6){c.bid+=rnd(1000,3000); c.topBidder=["জব্বার","বিদেশি বায়ার","রফিক"][rnd(0,2)];}});
+   if(aucTime<=0){
+     clearInterval(timerInt);
+     alert('Auction শেষ! যে গাড়িতে তুমি Top Bidder ছিলা সেগুলো তোমার হবে');
+     auctionCars.forEach(c=>{ if(c.topBidder==="তুমি" && money>=c.bid){money-=c.bid; myCars.push(c);} });
+     auctionCars=[]; document.getElementById('aucTimer').innerText='শেষ';
+   }
+   renderAll();
+ },1000);
+ renderAll();
+}
+function placeBid(i){
+ if(money<2000) return alert('টাকা নাই');
+ let c=auctionCars[i];
+ if(money<c.bid+2000) return alert('আরো টাকা লাগবে');
+ c.bid+=2000; c.topBidder="তুমি"; renderAll();
+}
 
-        const magentaRimLight = new THREE.PointLight(0xff0055, 3, 20);
-        magentaRimLight.position.set(10, 4, -8);
-        scene.add(magentaRimLight);
+function hireStaff(id){
+ let s=staffPool.find(x=>x.id==id);
+ if(money<s.price) return alert('টাকা নাই');
+ money-=s.price; staff[id]={paid:0,work:0};
+ alert(`✅ ${s.name} Hire করছো! সে বলছে: "বস, কাজ শুরু!"`);
+ renderAll(); saveGame();
+}
 
-        // Showroom Structure
-        function buildShowroomEnvironment() {
-            const floorGeo = new THREE.PlaneGeometry(60, 60);
-            const floorMat = new THREE.MeshStandardMaterial({
-                color: 0x0a0d14,
-                roughness: 0.1,
-                metalness: 0.8
-            });
-            const floor = new THREE.Mesh(floorGeo, floorMat);
-            floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
-            scene.add(floor);
+// Auto work by staff
+setInterval(()=>{
+ if(staff.washer && myCars.length){ let c=myCars.find(x=>x.wash<100); if(c){c.wash=Math.min(100,c.wash+5); c.cond=Math.min(100,c.cond+1); staff.washer.work++;}}
+ if(staff.mechanic && myCars.length){ let c=myCars.find(x=>x.cond<90); if(c){c.repair=Math.min(100,c.repair+4); c.cond=Math.min(100,c.cond+2); staff.mechanic.work++;}}
+ if(staff.manager && myCars.length && Math.random()>0.7){ // auto sell low cond
+   let idx=myCars.findIndex(x=>x.cond>85); if(idx!=-1){ let c=myCars[idx]; let sell=Math.floor(c.buyPrice*1.2); money+=sell; myCars.splice(idx,1); staff.manager.work++; fame+=1; }
+ }
+ // Guard check - theft at night
+ if(!staff.guard && Math.random()>0.98 && myCars.length){ alert('💀 চুরি! Guard নাই তাই রাতে একটা গাড়ির পার্টস চুরি হয়ে গেছে! Cond -15%'); myCars[rnd(0,myCars.length-1)].cond=Math.max(10,myCars[rnd(0,myCars.length-1)].cond-15); }
+ renderAll();
+},4000);
 
-            const grid = new THREE.GridHelper(60, 40, 0x00f0ff, 0x1e293b);
-            grid.position.y = 0.01;
-            scene.add(grid);
+// Daily salary - every 2 mins = 1 day
+setInterval(()=>{
+ let totalSal=0; Object.keys(staff).forEach(k=>{let s=staffPool.find(x=>x.id==k); totalSal+=s.salary; staff[k].paid+=s.salary;});
+ if(totalSal>0){ money-=totalSal; if(money<0) money=0; alert(`🌙 রাত 12 টা - Staff বেতন কাটা হলো ৳${totalSal}`); renderAll(); saveGame();}
+},120000);
 
-            const podiumGeo = new THREE.CylinderGeometry(4.5, 4.8, 0.3, 64);
-            const podiumMat = new THREE.MeshStandardMaterial({
-                color: 0x161d2a,
-                roughness: 0.2,
-                metalness: 0.5
-            });
-            const podium = new THREE.Mesh(podiumGeo, podiumMat);
-            podium.position.y = 0.15;
-            podium.receiveShadow = true;
-            podium.castShadow = true;
-            scene.add(podium);
-
-            const ringGeo = new THREE.TorusGeometry(4.65, 0.04, 16, 100);
-            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
-            ring.rotation.x = Math.PI / 2;
-            ring.position.y = 0.31;
-            scene.add(ring);
-        }
-
-        buildShowroomEnvironment();
-
-        let carGroup = new THREE.Group();
-        scene.add(carGroup);
-
-        let currentCarMesh = null;
-
-        function createSportsCar(paintColor) {
-            const car = new THREE.Group();
-
-            const bodyMaterial = new THREE.MeshPhysicalPhysicalMaterial({
-                color: paintColor,
-                metalness: 0.9,
-                roughness: 0.1,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.03
-            });
-
-            const glassMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0x111111,
-                metalness: 0.1,
-                roughness: 0.0,
-                transmission: 0.9,
-                transparent: true,
-                opacity: 0.8
-            });
-
-            const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.5, metalness: 0.8 });
-            const rimMaterial = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.1 });
-
-            const bodyGeo = new THREE.BoxGeometry(2.4, 0.65, 5.0);
-            const body = new THREE.Mesh(bodyGeo, bodyMaterial);
-            body.position.y = 0.65;
-            body.castShadow = true;
-            car.add(body);
-
-            const cabinGeo = new THREE.BoxGeometry(1.8, 0.55, 2.4);
-            const cabin = new THREE.Mesh(cabinGeo, glassMaterial);
-            cabin.position.set(0, 1.15, -0.2);
-            cabin.castShadow = true;
-            car.add(cabin);
-
-            const wheelRadius = 0.45;
-            const wheelThickness = 0.35;
-            const wheelPositions = [
-                [-1.25, wheelRadius, 1.6],
-                [1.25, wheelRadius, 1.6],
-                [-1.25, wheelRadius, -1.6],
-                [1.25, wheelRadius, -1.6]
-            ];
-
-            wheelPositions.forEach(pos => {
-                const wGroup = new THREE.Group();
-                const tire = new THREE.Mesh(new THREE.CylinderGeometry(wheelRadius, wheelRadius, wheelThickness, 32), wheelMaterial);
-                tire.rotation.z = Math.PI / 2;
-                tire.castShadow = true;
-                wGroup.add(tire);
-
-                const rim = new THREE.Mesh(new THREE.CylinderGeometry(wheelRadius * 0.6, wheelRadius * 0.6, wheelThickness + 0.02, 16), rimMaterial);
-                rim.rotation.z = Math.PI / 2;
-                wGroup.add(rim);
-
-                wGroup.posi
+function saveGame(){localStorage.setItem('bdCarMoney',money); localStorage.setItem('bdCarCars',JSON.stringify(myCars)); localStorage.setItem('bdCarStaff',JSON.stringify(staff));}
+function loadGame(){
+ let m=localStorage.getItem('bdCarMoney'); if(m) money=parseInt(m);
+ let ca=localStorage.getItem('bdCarCars'); if(ca) myCars=JSON.parse(ca);
+ let st=localStorage.getItem('bdCarStaff'); if(st) staff=JSON.parse(st);
+}
+loadGame();
+refreshMarket();
+renderAll();
+setInterval(saveGame,10000);
+</script>
+</body>
+</html>
