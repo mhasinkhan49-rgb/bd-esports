@@ -3,310 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GARIR HUT - Real Life Sim</title>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<title>GARIR HUT - Fixed HD</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#000;color:#fff;overflow:hidden}
-#top{position:fixed;top:0;width:100%;z-index:20;display:flex;justify-content:space-between;padding:8px;background:rgba(0,0,0,0.8);border-bottom:2px solid #facc15;font-size:13px}
-#hint{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);padding:8px 14px;border-radius:20px;border:1px solid #facc15;z-index:10;font-size:13px;min-width:280px;text-align:center}
-#inv{position:fixed;top:50px;right:10px;width:260px;background:rgba(15,23,42,0.95);border-radius:12px;padding:10px;border:2px solid #334155;z-index:10;max-height:70vh;overflow-y:auto}
-.card{background:#1e293b;padding:8px;border-radius:8px;margin-bottom:6px;font-size:12px;border-left:3px solid #facc15}
-.btn{background:#facc15;color:#000;padding:6px 10px;border:none;border-radius:8px;font-weight:900;margin:2px;cursor:pointer}
+body{background:#0f172a;color:#fff}
+.top{position:sticky;top:0;background:#111827;padding:12px;display:flex;justify-content:space-between;border-bottom:3px solid #facc15;z-index:20}
+.tabs{display:flex;background:#111827;overflow-x:auto;position:sticky;top:52px;z-index:20}
+.tab{padding:12px 18px;opacity:0.5;border-bottom:3px solid transparent;white-space:nowrap}
+.tab.active{opacity:1;border-color:#facc15;color:#facc15;font-weight:bold;background:#1e293b}
+.page{display:none;padding:12px;padding-bottom:100px}
+.page.active{display:block}
+.card{background:#1e293b;border-radius:16px;padding:12px;margin-bottom:12px;border:1px solid #334155}
+.card.gold{border:2px solid #facc15;background:linear-gradient(180deg,#2d2610,#1e293b);box-shadow:0 4px 15px rgba(250,204,21,0.2)}
+.carImg{width:100%;height:140px;background:linear-gradient(135deg,#0f172a,#334155);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;overflow:hidden}
+.carImg img{width:100%;height:100%;object-fit:cover}
+.badge{background:#334155;padding:4px 8px;border-radius:10px;font-size:11px;display:inline-block;margin:2px}
+.badge.gold{background:#facc15;color:#000;font-weight:900}
+.btn{background:#facc15;color:#000;padding:10px 16px;border:none;border-radius:10px;font-weight:900;margin:4px 2px}
 .btn-g{background:#22c55e;color:#fff}
-#joy{position:fixed;bottom:20px;left:20px;width:90px;height:90px;background:rgba(255,255,255,0.1);border-radius:50%;border:2px solid #fff3;z-index:10}
-#stick{width:40px;height:40px;background:#facc15;border-radius:50%;position:absolute;left:25px;top:25px}
-#canvas{width:100vw;height:100vh;display:block}
-#cross{position:fixed;left:50%;top:50%;width:16px;height:16px;transform:translate(-50%,-50%);z-index:5;opacity:0.7}
-#cross:before,#cross:after{content:'';position:absolute;background:#fff}
-#cross:before{width:16px;height:2px;top:7px}#cross:after{width:2px;height:16px;left:7px}
-#repairMini{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:30;display:none;justify-content:center;align-items:center}
-#dayNight{position:fixed;top:40px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);padding:4px 10px;border-radius:20px;font-size:12px;z-index:10}
+.btn-b{background:#3b82f6;color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.progress{height:10px;background:#334155;border-radius:10px;overflow:hidden;margin:6px 0}
+.bar{height:100%;background:linear-gradient(90deg,#22c55e,#facc15)}
+.timer{color:#ef4444;font-weight:900;font-size:20px}
 </style>
 </head>
 <body>
-<div id="top">
-<div>🚗 GARIR HUT REAL LIFE | ৳ <span id="money">500000</span></div>
-<div>🏠 <span id="house">House: টিনের ঘর</span> | ⏰ <span id="clock">10:00 AM</span> | <span id="inside">OUTSIDE</span></div>
-</div>
-<div id="dayNight">☀️ দিন - দোকান খোলা</div>
-<div id="hint">WASD হাঁটো | Mouse তাকাও | E = Switch / বসা / গাড়িতে উঠা | F = গাড়ি চালানো | Q = Repair | H = House এ ঘুম</div>
-
-<div id="inv">
-<div style="font-weight:900;color:#facc15;text-align:center;margin-bottom:6px">🏢 MY SHOP - <span id="shopLevel">Level 1 (Small)</span></div>
-<div class="card">
-<b>🔧 Switch Board</b><br>
-<button class="btn" onclick="toggleLight()">💡 Light Switch</button><span id="lightStat">OFF</span><br>
-<button class="btn" onclick="toggleDoor()">🚪 Main Door</button><span id="doorStat">CLOSED</span><br>
-<button class="btn" onclick="toggleLift()">⬆️ Car Lift</button><span id="liftStat">DOWN</span>
-</div>
-<div class="card">
-<b>⬆️ Shop Upgrade</b><br>
-Size: <span id="sizeStat">Small (2 cars)</span><br>
-<button class="btn btn-g" onclick="upgradeShop()">Upgrade to Medium (4 cars) - ৳100000</button>
-<button class="btn btn-g" onclick="upgradeShop2()">Large Showroom (6 cars + Office) - ৳250000</button>
-</div>
-<div id="carListInv"></div>
-<div class="card">
-<b>👷 Staff + Salary</b><br>
-<div id="staffInv"></div>
-<button class="btn btn-g" onclick="paySalary()">💰 সবার বেতন দাও</button>
-</div>
-<div class="card">
-<b>🏠 House</b><br>
-<span id="houseInfo">টিনের ঘর - ঘুমালে রাত শেষ হবে</span><br>
-<button class="btn" onclick="upgradeHouse()">House Upgrade ৳50000</button>
-<button class="btn btn-g" onclick="sleep()">😴 ঘুমাও (H)</button>
-</div>
+<div class="top">
+<div style="font-weight:900;color:#facc15">🚗 GARIR HUT FIXED</div>
+<div style="color:#22c55e;font-weight:900">৳ <span id="money">500000</span></div>
+<div>🚗 <span id="count">0/6</span></div>
 </div>
 
-<div id="repairMini">
-<div style="background:#1e293b;padding:20px;border-radius:16px;width:90%;max-width:360px;border:2px solid #facc15;text-align:center">
-<div style="font-size:50px" id="repairEmoji">🔧</div>
-<div style="font-weight:900" id="repairTitle">গাড়ি Repair করছো...</div>
-<div style="margin:10px 0">Hold করো: <div style="height:16px;background:#334155;border-radius:8px;overflow:hidden;margin-top:6px"><div id="repairBar" style="height:100%;width:0%;background:#22c55e"></div></div></div>
-<div id="repairText">Wrench দিয়ে Bolt খুলছো... 0%</div>
-<button class="btn" id="repairHoldBtn">🔧 Hold to Repair (Mouse Hold)</button><br>
-<button class="btn btn-g" onclick="closeRepair()">বন্ধ</button>
+<div class="tabs">
+<div class="tab active" onclick="openTab('showroom')">🏢 Showroom</div>
+<div class="tab" onclick="openTab('auction')">🔥 Auction</div>
+<div class="tab" onclick="openTab('market')">🏪 Market (8 Cars)</div>
+<div class="tab" onclick="openTab('staff')">👷 Staff</div>
+</div>
+
+<div id="showroom" class="page active">
+<div class="card" style="background:linear-gradient(90deg,#facc15,#f59e0b);color:#000;text-align:center;font-weight:900">🏢 YOUR SHOWROOM - গাড়ি এখানে সাজাও, ক্লিক করে Repair করো</div>
+<div class="grid" id="showroomGrid"></div>
+</div>
+
+<div id="auction" class="page">
+<div class="card" style="border:2px solid #ef4444;text-align:center">
+<div style="font-weight:900;color:#ef4444;font-size:18px">🔥 LIVE AUCTION - AUCTIONEER ডাকছে!</div>
+<div class="timer">⏱️ <span id="aucT">30</span>s | <span id="aucStatus">বন্ধ আছে, Start চাপো</span></div>
+<button class="btn" onclick="startAuction()">🎤 Auction শুরু করো</button>
+<div style="font-size:12px;color:#94a3b8;margin-top:6px">Auctioneer বলবে: "Ladies & Gentlemen! Next - Lamborghini!"</div>
+</div>
+<div class="grid" id="auctionGrid"></div>
+</div>
+
+<div id="market" class="page">
+<div class="card" style="background:#1e40af">🏪 MARKET PLACE - 8 জন লোক - Supercar থেকে CNG সব আছে - Voice এ দরদাম!</div>
+<div class="grid" id="marketGrid"></div>
+<button class="btn" onclick="refreshMarket()">🔄 নতুন মাল আনো ৳500</button>
+</div>
+
+<div id="staff" class="page">
+<div class="grid" id="staffGrid"></div>
+<div class="card">💡 Staff Hire করলে অটো কাজ করবে, তোমার Repair করা লাগবে না!</div>
+</div>
+
+<!-- Customer Talk -->
+<div id="talk" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:50;justify-content:center;align-items:center">
+<div style="background:#1e293b;width:92%;max-width:380px;border-radius:16px;padding:16px;border:2px solid #facc15">
+<div style="text-align:center;font-weight:900;color:#facc15">💬 কাস্টমার বাংলায় কথা বলছে</div>
+<div style="font-size:60px;text-align:center" id="custEm">🧑‍💼</div>
+<div style="background:#111827;padding:10px;border-radius:10px;margin:10px 0;border-left:4px solid #22c55e" id="custText">ভাই গাড়িটা কত? ফ্রেশ তো?</div>
+<button style="background:#334155;color:#fff;padding:8px 12px;border-radius:20px;border:none;margin:4px" onclick="speakCust()">🔊 শুনো</button>
+<button style="background:#334155;color:#fff;padding:8px 12px;border-radius:20px;border:none;margin:4px" onclick="startMic()">🎤 Mic দিয়ে বলো</button>
+<div id="talkBtns" style="margin-top:10px"></div>
+<button class="btn" style="width:100%;background:#ef4444;color:#fff;margin-top:10px" onclick="closeTalk()">বন্ধ</button>
 </div>
 </div>
 
-<canvas id="canvas"></canvas>
-<div id="joy"><div id="stick"></div></div>
-<div id="cross"></div>
-
-<script type="module">
-import * as THREE from 'three';
-let money=parseInt(localStorage.getItem('realMoney')||'500000');
-let shopSize=parseInt(localStorage.getItem('shopSize')||'1'); //1=2 cars,2=4,3=6
-let houseLevel=parseInt(localStorage.getItem('houseLevel')||'1');
-let myCars=JSON.parse(localStorage.getItem('realCars')||'[]');
-let staff=JSON.parse(localStorage.getItem('realStaff')||'{"cleaner":false,"mechanic":false,"guard":false,"manager":false}');
-let staffLevel=JSON.parse(localStorage.getItem('staffLevel')||'{"cleaner":1,"mechanic":1,"guard":1,"manager":1}');
-let salaryDue=parseInt(localStorage.getItem('salaryDue')||'0');
-
-let isInsideShop=false, isSitting=false, isDriving=false, currentCar=null, liftUp=false, lightOn=false, doorOpen=false;
-let hour=10, day=1;
-
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x87ceeb);
-const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,500);
-const renderer=new THREE.WebGLRenderer({canvas:document.getElementById('canvas'),antialias:true});
-renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; document.body.appendChild(renderer.domElement);
-scene.add(new THREE.AmbientLight(0xffffff,0.6));
-const sun=new THREE.DirectionalLight(0xffffff,1); sun.position.set(20,30,10); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048); scene.add(sun);
-
-// Ground
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(200,200), new THREE.MeshStandardMaterial({color:0x2a2a2a})); ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
-const road=new THREE.Mesh(new THREE.PlaneGeometry(12,200), new THREE.MeshStandardMaterial({color:0x111})); road.rotation.x=-Math.PI/2; road.position.y=0.02; road.position.x=0; scene.add(road);
-
-// Shop Building
-const shopGroup=new THREE.Group(); scene.add(shopGroup);
-let shopW=16, shopD=14;
-function buildShop(){
- shopGroup.clear();
- shopW= shopSize==1?16: shopSize==2?24: 32;
- shopD= shopSize==1?14: shopSize==2?20: 26;
- // floor
- const floor=new THREE.Mesh(new THREE.PlaneGeometry(shopW,shopD), new THREE.MeshStandardMaterial({color:0xdddddd, roughness:0.2})); floor.rotation.x=-Math.PI/2; floor.position.y=0.01; floor.receiveShadow=true; shopGroup.add(floor);
- // walls
- const wallMat=new THREE.MeshStandardMaterial({color:0xf5f5f5});
- const back=new THREE.Mesh(new THREE.BoxGeometry(shopW,6,0.3), wallMat); back.position.set(0,3,-shopD/2); shopGroup.add(back);
- const left=new THREE.Mesh(new THREE.BoxGeometry(0.3,6,shopD), wallMat); left.position.set(-shopW/2,3,0); shopGroup.add(left);
- const right=new THREE.Mesh(new THREE.BoxGeometry(0.3,6,shopD), wallMat); right.position.set(shopW/2,3,0); shopGroup.add(right);
- // front with door gap
- const frontL=new THREE.Mesh(new THREE.BoxGeometry(shopW/2-3,6,0.3), wallMat); frontL.position.set(-shopW/4-1.5,3,shopD/2); shopGroup.add(frontL);
- const frontR=new THREE.Mesh(new THREE.BoxGeometry(shopW/2-3,6,0.3), wallMat); frontR.position.set(shopW/4+1.5,3,shopD/2); shopGroup.add(frontR);
- // door
- const door=new THREE.Mesh(new THREE.BoxGeometry(3,4,0.1), new THREE.MeshStandardMaterial({color:0x8b4513})); door.position.set(0,2,shopD/2); door.name="mainDoor"; door.userData={type:"door"}; shopGroup.add(door);
- // office chair
- const chair=new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshStandardMaterial({color:0x333})); chair.position.set(shopW/2-2,0.5,-shopD/2+2); chair.name="chair"; chair.userData={type:"chair"}; shopGroup.add(chair);
- const desk=new THREE.Mesh(new THREE.BoxGeometry(2,1,1), new THREE.MeshStandardMaterial({color:0x654321})); desk.position.set(shopW/2-2,0.5,-shopD/2+4); shopGroup.add(desk);
- // switches
- const lightSwitch=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.4,0.1), new THREE.MeshStandardMaterial({color:0xffff00, emissive:0xffff00, emissiveIntensity:lightOn?1:0})); lightSwitch.position.set(-shopW/2+0.5,2,0); lightSwitch.name="lightSwitch"; lightSwitch.userData={type:"lightSwitch"}; shopGroup.add(lightSwitch);
- const liftSwitch=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.4,0.1), new THREE.MeshStandardMaterial({color:0x00ff00})); liftSwitch.position.set(-shopW/2+0.5,2,1); liftSwitch.name="liftSwitch"; liftSwitch.userData={type:"liftSwitch"}; shopGroup.add(liftSwitch);
- // lift platform
- const lift=new THREE.Mesh(new THREE.BoxGeometry(6,0.3,6), new THREE.MeshStandardMaterial({color:0x222})); lift.position.set(0,liftUp?2:0.2,0); lift.name="lift"; shopGroup.add(lift);
- // platforms for cars
- for(let i=0;i<(shopSize==1?2:shopSize==2?4:6);i++){
-   let x=(i%3)*8-8, z=Math.floor(i/3)*7-2;
-   const plat=new THREE.Mesh(new THREE.BoxGeometry(6,0.1,5.5), new THREE.MeshStandardMaterial({color:0x111})); plat.position.set(x,0.15,z); shopGroup.add(plat);
- }
+<script>
+let money=parseInt(localStorage.getItem('hutM2')||'500000'), my=[], mk=[], au=[], staff={}, aucInt=null, time=30, curCar=null;
+let cars=[
+{name:"Lamborghini Aventador 2024",price:650000,img:"🏎️",type:"super"},
+{name:"Ferrari 488 Pista",price:600000,img:"🏎️",type:"super"},
+{name:"Rolls Royce Phantom",price:800000,img:"🚘",type:"super"},
+{name:"Bugatti Chiron",price:900000,img:"🏎️",type:"super"},
+{name:"G-Wagon AMG",price:500000,img:"🚙",type:"super"},
+{name:"Supra MK4",price:180000,img:"🚗",type:"super"},
+{name:"Kawasaki Ninja H2R",price:150000,img:"🏍️",type:"super"},
+{name:"Premio G 2023",price:75000,img:"🚗",type:"normal"},
+{name:"Axio Hybrid",price:85000,img:"🚕",type:"normal"},
+{name:"Noah Hybrid",price:65000,img:"🚐",type:"normal"},
+{name:"Corolla 2022",price:45000,img:"🚙",type:"normal"},
+{name:"CNG Auto",price:15000,img:"🛺",type:"normal"}
+];
+let staffs=[
+{id:"washer",n:"🧼 Washer Jamal",p:8000,s:500,d:"অটো ধোয়া"},
+{id:"mechanic",n:"🔧 Mechanic Karim",p:18000,s:1000,d:"অটো Repair"},
+{id:"guard",n:"💂 Guard",p:10000,s:600,d:"চুরি বন্ধ"},
+{id:"manager",n:"👔 Manager",p:30000,s:1800,d:"অটো বিক্রি"}
+];
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function gen(t="any"){let pool=t=="super"?cars.filter(c=>c.type=="super"):t=="normal"?cars.filter(c=>c.type=="normal"):cars;let c=pool[rnd(0,pool.length-1)];let cond=rnd(25,90);return{id:Date.now()+rnd(1,9999),name:c.name,img:c.img,base:c.price,cond,wash:rnd(0,40),repair:rnd(0,30),buy:Math.floor(c.price*cond/100*0.6),isSuper:c.type=="super"}}
+function openTab(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active');render()}
+function render(){
+document.getElementById('money').innerText=money;document.getElementById('count').innerText=my.length+"/6";
+let s='';for(let i=0;i<6;i++){let c=my[i];if(c){let sell=Math.floor(c.buy*1.2 + c.cond*1000 + (c.isSuper?80000:0));s+=`<div class="card ${c.isSuper?'gold':''}"><div class="carImg">${c.img}</div><b>${c.name}</b> ${c.isSuper?'<span class="badge gold">SUPERCAR</span>':''}<br><span class="badge">Cond ${c.cond}%</span><div class="progress"><div class="bar" style="width:${c.cond}%"></div></div>Buy ৳${c.buy}<br><b style="color:#facc15">Sell ৳${sell}</b><br><button class="btn btn-g" onclick="talk(${i})">💬 কাস্টমার (Voice)</button><br><button class="btn" onclick="wash(${i})">🧼 ধোও ৳300</button><button class="btn" onclick="repair(${i})">🔧 ঠিক ৳1000</button></div>`}else s+=`<div class="card" style="border-style:dashed;opacity:0.5"><div class="carImg">➕</div><center>খালি Slot</center></div>`}
+document.getElementById('showroomGrid').innerHTML=s;
+let m='';mk.forEach((c,i)=>{m+=`<div class="card ${c.isSuper?'gold':''}"><div class="carImg">${c.img}</div><b>${c.name}</b> ${c.isSuper?'<span class="badge gold">SUPER</span>':''}<br>Cond ${c.cond}%<br><b style="color:#facc15">৳${c.buy}</b><br><button class="btn btn-g" onclick="buyM(${i})">কিনো</button><button class="btn" onclick="bargM(${i})">দরদাম -15%</button></div>`});document.getElementById('marketGrid').innerHTML=m;
+let a='';au.forEach((c,i)=>{a+=`<div class="card ${c.isSuper?'gold':''}"><div class="carImg">${c.img}</div><b>${c.name}</b><br>Bid: <b style="color:#facc15">৳${c.bid}</b><br>Top: ${c.top}<br><button class="btn btn-g" onclick="bid(${i})">+৳5K Bid</button></div>`});document.getElementById('auctionGrid').innerHTML=a;
+let st='';staffs.forEach(s=>{let o=staff[s.id];st+=`<div class="card"><b>${s.n}</b><br><small>${s.d}</small><br><span class="badge">Hire ৳${s.p}</span><br>${o?'<span class="badge" style="background:#22c55e">✅ কাজ করছে</span>':`<button class="btn btn-g" onclick="hire('${s.id}')">Hire</button>`}</div>`});document.getElementById('staffGrid').innerHTML=st;
 }
-buildShop();
-
-// House
-const house=new THREE.Mesh(new THREE.BoxGeometry(8,5,8), new THREE.MeshStandardMaterial({color:houseLevel==1?0x8b4513:houseLevel==2?0xeeeeee:0xffffff})); house.position.set(25,2.5,10); house.name="house"; house.userData={type:"house"}; scene.add(house);
-
-// Cars
-const carMeshes=[];
-function createCarMesh(data,x,z){
- const g=new THREE.Group();
- const body=new THREE.Mesh(new THREE.BoxGeometry(1.8,0.8,4), new THREE.MeshStandardMaterial({color:data.color||0xff0000})); body.position.y=0.8; body.castShadow=true; g.add(body);
- g.position.set(x,0,z); g.userData=data; g.name="car"; scene.add(g); carMeshes.push(g); return g;
+function refreshMarket(){if(money<500&&mk.length>0){alert('টাকা নাই');return;}if(mk.length>0)money-=500;mk=[gen("super"),gen("super"),gen("super"),gen(),gen(),gen("normal"),gen("normal"),gen()];render();save()}
+function buyM(i){let c=mk[i];if(my.length>=6){alert('Showroom Full');return;}if(money<c.buy){alert('টাকা নাই');return;}money-=c.buy;my.push(c);mk.splice(i,1);render();save();speak(`গাড়ি কিনেছেন ${c.name}`)}
+function bargM(i){mk[i].buy=Math.floor(mk[i].buy*0.85);render();speak('ঠিক আছে কম দামে নেন')}
+function startAuction(){au=[gen("super"),gen("super"),gen("super")].map(c=>({...c,bid:Math.floor(c.buy*0.7),top:["জব্বার","রফিক","বিদেশি"][rnd(0,2)]}));time=30;document.getElementById('aucStatus').innerText="চলছে! Auctioneer ডাকছে...";speak("Ladies and gentlemen! Next car, "+au[0].name+", starting price 5 lakh taka! Who is interested?");if(aucInt)clearInterval(aucInt);aucInt=setInterval(()=>{time--;document.getElementById('aucT').innerText=time;au.forEach(c=>{if(Math.random()>0.5){c.bid+=rnd(3000,8000);c.top=["জব্বার","বিদেশি","রফিক"][rnd(0,2)]}});if(time<=0){clearInterval(aucInt);let won=0;au.forEach(c=>{if(c.top==="তুমি"&&money>=c.bid&&my.length<6){money-=c.bid;my.push(c);won++}});alert(won?`🎉 জিতছো ${won} টা গাড়ি! Showroom এ চলে গেছে!`:`হারছো! আবার চেষ্টা করো`);au=[];document.getElementById('aucStatus').innerText="শেষ";}render();save()},1000);render()}
+function bid(i){let c=au[i];if(money<c.bid+5000){alert('টাকা লাগবে');return;}c.bid+=5000;c.top="তুমি";render();speak("Bid! "+c.bid+" taka!")}
+function wash(i){if(money<300)return;money-=300;my[i].wash=Math.min(100,my[i].wash+40);my[i].cond=Math.min(100,my[i].cond+12);render();save()}
+function repair(i){if(money<1000)return;money-=1000;my[i].repair=Math.min(100,my[i].repair+50);my[i].cond=Math.min(100,my[i].cond+25);render();save()}
+function hire(id){let s=staffs.find(x=>x.id==id);if(money<s.p)return alert('টাকা নাই');money-=s.p;staff[id]=true;render();save()}
+function talk(i){
+curCar=i;let c=my[i];let sell=Math.floor(c.buy*1.2 + c.cond*1000 + (c.isSuper?80000:0));
+let txt=`ভাই ${c.name} টা কত? ${c.isSuper?'সুপারকারটা সেই!':'গাড়িটা ফ্রেশ তো?'}`;
+document.getElementById('custText').innerText=txt;document.getElementById('talk').style.display='flex';
+document.getElementById('talkBtns').innerHTML=`<button class="btn" style="width:100%" onclick="reply(${sell})">বলো: "${sell} টাকা ভাই, ফিক্সড!"</button><button class="btn btn-g" style="width:100%" onclick="reply(${Math.floor(sell*0.9)})">বলো: "${Math.floor(sell*0.9)} টাকায় নেন!"</button>`;
+speak(txt);
 }
-myCars.forEach((c,i)=>{let x=(i%3)*8-8, z=Math.floor(i/3)*7-2; createCarMesh(c,x,z);});
-
-// Market cars outside to buy and drive
-const marketCars=[];
-function spawnMarketCar(){
- const colors=[0xff0000,0x00ff00,0x0000ff,0xffff00];
- let x=30+Math.random()*20, z=Math.random()*40-20;
- let data={name:["Corolla","Premio","Lambo","G-Wagon"][Math.floor(Math.random()*4)],price:30000+Math.floor(Math.random()*100000),cond:60+Math.floor(Math.random()*30),color:colors[Math.floor(Math.random()*4)],isMarket:true};
- let m=createCarMesh(data,x,z); m.userData.isMarket=true; marketCars.push(m);
+function speakCust(){speak(document.getElementById('custText').innerText)}
+function speak(t){if('speechSynthesis' in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='bn-BD';u.rate=0.9;let v=speechSynthesis.getVoices().find(v=>v.lang.includes('bn'));if(v)u.voice=v;speechSynthesis.speak(u)}}
+function reply(price){
+let c=my[curCar];let offer=Math.floor(price*(0.85+Math.random()*0.15));
+document.getElementById('custText').innerText=`কাস্টমার: "ভাই ${offer} টাকা দিবো, দেন?"`;speak(`ভাই ${offer} টাকা দিবো`);
+document.getElementById('talkBtns').innerHTML=`<button class="btn btn-g" style="width:100%" onclick="finalSell(${offer})">✅ ${offer} টাকায় দাও</button><button class="btn" style="width:100%" onclick="finalSell(${price})">না, ${price} টাকা লাগবে</button>`;
 }
-for(let i=0;i<5;i++) spawnMarketCar();
-
-// Player
-camera.position.set(0,1.7,18);
-let yaw=0,pitch=0,keys={},isSittingPos=null;
-addEventListener('keydown',e=>{
- keys[e.key.toLowerCase()]=true;
- if(e.key.toLowerCase()==='e') interact();
- if(e.key.toLowerCase()==='f') toggleDrive();
- if(e.key.toLowerCase()==='q') openRepair();
- if(e.key.toLowerCase()==='h') sleep();
-});
-addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
-let drag=false,lx=0,ly=0;
-renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY});
-addEventListener('pointerup',()=>drag=false);
-addEventListener('pointermove',e=>{if(!drag||isSitting) return; yaw-=(e.clientX-lx)*0.003; pitch-=(e.clientY-ly)*0.003; pitch=Math.max(-1.2,Math.min(1.2,pitch)); lx=e.clientX;ly=e.clientY;});
-let jx=0,jy=0; const joy=document.getElementById('joy'), stick=document.getElementById('stick');
-joy.addEventListener('touchmove',e=>{let r=joy.getBoundingClientRect();let t=e.touches[0];let x=t.clientX-(r.left+45),y=t.clientY-(r.top+45);let d=Math.hypot(x,y);if(d>35){x=x/d*35;y=y/d*35} stick.style.transform=`translate(${x}px,${y}px)`; jx=x/35;jy=y/35;});
-joy.addEventListener('touchend',()=>{stick.style.transform='';jx=0;jy=0;});
-
-function update(){
- let speed=isDriving?0.25:0.12;
- let f=new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
- let r=new THREE.Vector3(1,0,0).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
- if(!isSitting){
-   if(keys['w']||jy<-0.2) camera.position.addScaledVector(f,speed);
-   if(keys['s']||jy>0.2) camera.position.addScaledVector(f,-speed);
-   if(keys['a']||jx<-0.2) camera.position.addScaledVector(r,-speed);
-   if(keys['d']||jx>0.2) camera.position.addScaledVector(r,speed);
- }
- camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch;
-
- // check inside shop
- isInsideShop=Math.abs(camera.position.x)<shopW/2 && Math.abs(camera.position.z)<shopD/2;
- document.getElementById('inside').innerText=isInsideShop?'INSIDE SHOP':'OUTSIDE';
-
- // driving
- if(isDriving && currentCar){
-   currentCar.position.copy(camera.position); currentCar.position.y=0;
-   currentCar.rotation.y=yaw;
-   // move car forward with W
-   if(keys['w']) currentCar.translateZ(-speed*2);
-   camera.position.copy(currentCar.position); camera.position.y=1.7; camera.position.addScaledVector(f, -3); // third person behind
- }
+function finalSell(price){let c=my[curCar];money+=price;my.splice(curCar,1);closeTalk();render();save();speak('ধন্যবাদ ভাই');alert(`বিক্রি Done ৳${price}`)}
+function closeTalk(){document.getElementById('talk').style.display='none'}
+function startMic(){
+if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){alert('Chrome ব্যবহার করো');return;}
+let SR=window.SpeechRecognition||window.webkitSpeechRecognition;let r=new SR();r.lang='bn-BD';r.start();
+r.onresult=e=>{let t=e.results[0][0].transcript;document.getElementById('custText').innerText=`তুমি: "${t}"`;speak('বুঝেছি');}
 }
-
-function interact(){
- // raycast
- const ray=new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2(0,0),camera);
- const objs=[...shopGroup.children, house, ...carMeshes, ...marketCars];
- const hits=ray.intersectObjects(objs,true);
- if(hits.length==0) return;
- let obj=hits[0].object; while(obj.parent && obj.parent!==shopGroup && obj.parent.type!=='Scene') obj=obj.parent;
- let type=obj.userData?.type || obj.name;
- // console
- if(type==="lightSwitch"){toggleLight();}
- else if(type==="door" || type==="mainDoor"){toggleDoor();}
- else if(type==="liftSwitch"){toggleLift();}
- else if(type==="chair"){
-   if(!isSitting){isSitting=true; isSittingPos=camera.position.clone(); camera.position.set(obj.position.x,1.2,obj.position.z+1); document.getElementById('hint').innerText="চেয়ারে বসছো! E চাপলে উঠবা, এখান থেকে Manager এর মতো সব দেখতে পারবা";}
-   else {isSitting=false; camera.position.copy(isSittingPos); document.getElementById('hint').innerText="উঠে গেছো!";}
- }
- else if(type==="house"){document.getElementById('hint').innerText="🏠 House! H চাপলে ঘুমাবা, রাত শেষ হবে, বেতন কাটবে";}
- else if(obj.userData?.isMarket){
-   let price=obj.userData.price;
-   if(confirm(`🏪 ${obj.userData.name} - ৳${price} - কিনে নিজে চালিয়ে দোকানে নিবা?`)){
-     if(money>=price){money-=price; obj.userData.isMarket=false; myCars.push(obj.userData); save(); updateUI(); alert("কিনছো! এখন F চাপে গাড়িতে উঠো, চালিয়ে দোকানে নিয়ে আসো!");}
-   }
- }
- else if(obj.name==="car"){
-   currentCar=obj; document.getElementById('hint').innerText=`🚗 ${obj.userData.name} - F চাপে গাড়িতে উঠো, E চাপে Repair (Q)`;
- }
-}
-
-function toggleDrive(){
- if(!currentCar) return;
- if(!isDriving){
-   isDriving=true; document.getElementById('hint').innerText="🚗 Driving Mode! WASD চালাও, F চাপলে নামবা, দোকানে নিয়ে পার্ক করো!";
- } else {
-   isDriving=false; camera.position.set(currentCar.position.x,1.7,currentCar.position.z+3); document.getElementById('hint').innerText="গাড়ি থেকে নামছো!";
- }
-}
-
-function toggleLight(){lightOn=!lightOn; document.getElementById('lightStat').innerText=lightOn?'ON':'OFF'; scene.background=new THREE.Color(lightOn?0x87ceeb:0x111122); sun.intensity=lightOn?1:0.2; save();}
-function toggleDoor(){doorOpen=!doorOpen; document.getElementById('doorStat').innerText=doorOpen?'OPEN':'CLOSED'; let door=shopGroup.children.find(c=>c.name==="mainDoor"); if(door) door.visible=!doorOpen;}
-function toggleLift(){liftUp=!liftUp; document.getElementById('liftStat').innerText=liftUp?'UP':'DOWN'; let lift=shopGroup.children.find(c=>c.name==="lift"); if(lift) lift.position.y=liftUp?2:0.2;}
-
-function openRepair(){
- if(!currentCar) return alert('গাড়ির কাছে যাও, E চাপে Select করো, তারপর Q');
- document.getElementById('repairMini').style.display='flex';
- let prog=0, holding=false;
- const bar=document.getElementById('repairBar'), txt=document.getElementById('repairText');
- const btn=document.getElementById('repairHoldBtn');
- btn.onmousedown=()=>holding=true; btn.onmouseup=()=>holding=false; btn.ontouchstart=()=>holding=true; btn.ontouchend=()=>holding=false;
- let int=setInterval(()=>{
-   if(holding){prog+=1.5; bar.style.width=prog+'%'; txt.innerText=`Repairing... ${Math.floor(prog)}% - Bolt খুলছো 🔧`; if(prog>=100){clearInterval(int); currentCar.userData.cond=Math.min(100,currentCar.userData.cond+25); alert('✅ Repair Done! Cond +25%'); closeRepair(); save();}}}
- },30);
-}
-window.closeRepair=()=>document.getElementById('repairMini').style.display='none';
-
-function upgradeShop(){
- if(shopSize>=2) return;
- if(money<100000) return alert('টাকা নাই');
- money-=100000; shopSize=2; buildShop(); save(); updateUI(); alert('Shop Medium হয়ে গেছে! 4 গাড়ি রাখতে পারবা!');
-}
-function upgradeShop2(){
- if(shopSize>=3) return;
- if(money<250000) return alert('টাকা নাই');
- money-=250000; shopSize=3; buildShop(); save(); updateUI(); alert('Large Showroom + Office! 6 গাড়ি!');
-}
-function upgradeHouse(){
- if(money<50000) return alert('টাকা নাই');
- money-=50000; houseLevel++; save(); location.reload();
-}
-function sleep(){
- hour=8; day++; document.getElementById('clock').innerText=`Day ${day} 8:00 AM`;
- // pay salary
- let total=0; Object.keys(staff).forEach(k=>{if(staff[k]){let lvl=staffLevel[k]; total+=500*lvl; salaryDue+=500*lvl;}});
- if(total>0) alert(`🌙 ঘুমাইছো! রাত শেষ! Salary Due: ৳${salaryDue}`);
- updateUI(); save();
-}
-window.paySalary=()=>{
- if(salaryDue==0) return alert('বেতন বাকি নাই');
- if(money<salaryDue) return alert('টাকা নাই');
- money-=salaryDue; salaryDue=0; alert('✅ সব Staff এর বেতন দিছো! ওরা খুশি!'); save(); updateUI();
-};
-
-function updateUI(){
- document.getElementById('money').innerText=money;
- document.getElementById('shopLevel').innerText= shopSize==1?'Level 1 (Small)': shopSize==2?'Level 2 (Medium)':'Level 3 (Large)';
- document.getElementById('sizeStat').innerText= shopSize==1?'Small (2 cars)': shopSize==2?'Medium (4 cars)':'Large (6 cars)';
- document.getElementById('house').innerText= houseLevel==1?'টিনের ঘর':houseLevel==2?'একতলা':'ভিলা';
- document.getElementById('houseInfo').innerText= `Level ${houseLevel} - Salary Due: ৳${salaryDue}`;
- let clist=''; myCars.forEach((c,i)=>{clist+=`<div class=card><b>${c.name}</b> Cond ${c.cond}%<br>Buy ৳${c.price||c.buy||30000}</div>`}); document.getElementById('carListInv').innerHTML=clist||'<div class=card>গাড়ি নাই</div>';
- let sinv=''; Object.keys(staff).forEach(k=>{sinv+=`<div>${k}: ${staff[k]?'✅ Level '+staffLevel[k]:'❌ নাই'} ${staff[k]?`<button class=btn onclick="upgradeStaff('${k}')">Upgrade ৳10000</button>`: `<button class=btn btn-g onclick="hireStaff('${k}')">Hire ৳5000</button>`}</div>`}); document.getElementById('staffInv').innerHTML=sinv;
-}
-window.upgradeShop=upgradeShop; window.upgradeShop2=upgradeShop2; window.upgradeHouse=upgradeHouse; window.toggleLight=toggleLight; window.toggleDoor=toggleDoor; window.toggleLift=toggleLift; window.sleep=sleep;
-window.hireStaff=(k)=>{if(money<5000) return alert('টাকা নাই'); money-=5000; staff[k]=true; save(); updateUI();};
-window.upgradeStaff=(k)=>{if(money<10000) return alert('টাকা নাই'); money-=10000; staffLevel[k]++; save(); updateUI();};
-
-function save(){localStorage.setItem('realMoney',money); localStorage.setItem('shopSize',shopSize); localStorage.setItem('houseLevel',houseLevel); localStorage.setItem('realCars',JSON.stringify(myCars)); localStorage.setItem('realStaff',JSON.stringify(staff)); localStorage.setItem('staffLevel',JSON.stringify(staffLevel)); localStorage.setItem('salaryDue',salaryDue);}
-
-// Day night cycle
-setInterval(()=>{
- hour++; if(hour>=24){hour=0; day++; salaryDue+=2000;}
- let isNight=hour<6||hour>=19;
- document.getElementById('clock').innerText=`Day ${day} ${hour}:00 ${hour>=12?'PM':'AM'}`;
- document.getElementById('dayNight').innerText= isNight?'🌙 রাত - দোকান বন্ধ, Guard না থাকলে চুরি!':'☀️ দিন - দোকান খোলা';
- if(isNight) scene.background=new THREE.Color(0x0a0a2a); else scene.background=new THREE.Color(0x87ceeb);
-},30000); // 30 sec = 1 hour
-
-function loop(){requestAnimationFrame(loop); update(); renderer.render(scene,camera);}
-loop(); updateUI();
-addEventListener('resize',()=>{c
+function save(){localStorage.setItem('hutM2',money);localStorage.setItem('hutC2',JSON.stringify(my));localStorage.setItem('hutS2',JSON.stringify(staff))}
+let saved=localStorage.getItem('hutC2');if(saved)my=JSON.parse(saved);let st2=localStorage.getItem('hutS2');if(st2)staff=JSON.parse(st2);
+refreshMarket();render();setInterval(save,3000);
+// auto staff
+setInterval(()=>{if(staff.washer){let c=my.find(x=>x.wash<90);if(c){c.wash+=2;c.cond+=1}}if(staff.mechanic){let c=my.find(x=>x.cond<90);if(c){c.cond+=2}}render()},3000);
+</script>
+</body>
+</html>
