@@ -2,272 +2,453 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>BD BATTLE - FIXED ALL BUTTONS WORK</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battle X - Shooting Game</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#0f172a;color:#fff;font-family:sans-serif}
-button{cursor:pointer}
-#start{position:fixed;inset:0;background:#111827;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
-.btn{padding:14px 20px;border:none;border-radius:10px;font-weight:900;margin:5px;font-size:15px}
-.by{background:#facc15;color:#000}.bg{background:#22c55e;color:#fff}.br{background:#ef4444;color:#fff}.bb{background:#1e293b;color:#fff;border:1px solid #334155}
-#top{position:fixed;top:0;left:0;right:0;background:#000;padding:8px 10px;display:none;justify-content:space-between;font-size:12px;z-index:100;border-bottom:2px solid #facc15}
-#lobby{position:fixed;top:38px;left:0;right:0;bottom:0;background:#0f172a;display:none;overflow-y:auto;padding:12px;padding-bottom:70px;z-index:80}
-.box{background:#1e293b;border:2px solid #334155;border-radius:16px;padding:14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
-#game{position:fixed;top:38px;left:0;right:0;bottom:0;background:#2d5a2d;display:none;z-index:70;overflow:hidden}
-#world{position:absolute;width:2200px;height:2200px;background:#3a7a3a;left:0;top:0}
-.p{position:absolute;width:34px;height:34px;border-radius:50%;border:2px solid #000;display:flex;align-items:center;justify-content:center;font-size:20px}
-#player{background:#facc15;z-index:20}
-.enemy{background:#ef4444}
-.bul{position:absolute;width:9px;height:9px;background:yellow;border-radius:50%}
-.gloo{position:absolute;width:60px;height:65px;background:linear-gradient(#00d4ff,#0077aa);border:3px solid #fff;border-radius:12px}
-#joy{position:fixed;bottom:15px;left:15px;width:120px;height:120px;background:rgba(255,255,255,0.18);border-radius:50%;border:2px solid #fff;z-index:90;display:none;touch-action:none}
-#stick{width:50px;height:50px;background:#facc15;border-radius:50%;position:absolute;left:35px;top:35px}
-#fire{position:fixed;bottom:20px;right:15px;width:80px;height:80px;background:red;border-radius:50%;border:3px solid #fff;z-index:90;display:none;align-items:center;justify-content:center;font-size:30px}
-#glooBtn{position:fixed;bottom:110px;right:15px;width:70px;height:70px;background:#00aaff;border-radius:50%;border:3px solid #fff;z-index:90;display:none;align-items:center;justify-content:center;font-size:28px}
-#ctrl{position:fixed;bottom:190px;right:10px;z-index:90;display:none;flex-direction:column;gap:6px}
-.cb{padding:8px 10px;background:#111827;border:1px solid #444;color:#fff;border-radius:8px;font-size:11px;font-weight:900}
-#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#000;padding:14px 20px;border-radius:14px;font-weight:900;z-index:200;display:none;max-width:300px;text-align:center}
-#store,#profile{position:fixed;inset:0;background:#0f172a;z-index:150;display:none;padding:15px;overflow-y:auto;padding-top:45px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:10px;display:flex;gap:8px;align-items:center}
-#tabs{position:fixed;bottom:0;left:0;right:0;background:#000;display:none;z-index:85;border-top:2px solid #facc15}
-.tab{flex:1;padding:12px 2px;text-align:center;font-size:11px;font-weight:900;opacity:0.6}
-.tab.on{opacity:1;background:#1e293b;color:#facc15}
+body{margin:0;background:#101820;color:white;font-family:Arial,sans-serif}
+header{background:#182b3c;padding:14px;text-align:center}
+h1{margin:5px;color:#ffd54a}
+nav{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding:12px}
+button{background:#e8a72d;border:0;border-radius:7px;padding:11px 14px;font-weight:bold;cursor:pointer}
+button:active{transform:scale(.96)}
+button:disabled{opacity:.45}
+.panel{background:#203448;padding:14px;margin:10px;border-radius:10px}
+.hidden{display:none}
+#game{display:block;width:100%;height:62vh;background:#506b42;border:3px solid #d9a43b;touch-action:none}
+.stats{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px}
+.controls{display:flex;justify-content:space-around;align-items:center;padding:12px;gap:8px}
+.big{font-size:17px;padding:17px}
+#message{text-align:center;color:#ffe46a;min-height:25px}
+.item{display:inline-block;background:#30495f;padding:12px;margin:6px;border-radius:8px;min-width:130px}
+input{padding:10px;border-radius:6px;border:0;max-width:100%}
+.small{font-size:12px;color:#ccc}
 </style>
 </head>
 <body>
 
-<div id="start">
-<h1 style="color:#facc15;font-size:40px;margin:0">🔥 BD BATTLE</h1>
-<p style="color:#facc15;font-weight:900">ALL BUTTONS FIXED - 100% WORKING</p>
-<input id="nameIn" placeholder="নাম লিখো - যেমন Akkas" style="padding:12px;width:280px;border-radius:10px;border:none;text-align:center;font-weight:900;margin:10px">
-<button class="btn by" style="width:300px;font-size:19px;padding:16px" onclick="goTraining()">▶️ START - TRAINING ম্যাচ</button>
-<p style="font-size:12px;color:#aaa">START চাপলে Training এ ঢুকবা<br>BR 10 Enemy + 1v1 Unlimited Gloo সব Lobby তে আছে</p>
+<header>
+<h1>⚔ BATTLE X</h1>
+<div>Ultimate Shooting Battle Game</div>
+</header>
+
+<div class="stats panel">
+<div>🪙 Coins: <b id="coins">5000</b></div>
+<div>⭐ Level: <b id="level">1</b>/100</div>
+<div>SP: <b id="xp">0</b></div>
+<div>❤️ HP: <b id="hp">100</b></div>
 </div>
 
-<div id="top">
-<div>👤 <span id="pName">Player</span> | LV <span id="pLv">1</span> | XP <span id="pXp">0</span>/10000</div>
-<div>🎯 <span id="alive">0</span> | 🔫 <span id="ammo">60</span> | 🧊 <span id="glooInfo">∞</span></div>
-</div>
+<nav>
+<button onclick="show('home')">HOME</button>
+<button onclick="show('gamePanel')">GAME</button>
+<button onclick="show('characters')">CHARACTER STORE</button>
+<button onclick="show('dress')">DRESS UP</button>
+<button onclick="show('skins')">GUN SKINS</button>
+<button onclick="show('profile')">PROFILE</button>
+</nav>
 
-<div id="lobby">
-<div class="box" style="border-color:#facc15">
-<div><b>🎯 TRAINING - START</b><br><small>Joystick, Fire, Gloo প্র্যাকটিস</small></div>
-<button class="btn by" onclick="goTraining()">START</button>
-</div>
-<div class="box" style="border-color:#22c55e">
-<div><b>🔥 BR MATCH - 10 ENEMY</b><br><small>10 টা Enemy খুঁজে মারতে হবে</small></div>
-<button class="btn bg" onclick="goBR()">PLAY BR</button>
-</div>
-<div class="box" style="border-color:#ef4444">
-<div><b>⚔️ 1v1 - 2 PLAYER ONLY</b><br><small>তুমি 1 vs Enemy 1 | Unlimited Gloo | 2 Gun</small></div>
-<button class="btn br" onclick="go1v1()">PLAY 1v1</button>
-</div>
-<div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0">
-<button class="btn bb" onclick="openStore('char')">👤 Character 8 টা</button>
-<button class="btn bb" onclick="openStore('dress')">👕 Dress Store</button>
-<button class="btn bb" onclick="openStore('gun')">🔫 Gun Skin Store</button>
-<button class="btn by" onclick="openProfile()">👤 Profile + Name + Level 1-100</button>
-</div>
-</div>
+<section id="home" class="panel">
+<h2>Welcome to Battle X</h2>
+<p>তোমার যুদ্ধ শুরু করো!</p>
+<button class="big" onclick="startGame('training')">▶ START TRAINING</button>
+<button class="big" onclick="startGame('battle')">⚔ BATTLE MATCH</button>
+<button class="big" onclick="startGame('1v1')">🔥 1 VS 1 MATCH</button>
+<div id="message">Ready for Battle!</div>
+</section>
 
-<div id="game">
-<div id="world"><div id="player" class="p">🧑</div></div>
+<section id="gamePanel" class="panel hidden">
+<div class="stats">
+<span id="mode">Training</span>
+<span>Enemies: <b id="enemyCount">0</b></span>
+<span>Gun: <b id="gun">M4A1</b></span>
 </div>
-<div id="joy"><div id="stick"></div></div>
-<div id="fire" onclick="doFire()">🔥</div>
-<div id="glooBtn" onclick="doGloo()">🧊</div>
-<div id="ctrl">
-<button class="cb" onclick="switchGun()">🔫 2 Gun Switch</button>
-<button class="cb" onclick="heal()">💊 Medkit</button>
-<button class="cb" onclick="emote()">💃 Emote</button>
-<button class="cb" style="background:#ef4444" onclick="backLobby()">🚪 Exit</button>
+<canvas id="game"></canvas>
+<div class="controls">
+<button class="big" id="leftFire">◀</button>
+<button class="big" id="fire">🔥 FIRE</button>
+<button class="big" id="rightFire">▶</button>
+<button class="big" onclick="placeWall()">🛡 GLOO</button>
 </div>
+<div class="controls">
+<button onclick="switchGun()">🔫 CHANGE GUN</button>
+<button onclick="show('home')">EXIT</button>
+</div>
+<p class="small">PC: WASD / Arrow Keys = Move, Space = Fire, G = Gloo Wall, Q = Gun Change. মোবাইলে Joystick ব্যবহার করো।</p>
+<div style="text-align:center">
+<button id="joy" style="width:100px;height:65px;border-radius:50%;background:#607d8b;color:white">JOYSTICK</button>
+</div>
+</section>
 
-<div id="store">
-<h2 id="storeTitle" style="color:#facc15">STORE</h2>
-<div id="storeList"></div>
-<button class="btn bb" style="width:100%;margin-top:12px" onclick="document.getElementById('store').style.display='none'">❌ Close</button>
-</div>
+<section id="characters" class="panel hidden">
+<h2>👤 Character Store</h2>
+<div id="characterList"></div>
+</section>
 
-<div id="profile">
-<h2 style="color:#facc15">👤 PROFILE - নাম + Level System</h2>
-<div style="background:#1e293b;padding:12px;border-radius:12px;margin:10px 0">
-<b>নাম Change:</b><br>
-<input id="newNameIn" placeholder="নতুন নাম লিখো" style="width:100%;padding:10px;border-radius:8px;border:none;margin:6px 0">
-<button class="btn by" style="width:100%" onclick="changeName()">✅ নাম Change করো</button>
-<br><br>
-Level: <b><span id="prLv">1</span>/100</b> | XP: <b><span id="prXp">0</span>/10000</b><br>
-<div style="width:100%;height:10px;background:#333;border-radius:5px;margin:6px 0"><div id="xpBar" style="height:100%;width:0%;background:#facc15"></div></div>
-<p style="font-size:12px">প্রতি ম্যাচে 10,000 XP = 2 Level Up হবে (তোমার কথামতো)</p>
-Diamond: <span id="prDia">5000</span><br>
-Character: <span id="prChar">Jack</span> | Gun Skin: <span id="prGun">MP40 Default</span><br><br>
-<button class="btn bg" style="width:100%" onclick="addTestXP()">🎁 Test: 10,000 XP Add (2 Level Up হবে)</button>
-</div>
-<button class="btn bb" style="width:100%" onclick="document.getElementById('profile').style.display='none'">❌ Close</button>
-</div>
+<section id="dress" class="panel hidden">
+<h2>👕 Dress Up Store</h2>
+<div id="dressList"></div>
+</section>
 
-<div id="tabs">
-<div class="tab on" onclick="backLobby()">🎮 Lobby</div>
-<div class="tab" onclick="openStore('char')">👤 Char</div>
-<div class="tab" onclick="openStore('dress')">👕 Dress</div>
-<div class="tab" onclick="openStore('gun')">🔫 Gun</div>
-<div class="tab" onclick="openProfile()">👤 Profile</div>
-</div>
+<section id="skins" class="panel hidden">
+<h2>🔫 Gun Skin Store</h2>
+<div id="skinList"></div>
+</section>
 
-<div id="msg"></div>
+<section id="profile" class="panel hidden">
+<h2>👑 Player Profile</h2>
+<p>Player Name:</p>
+<input id="playerName" placeholder="তোমার নাম লিখো">
+<button onclick="saveName()">SAVE NAME</button>
+<p id="profileName"></p>
+<p>Level: <b id="profileLevel">1</b>/100</p>
+<p>Experience: <b id="profileXP">0</b> SP</p>
+<p>প্রতি ৫০০০ SP-তে ১ লেভেল। ১০,০০০ SP-তে ২ লেভেল।</p>
+<p>Owned Characters: <span id="ownedCount"></span></p>
+</section>
 
 <script>
-let playerName='Player', level=1, xp=0, diamond=5000, curChar='Jack', curGun='MP40 Default';
-let playerX=1100, playerY=1100, joyX=0, joyY=0, ammo=60, enemies=[], alive=0, playing=false, mode='', gunIdx=0, guns=['MP40','M1887'];
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
 
-let chars=[
- {n:'Jack',p:0,e:'🧑‍🦱',d:'Default - Free',own:true},
- {n:'Jackie',p:500,e:'👨‍🦰',d:'Speed +10%',own:false},
- {n:'Jessica',p:800,e:'👩',d:'HP +15%',own:false},
- {n:'Akkas',p:600,e:'👳',d:'BD Hero - New',own:false},
- {n:'Karim',p:700,e:'🧔',d:'Power Hero',own:false},
- {n:'Rofik',p:900,e:'👨‍🦳',d:'Sniper Expert',own:false},
- {n:'Sakib',p:1000,e:'👨‍🎤',d:'New Character 2024',own:false},
- {n:'Noyon',p:1200,e:'🦸‍♂️',d:'Legendary - New',own:false}
-];
-let dresses=[
- {n:'Shirt - Red Dragon',p:200,e:'👕',t:'Shirt'},
- {n:'Pant - Cargo Brown',p:150,e:'👖',t:'Pant'},
- {n:'Choshma - Black Power',p:100,e:'👓',t:'Choshma'},
- {n:'Sunglass - Cool Black',p:250,e:'🕶️',t:'Sunglass'},
- {n:'Hoodie - White Premium',p:300,e:'🧥',t:'Shirt'},
- {n:'Cap - Black King',p:120,e:'🧢',t:'Cap'},
- {n:'Vest - Green Military',p:400,e:'🦺',t:'Vest'},
- {n:'Shoes - Gaming Pro',p:180,e:'👟',t:'Shoes'}
-];
-let gunSkins=[
- {n:'MP40 - Cobra',p:2000,e:'🔫',g:'MP40'},
- {n:'UMP - Booyah Day',p:1800,e:'🔫',g:'UMP'},
- {n:'XM8 - Destiny',p:1500,e:'🔫',g:'XM8'},
- {n:'Desert Eagle - Golden',p:1200,e:'🔫',g:'Desert Eagle'},
- {n:'AK47 - Flaming Dragon',p:2200,e:'🔫',g:'AK47'},
- {n:'AWM - Gold Sniper',p:2500,e:'🎯',g:'AWM'},
- {n:'Mini Uzi - Flash',p:1000,e:'🔫',g:'Mini Uzi'},
- {n:'Katana - Dragon Skin',p:800,e:'🗡️',g:'Katana'},
- {n:'Pan - Fried Skin',p:600,e:'🍳',g:'Pan'}
+let coins=5000,xp=0,level=1;
+let hp=100,gameRunning=false,mode="training";
+let player={x:0,y:0,r:13,speed:3};
+let enemies=[],walls=[],bullets=[];
+let gunIndex=0,fireHeld=false,keys={};
+let joyX=0,joyY=0,joyActive=false;
+let rewarded=false,lastShot=0;
+let ownedCharacters=["Jack"];
+let ownedDress=[];
+let ownedSkins=[];
+let equippedCharacter="Jack";
+let equippedSkin="";
+let equippedDress=[];
+let playerName="Player";
+
+const guns=["M4A1","UMP","Desert Eagle","Mini Uzi"];
+
+const characters=[
+["Jack",500],["Jackie",800],["Jessica",1000],
+["Akkas",1200],["Karim",1500],["Rafiq",1800],
+["Shadow",2500],["Hunter",3000]
 ];
 
-function msg(t){let m=document.getElementById('msg');m.innerText=t;m.style.display='block';setTimeout(()=>m.style.display='none',2500);}
-function upd(){
- document.getElementById('pName').innerText=playerName;
- document.getElementById('pLv').innerText=level;
- document.getElementById('pXp').innerText=xp;
- document.getElementById('prLv').innerText=level;
- document.getElementById('prXp').innerText=xp;
- document.getElementById('prDia').innerText=diamond;
- document.getElementById('prChar').innerText=curChar;
- document.getElementById('prGun').innerText=curGun;
- document.getElementById('alive').innerText=alive;
- document.getElementById('ammo').innerText=ammo;
- document.getElementById('xpBar').style.width=(xp/10000*100)+'%';
- document.getElementById('glooInfo').innerText=mode=='1v1'?'∞':'15';
+const dresses=[
+["Red Shirt",300],["Black Shirt",400],
+["Blue Shirt",450],["Combat Pant",500],
+["Black Pant",550],["Sunglasses",350],
+["Golden Glasses",600],["Army Outfit",900]
+];
+
+const skins=[
+["MB40 Skin",500],["UMP Skin",600],
+["Ximate Skin",700],["Desert Eagle Skin",800],
+["AK47 Skin",900],["AWM Skin",1000],
+["Katana Skin",1200],["Pan Skin",500],
+["Golden Mini Uzi",1500]
+];
+
+function load(){
+try{
+const d=JSON.parse(localStorage.getItem("battlex")||"{}");
+coins=d.coins??5000;
+xp=d.xp??0;
+level=d.level??1;
+ownedCharacters=d.ownedCharacters||["Jack"];
+ownedDress=d.ownedDress||[];
+ownedSkins=d.ownedSkins||[];
+equippedCharacter=d.equippedCharacter||"Jack";
+equippedSkin=d.equippedSkin||"";
+equippedDress=d.equippedDress||[];
+playerName=d.playerName||"Player";
+}catch(e){}
+updateUI();
 }
-function goTraining(){
- let v=document.getElementById('nameIn').value; if(v) playerName=v;
- document.getElementById('start').style.display='none';
- document.getElementById('top').style.display='flex';
- document.getElementById('lobby').style.display='none';
- openGame('training');
- msg('🎯 TRAINING শুরু! Joystick, Fire, Gloo প্র্যাকটিস করো');
+
+function save(){
+localStorage.setItem("battlex",JSON.stringify({
+coins,xp,level,ownedCharacters,ownedDress,ownedSkins,
+equippedCharacter,equippedSkin,equippedDress,playerName
+}));
 }
-function goBR(){document.getElementById('lobby').style.display='none'; openGame('br');}
-function go1v1(){document.getElementById('lobby').style.display='none'; openGame('1v1');}
-function backLobby(){
- playing=false;
- document.getElementById('game').style.display='none';
- document.getElementById('joy').style.display='none';
- document.getElementById('fire').style.display='none';
- document.getElementById('glooBtn').style.display='none';
- document.getElementById('ctrl').style.display='none';
- document.getElementById('lobby').style.display='block';
- document.getElementById('tabs').style.display='flex';
- document.getElementById('top').style.display='flex';
- document.getElementById('start').style.display='none';
- if(mode!='training'){xp+=10000; if(xp>=10000){level+=2; xp-=10000; if(level>100) level=100; msg('🎉 10,000 XP! 2 Level Up! Level '+level);} }
- upd();
+
+function updateUI(){
+document.getElementById("coins").textContent=coins;
+document.getElementById("xp").textContent=xp;
+document.getElementById("level").textContent=level;
+document.getElementById("hp").textContent=hp;
+document.getElementById("profileLevel").textContent=level;
+document.getElementById("profileXP").textContent=xp;
+document.getElementById("ownedCount").textContent=ownedCharacters.length;
+document.getElementById("profileName").textContent="Name: "+playerName;
+document.getElementById("playerName").value=playerName;
 }
-function openGame(m){
- mode=m; playing=true; playerX=1100; playerY=1100; ammo=60;
- if(m=='br') alive=10; else if(m=='1v1') alive=1; else alive=0;
- document.getElementById('game').style.display='block';
- document.getElementById('joy').style.display='block';
- document.getElementById('fire').style.display='flex';
- document.getElementById('glooBtn').style.display='flex';
- document.getElementById('ctrl').style.display='flex';
- document.getElementById('top').style.display='flex';
- document.getElementById('tabs').style.display='none';
- document.getElementById('player').style.left=playerX+'px'; document.getElementById('player').style.top=playerY+'px';
- document.getElementById('world').style.transform=`translate(${-playerX+innerWidth/2}px,${-playerY+innerHeight/2}px)`;
- spawn(m); upd(); loop();
+
+function show(id){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+if(id==="characters")renderStore(characters,"characterList","character");
+if(id==="dress")renderStore(dresses,"dressList","dress");
+if(id==="skins")renderStore(skins,"skinList","skin");
 }
-function spawn(m){
- let w=document.getElementById('world'); w.querySelectorAll('.enemy').forEach(e=>e.remove()); w.querySelectorAll('.gloo').forEach(e=>e.remove()); w.querySelectorAll('.bul').forEach(e=>e.remove());
- enemies=[]; let c=m=='br'?10:m=='1v1'?1:0;
- for(let i=0;i<c;i++){let e=document.createElement('div');e.className='p enemy';e.innerHTML='💀';e.style.left=(Math.random()*1800+200)+'px';e.style.top=(Math.random()*1800+200)+'px';e.dataset.hp=100;w.appendChild(e);enemies.push(e);}
+
+function saveName(){
+let n=document.getElementById("playerName").value.trim();
+if(n)playerName=n;
+save();updateUI();
 }
+
+function renderStore(items,id,type){
+let html="";
+items.forEach(([name,price])=>{
+let owned=type==="character"?ownedCharacters.includes(name):
+type==="dress"?ownedDress.includes(name):ownedSkins.includes(name);
+let equipped=type==="character"?equippedCharacter===name:
+type==="dress"?equippedDress.includes(name):equippedSkin===name;
+
+html+=`<div class="item">
+<h3>${name}</h3>
+<p>Price: ${price} Coins</p>
+${owned?
+`<button onclick="equip('${type}','${name}')">${equipped?"EQUIPPED":"EQUIP"}</button>`:
+`<button onclick="buy('${type}','${name}',${price})">BUY</button>`}
+</div>`;
+});
+document.getElementById(id).innerHTML=html;
+}
+
+function buy(type,name,price){
+if(coins<price){alert("Not enough coins!");return;}
+coins-=price;
+if(type==="character")ownedCharacters.push(name);
+if(type==="dress")ownedDress.push(name);
+if(type==="skin")ownedSkins.push(name);
+save();updateUI();
+renderStore(type==="character"?characters:type==="dress"?dresses:skins,
+type==="character"?"characterList":type==="dress"?"dressList":"skinList",type);
+}
+
+function equip(type,name){
+if(type==="character")equippedCharacter=name;
+if(type==="skin")equippedSkin=name;
+if(type==="dress"){
+if(equippedDress.includes(name))equippedDress=equippedDress.filter(x=>x!==name);
+else equippedDress.push(name);
+}
+save();
+renderStore(type==="character"?characters:type==="dress"?dresses:skins,
+type==="character"?"characterList":type==="dress"?"dressList":"skinList",type);
+}
+
+function resize(){
+let r=canvas.getBoundingClientRect();
+canvas.width=r.width*devicePixelRatio;
+canvas.height=r.height*devicePixelRatio;
+ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+}
+window.addEventListener("resize",resize);
+resize();
+
+function startGame(m){
+mode=m;
+hp=100;
+player.x=canvas.clientWidth/2;
+player.y=canvas.clientHeight/2;
+enemies=[];
+walls=[];
+bullets=[];
+rewarded=false;
+gameRunning=true;
+
+let count=m==="battle"?10:m==="1v1"?1:0;
+for(let i=0;i<count;i++){
+let a=Math.random()*Math.PI*2;
+let distance=130+Math.random()*160;
+enemies.push({
+x:Math.max(20,Math.min(canvas.clientWidth-20,player.x+Math.cos(a)*distance)),
+y:Math.max(20,Math.min(canvas.clientHeight-20,player.y+Math.sin(a)*distance)),
+r:12,hp:100,speed:0.65+Math.random()*.35,
+lastAttack:0
+});
+}
+document.getElementById("mode").textContent=m.toUpperCase();
+document.getElementById("enemyCount").textContent=enemies.length;
+document.getElementById("gun").textContent=guns[gunIndex];
+show("gamePanel");
+requestAnimationFrame(loop);
+}
+
+function switchGun(){
+gunIndex=(gunIndex+1)%guns.length;
+document.getElementById("gun").textContent=guns[gunIndex];
+}
+
+function placeWall(){
+if(!gameRunning)return;
+let dx=joyX||0,dy=joyY||0;
+walls.push({
+x:player.x+(dx?dx*35:0),
+y:player.y+(dy?dy*35:-35),
+w:48,h:12
+});
+}
+
+function shoot(){
+if(!gameRunning)return;
+let now=Date.now();
+if(now-lastShot<180)return;
+lastShot=now;
+if(!enemies.length)return;
+let target=enemies.reduce((a,b)=>
+Math.hypot(a.x-player.x,a.y-player.y)<
+Math.hypot(b.x-player.x,b.y-player.y)?a:b);
+let angle=Math.atan2(target.y-player.y,target.x-player.x);
+let speed=gunIndex===2?12:8;
+bullets.push({
+x:player.x,y:player.y,
+vx:Math.cos(angle)*speed,
+vy:Math.sin(angle)*speed,
+damage:gunIndex===2?65:gunIndex===3?12:25
+});
+}
+
+function movePlayer(){
+let dx=0,dy=0;
+if(keys["w"]||keys["ArrowUp"])dy--;
+if(keys["s"]||keys["ArrowDown"])dy++;
+if(keys["a"]||keys["ArrowLeft"])dx--;
+if(keys["d"]||keys["ArrowRight"])dx++;
+dx+=joyX;dy+=joyY;
+let l=Math.hypot(dx,dy)||1;
+player.x+=dx/l*player.speed;
+player.y+=dy/l*player.speed;
+player.x=Math.max(12,Math.min(canvas.clientWidth-12,player.x));
+player.y=Math.max(12,Math.min(canvas.clientHeight-12,player.y));
+}
+
 function loop(){
- if(!playing) return; requestAnimationFrame(loop);
- if(joyX||joyY){playerX+=joyX*7; playerY+=joyY*7; playerX=Math.max(100,Math.min(2100,playerX)); playerY=Math.max(100,Math.min(2100,playerY)); document.getElementById('player').style.left=playerX+'px'; document.getElementById('player').style.top=playerY+'px'; let wx=-playerX+innerWidth/2, wy=-playerY+innerHeight/2; document.getElementById('world').style.transform=`translate(${wx}px,${wy}px)`;}
- if(mode!='training'){enemies.forEach(en=>{let ex=parseInt(en.style.left),ey=parseInt(en.style.top);let ang=Math.atan2(playerY-ey,playerX-ex);en.style.left=(ex+Math.cos(ang)*1.4)+'px';en.style.top=(ey+Math.sin(ang)*1.4)+'px';});}
-}
-function doFire(){
- if(!playing) return; if(ammo<=0){ammo=60;upd();msg('Reload 60 Ammo');return;} ammo--;upd();
- let w=document.getElementById('world'); let b=document.createElement('div');b.className='bul';b.style.left=playerX+12+'px';b.style.top=playerY+12+'px';w.appendChild(b);
- let dirX=joyX||0, dirY=joyY||-1; let len=Math.hypot(dirX,dirY)||1; dirX/=len; dirY/=len; let d=0;
- let it=setInterval(()=>{d+=20;b.style.left=playerX+12+dirX*d+'px';b.style.top=playerY+12+dirY*d+'px';
-  enemies.forEach((en,i)=>{if(Math.hypot(parseInt(b.style.left)-parseInt(en.style.left),parseInt(b.style.top)-parseInt(en.style.top))<24){en.dataset.hp-=50;en.style.transform='scale(1.5)';setTimeout(()=>en.style.transform='scale(1)',120);if(en.dataset.hp<=0){en.remove();enemies.splice(i,1);alive--;upd();msg('Enemy মারছো! বাকি '+alive);if(alive<=0 && mode!='training'){msg('🏆 BOOYAH!');setTimeout(backLobby,1200);}}b.remove();clearInterval(it);}});
-  if(d>500){b.remove();clearInterval(it);}
- },16);
-}
-function doGloo(){
- if(!playing) return; let w=document.getElementById('world'); let g=document.createElement('div');g.className='gloo';g.style.left=(playerX+ (joyX*50||40))+'px';g.style.top=(playerY+(joyY*50||0))+'px';w.appendChild(g);msg('🧊 Gloo Wall! '+(mode=='1v1'?'Unlimited':'') ); setTimeout(()=>g.remove(), mode=='1v1'?15000:8000);
-}
-function switchGun(){gunIdx=gunIdx==0?1:0;msg('🔫 Gun Switch: '+guns[gunIdx]+' - 2 টা গান');}
-function heal(){msg('💊 Medkit - HP Full');}
-function emote(){let p=document.getElementById('player');p.innerHTML='💃';setTimeout(()=>p.innerHTML='🧑',900);}
-function openStore(t){
- document.getElementById('store').style.display='block';
- let title=t=='char'?'👤 Character Store - 8 টা':t=='dress'?'👕 Dress Store - Shirt, Pant, Choshma, Sunglass':'🔫 Gun Skin Store - MP40, UMP, XM8, Desert Eagle, AK47, AWM, Mini Uzi, Katana, Pan';
- document.getElementById('storeTitle').innerText=title;
- let list=t=='char'?chars:t=='dress'?dresses:gunSkins;
- let h='<div class="grid">';
- list.forEach((it,i)=>{
-  let owned=it.own?'Owned':''; let price=it.own?'✅ Owned':`💎 ${it.p}`;
-  h+=`<div class="card"><div style="font-size:32px">${it.e}</div><div style="flex:1"><b>${it.n}</b><br><small>${it.d||it.t||it.g}</small><br><b style="color:#facc15">${price}</b><br>${it.own?'<span style="color:#22c55e;font-weight:900">Equipped</span>':`<button class="btn by" style="padding:6px 10px;font-size:12px" onclick="buy('${t}',${i})">Buy - Auto Add</button>`}</div></div>`;
- });
- h+='</div>'; document.getElementById('storeList').innerHTML=h;
-}
-function buy(t,i){
- let list=t=='char'?chars:t=='dress'?dresses:gunSkins; let it=list[i];
- if(diamond<it.p){msg('Diamond নাই!');return;}
- diamond-=it.p; it.own=true;
- if(t=='char') curChar=it.n;
- if(t=='gun') curGun=it.n;
- msg('✅ কিনছো! Auto Add হইছে - '+it.n); upd(); openStore(t);
-}
-function openProfile(){document.getElementById('profile').style.display='block'; upd();}
-function changeName(){let v=document.getElementById('newNameIn').value; if(!v) return msg('নাম লিখো'); playerName=v; document.getElementById('newNameIn').value=''; upd(); msg('✅ নাম Change: '+v);}
-function addTestXP(){xp+=10000; if(xp>=10000){level+=2; xp-=10000; if(level>100) level=100;} upd(); msg('🎉 10,000 XP = 2 Level Up! Level '+level);}
+if(!gameRunning)return;
+movePlayer();
+if(fireHeld||keys[" "])shoot();
 
-// Joystick - only this area has touch-action:none
-let joy=document.getElementById('joy'), stick=document.getElementById('stick');
-joy.addEventListener('touchstart', e=>{e.preventDefault();},{passive:false});
-joy.addEventListener('touchmove', e=>{
- e.preventDefault();
- let r=joy.getBoundingClientRect(); let t=e.touches[0];
- let x=t.clientX-(r.left+60), y=t.clientY-(r.top+60);
- let d=Math.hypot(x,y); if(d>50){x=x/d*50; y=y/d*50}
- stick.style.left=(35+x)+'px'; stick.style.top=(35+y)+'px';
- joyX=x/50; joyY=y/50;
-},{passive:false});
-joy.addEventListener('touchend', e=>{e.preventDefault(); stick.style.left='35px'; stick.style.top='35px'; joyX=0; joyY=0;},{passive:false});
+let w=canvas.clientWidth,h=canvas.clientHeight;
+ctx.clearRect(0,0,w,h);
+ctx.fillStyle="#587a43";
+ctx.fillRect(0,0,w,h);
+
+// Ground decoration
+ctx.strokeStyle="rgba(255,255,255,.08)";
+for(let x=0;x<w;x+=45){
+ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();
+}
+for(let y=0;y<h;y+=45){
+ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+}
+
+// Gloo walls
+walls.forEach(v=>{
+ctx.fillStyle="#55ddeb";
+ctx.fillRect(v.x-v.w/2,v.y-v.h/2,v.w,v.h);
+});
+
+// Bullets
+bullets.forEach(b=>{
+b.x+=b.vx;b.y+=b.vy;
+ctx.fillStyle="#ffeb3b";
+ctx.beginPath();ctx.arc(b.x,b.y,4,0,Math.PI*2);ctx.fill();
+enemies.forEach(e=>{
+if(Math.hypot(e.x-b.x,e.y-b.y)<e.r+5){
+e.hp-=b.damage;b.x=-999;
+}
+});
+});
+bullets=bullets.filter(b=>b.x>0&&b.x<w&&b.y>0&&b.y<h);
+
+enemies.forEach(e=>{
+let a=Math.atan2(player.y-e.y,player.x-e.x);
+let dist=Math.hypot(player.x-e.x,player.y-e.y);
+if(dist>24){
+let nx=e.x+Math.cos(a)*e.speed;
+let ny=e.y+Math.sin(a)*e.speed;
+let blocked=walls.some(v=>Math.abs(nx-v.x)<v.w/2+10&&Math.abs(ny-v.y)<v.h/2+10);
+if(!blocked){e.x=nx;e.y=ny;}
+}
+if(dist<30&&Date.now()-e.lastAttack>800){
+hp=Math.max(0,hp-5);
+e.lastAttack=Date.now();
+}
+ctx.fillStyle="#e53935";
+ctx.beginPath();ctx.arc(e.x,e.y,e.r,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="white";
+ctx.fillRect(e.x-13,e.y-20,26,4);
+ctx.fillStyle="#35e66d";
+ctx.fillRect(e.x-13,e.y-20,26*Math.max(0,e.hp/100),4);
+});
+
+enemies=enemies.filter(e=>e.hp>0);
+document.getElementById("enemyCount").textContent=enemies.length;
+
+// Player
+ctx.fillStyle="#ffcf45";
+ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="white";
+ctx.fillText(equippedCharacter,player.x-20,player.y-20);
+
+updateUI();
+
+if(enemies.length===0&&!rewarded&&mode!=="training"){
+rewarded=true;
+xp+=10000;
+coins+=1000;
+let old=level;
+level=Math.min(100,1+Math.floor(xp/5000));
+save();updateUI();
+alert("🏆 MATCH WIN! +10000 SP +1000 Coins! Level "+old+" → "+level);
+gameRunning=false;
+show("home");
+return;
+}
+if(hp<=0){
+gameRunning=false;
+alert("GAME OVER! Try Again.");
+show("home");
+return;
+}
+requestAnimationFrame(loop);
+}
+
+document.addEventListener("keydown",e=>{
+keys[e.key]=true;
+if(e.key.toLowerCase()==="g")placeWall();
+if(e.key.toLowerCase()==="q")switchGun();
+});
+document.addEventListener("keyup",e=>keys[e.key]=false);
+
+document.getElementById("fire").onpointerdown=e=>{fireHeld=true;shoot()};
+document.getElementById("fire").onpointerup=()=>fireHeld=false;
+document.getElementById("fire").onpointerleave=()=>fireHeld=false;
+
+document.getElementById("leftFire").onpointerdown=()=>joyX=-1;
+document.getElementById("leftFire").onpointerup=()=>joyX=0;
+document.getElementById("rightFire").onpointerdown=()=>joyX=1;
+document.getElementById("rightFire").onpointerup=()=>joyX=0;
+
+let joy=document.getElementById("joy");
+joy.onpointerdown=e=>{
+joyActive=true;joy.setPointerCapture(e.pointerId);
+};
+joy.onpointermove=e=>{
+if(!joyActive)return;
+let r=joy.getBoundingClientRect();
+joyX=Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/(r.width/2)));
+joyY=Math.max(-1,Math.min(1,(e.clientY-r.top-r.height/2)/(r.height/2)));
+};
+joy.onpointerup=()=>{joyActive=false;joyX=0;joyY=0};
+joy.onpointercancel=()=>{joyActive=false;joyX=0;joyY=0};
+
+load();
+show("home");
 </script>
 </body>
 </html>
