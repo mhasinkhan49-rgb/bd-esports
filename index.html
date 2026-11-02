@@ -1,250 +1,225 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>GARIR HUT - Real Open World</title>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
-body{background:#000;color:#fff;overflow:hidden;touch-action:none}
-#top{position:fixed;top:0;width:100%;z-index:20;display:flex;justify-content:space-between;padding:8px 10px;background:rgba(0,0,0,0.85);border-bottom:2px solid #facc15;font-size:12px}
-#hint{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);padding:8px 14px;border-radius:20px;border:1px solid #facc15;z-index:10;text-align:center;font-size:12px;min-width:300px}
-#actionBar{position:fixed;bottom:0;width:100%;background:#0f172a;display:flex;gap:6px;padding:8px;overflow-x:auto;z-index:15;border-top:2px solid #facc15}
-.abtn{background:#1e293b;border:1px solid #334155;color:#fff;padding:10px 14px;border-radius:10px;white-space:nowrap;font-weight:bold;font-size:13px}
-.abtn.gold{background:#facc15;color:#000}
-.abtn.green{background:#22c55e}
-#joy{position:fixed;bottom:110px;left:15px;width:90px;height:90px;background:rgba(255,255,255,0.08);border-radius:50%;border:2px solid rgba(255,255,255,0.2);z-index:10}
-#stick{width:40px;height:40px;background:#facc15;border-radius:50%;position:absolute;left:25px;top:25px}
-#cross{position:fixed;left:50%;top:50%;width:14px;height:14px;transform:translate(-50%,-50%);z-index:5;opacity:0.6}
-#cross:before,#cross:after{content:'';position:absolute;background:#fff}
-#cross:before{width:14px;height:2px;top:6px}#cross:after{width:2px;height:14px;left:6px}
-#priceEdit{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:30;display:none;justify-content:center;align-items:center}
-#map{position:fixed;top:45px;left:10px;background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:10px;font-size:11px;z-index:10;border:1px solid #333}
-canvas{display:block}
-</style>
-</head>
-<body>
-<div id="top">
-<div>🚗 GARIR HUT REAL | ৳ <span id="money">800000</span></div>
-<div>📍 <span id="loc">SHOWROOM OUTSIDE</span> | 🚗 <span id="cnt">2/6</span></div>
-</div>
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-<div id="map">🗺️ MAP: [Showroom 0m] ----80m----> [AUCTION] <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;80m<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NEIGHBORHOOD]</div>
+public class MobileJoystick : MonoBehaviour,
+    IDragHandler, IPointerDownHandler, IPointerUpHandler
+{
+    public RectTransform background;
+    public RectTransform handle;
 
-<div id="hint">WASD / Joystick = হাঁটা | Mouse Drag = তাকানো | E = গাড়ি/দরজা/দাম পরিবর্তন | F = গাড়ি চালাও</div>
+    public Vector2 Direction { get; private set; }
 
-<div id="actionBar">
-<button class="abtn" onclick="doInspect()">🔍 দেখো / দাম দেখো</button>
-<button class="abtn gold" onclick="doEditPrice()">💲 দাম Change করো</button>
-<button class="abtn" onclick="doWash()">🧼 ধোও ৳500</button>
-<button class="abtn" onclick="doRepair()">🔧 Repair ৳2000</button>
-<button class="abtn green" onclick="doBuySell()">💰 কেনা/বিক্রি / Auction Join</button>
-<button class="abtn" onclick="doDrive()">🚗 চালাও (F)</button>
-</div>
-
-<div id="joy"><div id="stick"></div></div>
-<div id="cross"></div>
-
-<div id="priceEdit">
-<div style="background:#1e293b;padding:20px;border-radius:16px;width:90%;max-width:340px;border:2px solid #facc15;text-align:center">
-<div style="font-weight:900;color:#facc15">💲 দাম Change করো</div>
-<div id="editCarName" style="margin:10px 0;font-size:18px">Lamborghini</div>
-<input id="priceInput" type="number" style="width:100%;padding:12px;border-radius:10px;border:none;font-size:18px;font-weight:900;text-align:center" placeholder="নতুন দাম লেখো">
-<div style="margin-top:12px">
-<button class="abtn gold" style="width:45%" onclick="savePrice()">✅ Save</button>
-<button class="abtn" style="width:45%" onclick="closePrice()">❌ Cancel</button>
-</div>
-<div style="font-size:11px;color:#94a3b8;margin-top:8px">Showroom এর ভিতরে তোমার গাড়ির দাম তুমি নিজে বসাবা, Customer সেই দাম দেখবে!</div>
-</div>
-</div>
-
-<script type="module">
-import * as THREE from 'three';
-let money=800000, myCars=[], selected=null, isDriving=false, currentVehicle=null;
-let yaw=0,pitch=0,keys={};
-
-// SCENE - FIXED NO PINK
-const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x87ceeb);
-scene.fog=new THREE.Fog(0x87ceeb,30,160);
-const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,0.1,500);
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
-
-scene.add(new THREE.AmbientLight(0xffffff,0.7));
-const sun=new THREE.DirectionalLight(0xffffff,1.2); sun.position.set(30,40,20); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048); sun.shadow.camera.left=-100; sun.shadow.camera.right=100; sun.shadow.camera.top=100; sun.shadow.camera.bottom=-100; scene.add(sun);
-
-// GROUND + ROAD CONNECTING ALL 3 LOCATIONS
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(300,300), new THREE.MeshStandardMaterial({color:0x555555})); ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
-function road(x1,z1,x2,z2){
-  const len=Math.hypot(x2-x1,z2-z1); const ang=Math.atan2(z2-z1,x2-x1);
-  const r=new THREE.Mesh(new THREE.PlaneGeometry(len,10), new THREE.MeshStandardMaterial({color:0x1a1a1a})); r.rotation.x=-Math.PI/2; r.position.set((x1+x2)/2,0.05,(z1+z2)/2); r.rotation.z=ang; scene.add(r);
-}
-road(0,0,80,0); road(0,0,0,80);
-
-// ===== 1. SHOWROOM - Like your Pic 1 & 2 =====
-const showroom=new THREE.Group(); scene.add(showroom);
-const showFloor=new THREE.Mesh(new THREE.PlaneGeometry(30,26), new THREE.MeshStandardMaterial({color:0xeeeeee, roughness:0.1, metalness:0.1})); showFloor.rotation.x=-Math.PI/2; showFloor.position.set(0,0.02,0); showFloor.receiveShadow=true; showroom.add(showFloor);
-// Glass building - like Pic 1
-const glassMat=new THREE.MeshPhysicalMaterial({color:0xaaddff, transparent:true, opacity:0.25, roughness:0, metalness:0.2, side:2});
-const backWall=new THREE.Mesh(new THREE.BoxGeometry(30,10,0.5), new THREE.MeshStandardMaterial({color:0xffffff})); backWall.position.set(0,5,-13); showroom.add(backWall);
-for(let i=0;i<3;i++){ // front glass
-  const g=new THREE.Mesh(new THREE.PlaneGeometry(8,10), glassMat); g.position.set(-10+i*10,5,13); showroom.add(g);
-}
-const sideL=new THREE.Mesh(new THREE.BoxGeometry(0.5,10,26), new THREE.MeshStandardMaterial({color:0xffffff})); sideL.position.set(-15,5,0); showroom.add(sideL);
-const sideR=new THREE.Mesh(new THREE.BoxGeometry(0.5,10,26), new THREE.MeshStandardMaterial({color:0xffffff})); sideR.position.set(15,5,0); showroom.add(sideR);
-// Platforms inside - like Pic 2
-const platforms=[]; [[-8,5],[-2,5],[5,5],[10,-5]].forEach((p,i)=>{
-  const base=new THREE.Mesh(new THREE.BoxGeometry(6,0.3,5.5), new THREE.MeshStandardMaterial({color:0x111})); base.position.set(p[0],0.15,p[1]); base.receiveShadow=true; showroom.add(base);
-  const neon=new THREE.Mesh(new THREE.BoxGeometry(6.2,0.08,5.7), new THREE.MeshStandardMaterial({color:i%2?0x00ffff:0xff00ff, emissive:i%2?0x00ffff:0xff00ff, emissiveIntensity:1.5})); neon.position.set(p[0],0.35,p[1]); showroom.add(neon);
-  const tag=new THREE.Mesh(new THREE.BoxGeometry(0.8,1.2,0.1), new THREE.MeshStandardMaterial({color:0xffffff})); tag.position.set(p[0]+2.5,1,p[1]); tag.name="priceTag"; tag.userData={platformIndex:i}; showroom.add(tag);
-  platforms.push({x:p[0],z:p[1],car:null,tag:tag});
-});
-// Outside car + man - like Pic 1
-const manOutside=new THREE.Mesh(new THREE.CapsuleGeometry(0.4,1.4,4,8), new THREE.MeshStandardMaterial({color:0x111111})); manOutside.position.set(-3,1,16); showroom.add(manOutside);
-
-// ===== 2. CAR AUCTION - Like Pic 3 =====
-const auction=new THREE.Group(); auction.position.set(80,0,0); scene.add(auction);
-const aucFloor=new THREE.Mesh(new THREE.PlaneGeometry(50,30), new THREE.MeshStandardMaterial({color:0x444444})); aucFloor.rotation.x=-Math.PI/2; aucFloor.position.y=0.01; aucFloor.receiveShadow=true; auction.add(aucFloor);
-const aucBuilding=new THREE.Mesh(new THREE.BoxGeometry(40,8,6), new THREE.MeshStandardMaterial({color:0x888888})); aucBuilding.position.set(0,4,-10); auction.add(aucBuilding);
-const aucSign=new THREE.Mesh(new THREE.BoxGeometry(12,3,0.5), new THREE.MeshStandardMaterial({color:0xff0000, emissive:0xff0000, emissiveIntensity:0.5})); aucSign.position.set(0,10,-10); auction.add(aucSign);
-// 4 garages
-for(let i=0;i<4;i++){
-  const door=new THREE.Mesh(new THREE.BoxGeometry(7,5,0.5), new THREE.MeshStandardMaterial({color:0x222222})); door.position.set(-15+i*10,2.5,-7); door.name="garage"+i; auction.add(door);
-  const priceScreen=new THREE.Mesh(new THREE.PlaneGeometry(5,1.2), new THREE.MeshStandardMaterial({color:0x000000, emissive:0x00ff00, emissiveIntensity:1})); priceScreen.position.set(-15+i*10,6,-6.8); priceScreen.name="priceScreen"+i; auction.add(priceScreen);
-  const platform=new THREE.Mesh(new THREE.BoxGeometry(6,0.2,4), new THREE.MeshStandardMaterial({color:0x660000})); platform.position.set(-15+i*10,0.1,-2); auction.add(platform);
-}
-// People watching auction
-for(let i=0;i<6;i++){ const p=new THREE.Mesh(new THREE.CapsuleGeometry(0.3,1,4,6), new THREE.MeshStandardMaterial({color:i%2?0x222222:0xeeeeee})); p.position.set(-20+i*2,0.8,8); auction.add(p);}
-
-// ===== 3. NEIGHBORHOOD - Like Pic 4 =====
-const hood=new THREE.Group(); hood.position.set(0,0,80); scene.add(hood);
-const hoodRoad=new THREE.Mesh(new THREE.PlaneGeometry(14,120), new THREE.MeshStandardMaterial({color:0x222222})); hoodRoad.rotation.x=-Math.PI/2; hoodRoad.position.set(0,0.02,0); hood.add(hoodRoad);
-for(let i=0;i<6;i++){
-  const side=i%2==0?-10:10; const z=-50+i*20;
-  const house=new THREE.Mesh(new THREE.BoxGeometry(8,6,10), new THREE.MeshStandardMaterial({color:i%2?0xddeeff:0xffeedd})); house.position.set(side,3,z); house.castShadow=true; hood.add(house);
-  const houseCarPlat=new THREE.Mesh(new THREE.BoxGeometry(5,0.1,3), new THREE.MeshStandardMaterial({color:0x333333})); houseCarPlat.position.set(side>0?side-3:side+3,0.05,z); hood.add(houseCarPlat);
-}
-
-// CARS - Different Models
-function spawnCar(data,x,z,parent=scene){
-  const g=new THREE.Group();
-  const body=new THREE.Mesh(new THREE.BoxGeometry(1.8,0.7,4), new THREE.MeshStandardMaterial({color:data.color||0xffcc00, roughness:0.2, metalness:0.6})); body.position.y=0.8; body.castShadow=true; g.add(body);
-  const roof=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.5,2), new THREE.MeshStandardMaterial({color:0x111111})); roof.position.y=1.35; roof.position.z=-0.2; g.add(roof);
-  const wheels=new THREE.CylinderGeometry(0.35,0.35,0.2,12);
-  [[-0.9,0.35,1.2],[0.9,0.35,1.2],[-0.9,0.35,-1.2],[0.9,0.35,-1.2]].forEach(p=>{let w=new THREE.Mesh(wheels,new THREE.MeshStandardMaterial({color:0x111111})); w.rotation.z=Math.PI/2; w.position.set(...p); g.add(w);});
-  g.position.set(x,0,z); g.userData=data; parent.add(g); return g;
-}
-
-const carData=[
-{name:"Audi R8 Yellow",color:0xffcc00,buy:120000,cond:85,price:180000},
-{name:"G-Wagon Black",color:0x111111,buy:300000,cond:90,price:450000},
-{name:"Lambo Red",color:0xff0000,buy:500000,cond:95,price:750000},
-{name:"Toyota Corolla",color:0xffffff,buy:40000,cond:70,price:60000}
-];
-
-let carMeshes=[];
-carData.slice(0,2).forEach((d,i)=>{let m=spawnCar(d,platforms[i].x,platforms[i].z,showroom); m.userData.isMyCar=true; platforms[i].car=d; carMeshes.push(m); myCars.push(d);});
-
-// Auction cars
-[carData[1],{name:"DeLorean",color:0xcccccc,buy:80000,cond:60,price:120000},carData[2]].forEach((d,i)=>{let m=spawnCar(d,-15+i*10, -2, auction); m.userData.isAuction=true; m.userData.auctionPrice=150000+i*50000; carMeshes.push(m);});
-// Hood cars
-carData.forEach((d,i)=>{let m=spawnCar(d, (i%2?7:-7), -50+i*20, hood); m.userData.isHood=true; m.userData.ownerPrice=30000+i*20000; carMeshes.push(m);});
-
-// CONTROLS - FIXED
-camera.position.set(0,1.7,20); 
-function updateLoc(){
-  let distShow=Math.hypot(camera.position.x, camera.position.z);
-  let distAuc=Math.hypot(camera.position.x-80, camera.position.z);
-  let distHood=Math.hypot(camera.position.x, camera.position.z-80);
-  if(distShow<distAuc && distShow<distHood) document.getElementById('loc').innerText="SHOWROOM";
-  else if(distAuc<distHood) document.getElementById('loc').innerText="AUCTION";
-  else document.getElementById('loc').innerText="NEIGHBORHOOD";
-}
-function loop(){
-  requestAnimationFrame(loop);
-  // move
-  let f=new THREE.Vector3(0,0,-1).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
-  let r=new THREE.Vector3(1,0,0).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
-  let spd=isDriving?0.28:0.13;
-  if(!selected || isDriving){
-    if(keys['w']||jy<-0.2) camera.position.addScaledVector(f,spd);
-    if(keys['s']||jy>0.2) camera.position.addScaledVector(f,-spd);
-    if(keys['a']||jx<-0.2) camera.position.addScaledVector(r,-spd);
-    if(keys['d']||jx>0.2) camera.position.addScaledVector(r,spd);
-  }
-  if(isDriving && currentVehicle){ currentVehicle.position.copy(camera.position); currentVehicle.position.y=0; currentVehicle.rotation.y=yaw; camera.position.addScaledVector(f, -5); camera.position.y=2.2; }
-  camera.rotation.order='YXZ'; camera.rotation.y=yaw; camera.rotation.x=pitch;
-  renderer.render(scene,camera);
-  updateLoc();
-  // ray for selection
-  const ray=new THREE.Raycaster(); ray.setFromCamera(new THREE.Vector2(0,0),camera);
-  const hits=ray.intersectObjects(carMeshes,true);
-  if(hits.length){let root=hits[0].object; while(root.parent && root.parent.type!='Scene' && !root.userData.name) root=root.parent; selected=root.userData; document.getElementById('hint').innerText=`🎯 ${selected.name} - দাম: ৳${selected.price||selected.buy} - E=দাম Change, F=চালাও, 💰=Auction Join`; }
-}
-loop();
-
-// Input
-addEventListener('keydown',e=>{
-  keys[e.key.toLowerCase()]=true;
-  if(e.key.toLowerCase()=='e') doInspect();
-});
-addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
-let drag=false,lx=0,ly=0;
-renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY});
-addEventListener('pointerup',()=>drag=false);
-addEventListener('pointermove',e=>{
-  if(!drag) return; yaw-=(e.clientX-lx)*0.0035; pitch-=(e.clientY-ly)*0.0035; pitch=Math.max(-1.3,Math.min(1.3,pitch)); lx=e.clientX;ly=e.clientY;
-});
-let jx=0,jy=0; const joy=document.getElementById('joy'), stick=document.getElementById('stick');
-joy.addEventListener('touchmove',e=>{let rect=joy.getBoundingClientRect();let t=e.touches[0];let x=t.clientX-(rect.left+45),y=t.clientY-(rect.top+45);let d=Math.hypot(x,y);if(d>35){x=x/d*35;y=y/d*35} stick.style.transform=`translate(${x}px,${y}px)`; jx=x/35;jy=y/35;});
-joy.addEventListener('touchend',()=>{stick.style.transform='';jx=0;jy=0;});
-
-// ACTIONS
-function doInspect(){ if(!selected) return alert('গাড়ির দিকে তাকাও, কাছে যাও, Crosshair গাড়িতে রাখো'); alert(`🚗 ${selected.name}\nCond: ${selected.cond}%\nBuy: ৳${selected.buy}\nতোমার দাম: ৳${selected.price}\n\nShowroom এর ভিতরে তোমার গাড়ি হলে দাম Change করতে পারবা, বাইরে হলে Auction এ Join করতে পারবা`); }
-function doEditPrice(){
-  if(!selected || !selected.isMyCar) return alert('এটা তোমার Showroom এর গাড়ি না! Showroom এর ভিতরের তোমার গাড়ির দিকে তাকাও');
-  document.getElementById('priceEdit').style.display='flex';
-  document.getElementById('editCarName').innerText=selected.name;
-  document.getElementById('priceInput').value=selected.price;
-}
-window.savePrice=()=>{
-  let v=parseInt(document.getElementById('priceInput').value);
-  if(!v||v<1000) return alert('সঠিক দাম দাও');
-  selected.price=v; closePrice(); alert(`✅ দাম Change! এখন ${selected.name} এর নতুন দাম ৳${v} - Customer এই দাম দেখবে!`); document.getElementById('money').innerText=money;
-};
-window.closePrice=()=>document.getElementById('priceEdit').style.display='none';
-
-function doBuySell(){
-  if(!selected) return alert('গাড়ির দিকে তাকাও');
-  if(selected.isMyCar){
-    let sell=selected.price||selected.buy*1.3;
-    if(confirm(`💰 ${selected.name} বিক্রি করবা ৳${sell} টাকায়?\nCustomer আসবে, দরদাম করবে`)){ money+=sell; myCars=myCars.filter(c=>c!=selected); carMeshes.forEach(m=>{if(m.userData==selected) m.visible=false}); selected=null; document.getElementById('money').innerText=money; alert('বিক্রি Done!'); }
-  } else if(selected.isAuction){
-    if(confirm(`🔥 AUCTION JOIN করবা?\n${selected.name}\nCurrent Bid: ৳${selected.auctionPrice}\nতুমি Bid করবা?`)){
-      if(money>=selected.auctionPrice){ money-=selected.auctionPrice; selected.isMyCar=true; selected.isAuction=false; selected.buy=selected.auctionPrice; myCars.push(selected); alert(`🎉 Auction জিতছো! ${selected.name} এখন তোমার Showroom এ! Showroom এ হেঁটে যাও, Platform এ রাখা হবে`); 
-      let plat=platforms.find(p=>!p.car); if(plat){ selected.x=plat.x; selected.z=plat.z; let m=spawnCar(selected,plat.x,plat.z,showroom); carMeshes.push(m); plat.car=selected; }
-      } else alert('টাকা নাই');
+    public void OnPointerDown(PointerEventData e)
+    {
+        OnDrag(e);
     }
-  } else if(selected.isHood){
-    if(confirm(`🏘️ ${selected.name} - বাড়ির মালিক বিক্রি করবে ৳${selected.ownerPrice} এ, কিনবা? কিনে চালিয়ে Showroom এ নিবা`)){
-      if(money>=selected.ownerPrice){ money-=selected.ownerPrice; selected.isMyCar=true; selected.isHood=false; myCars.push(selected); alert('কিনছো! এখন F চাপে গাড়িতে উঠো, চালিয়ে Showroom এ নিয়ে আসো'); }
+
+    public void OnDrag(PointerEventData e)
+    {
+        Vector2 pos;
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            background, e.position,
+            e.pressEventCamera, out pos);
+
+        Direction = Vector2.ClampMagnitude(
+            pos / (background.sizeDelta / 2f), 1f);
+
+        handle.anchoredPosition = new Vector2(
+            Direction.x * background.sizeDelta.x / 2f,
+            Direction.y * background.sizeDelta.y / 2f);
     }
-  }
-  document.getElementById('money').innerText=money; document.getElementById('cnt').innerText=myCars.length+'/6';
+
+    public void OnPointerUp(PointerEventData e)
+    {
+        Direction = Vector2.zero;
+        handle.anchoredPosition = Vector2.zero;
+    }
+}using UnityEngine;
+
+[RequireComponent(typeof(CharacterController))]
+public class MobilePlayer : MonoBehaviour
+{
+    public MobileJoystick joystick;
+    public Transform cameraTransform;
+
+    public float moveSpeed = 5f;
+    public float sprintSpeed = 8f;
+    public float jumpHeight = 1.5f;
+    public float gravity = -20f;
+
+    private CharacterController controller;
+    private Vector3 velocity;
+
+    public bool sprinting;
+    public bool jumping;
+
+    void Start()
+    {
+        controller = GetComponent<CharacterController>();
+    }
+
+    void Update()
+    {
+        Move();
+    }
+
+    void Move()
+    {
+        Vector2 input = joystick.Direction;
+
+        Vector3 move =
+            transform.right * input.x +
+            transform.forward * input.y;
+
+        float speed = sprinting ? sprintSpeed : moveSpeed;
+
+        controller.Move(
+            move * speed * Time.deltaTime);
+
+        if (controller.isGrounded && velocity.y < 0)
+            velocity.y = -2f;
+
+        if (controller.isGrounded && jumping)
+        {
+            velocity.y =
+                Mathf.Sqrt(jumpHeight * -2f * gravity);
+
+            jumping = false;
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(
+            velocity * Time.deltaTime);
+    }
+
+    public void JumpButton()
+    {
+        jumping = true;
+    }
+
+    public void SprintButtonDown()
+    {
+        sprinting = true;
+    }
+
+    public void SprintButtonUp()
+    {
+        sprinting = false;
+    }
+}using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class MobileCamera : MonoBehaviour,
+    IDragHandler
+{
+    public Transform player;
+    public float sensitivity = 0.15f;
+
+    private float rotationX;
+
+    public void OnDrag(PointerEventData e)
+    {
+        float x = e.delta.x * sensitivity;
+        float y = e.delta.y * sensitivity;
+
+        player.Rotate(Vector3.up * x);
+
+        rotationX -= y;
+        rotationX = Mathf.Clamp(rotationX, -75f, 75f);
+
+        transform.localRotation =
+            Quaternion.Euler(rotationX, 0, 0);
+    }
+}using UnityEngine;
+
+public class MobileGun : MonoBehaviour
+{
+    public Camera playerCamera;
+
+    public float damage = 25f;
+    public float range = 150f;
+    public float fireRate = 0.2f;
+
+    private float nextFire;
+
+    public void FireButton()
+    {
+        if (Time.time < nextFire)
+            return;
+
+        nextFire = Time.time + fireRate;
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(
+            playerCamera.transform.position,
+            playerCamera.transform.forward,
+            out hit, range))
+        {
+            EnemyHealth enemy =
+                hit.collider.GetComponentInParent<EnemyHealth>();
+
+            if (enemy != null)
+                enemy.TakeDamage(damage);
+        }
+    }
+}using UnityEngine;
+
+public class EnemyHealth : MonoBehaviour
+{
+    public float health = 100f;
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+}using UnityEngine;
+
+public class PlayerHealth : MonoBehaviour
+{
+    public float maxHealth = 100f;
+    public float health = 100f;
+
+    public void TakeDamage(float damage)
+    {
+        health = Mathf.Max(0, health - damage);
+
+        if (health <= 0)
+        {
+            Debug.Log("Player Eliminated!");
+        }
+    }
+
+    public void Heal()
+    {
+        health = maxHealth;
+    }
+}using UnityEngine;
+
+public class AdminPanel : MonoBehaviour
+{
+    public MobilePlayer player;
+    public PlayerHealth playerHealth;
+
+    public void IncreaseSpeed()
+    {
+        player.moveSpeed += 1f;
+    }
+
+    public void HealPlayer()
+    {
+        playerHealth.Heal();
+    }
+
+    public void ResetSpeed()
+    {
+        player.moveSpeed = 5f;
+    }
 }
-function doWash(){ if(!selected||!selected.isMyCar) return alert('তোমার গাড়ি না'); if(money<500) return alert('টাকা নাই'); money-=500; selected.cond=Math.min(100,selected.cond+10); alert('🧼 ধোয়া Done! Cond +10%'); document.getElementById('money').innerText=money; }
-function doRepair(){ if(!selected||!selected.isMyCar) return alert('তোমার গাড়ি না'); if(money<2000) return alert('টাকা নাই'); money-=2000; selected.cond=Math.min(100,selected.cond+25); alert('🔧 Repair Done! Cond +25%'); document.getElementById('money').innerText=money; }
-function doDrive(){
-  if(!selected) return alert('গাড়ির দিকে তাকাও');
-  if(!isDriving){ isDriving=true; currentVehicle=carMeshes.find(m=>m.userData==selected); document.getElementById('hint').innerText='🚗 Driving! WASD চালাও, F চাপলে নামবা'; }
-  else { isDriving=false; currentVehicle=null; camera.position.y=1.7; document.getElementById('hint').innerText='গাড়ি থেকে নামছো'; }
-}
-window.doInspect=doInspect; window.doEditPrice=doEditPrice; window.doBuySell=doBuySell; window.doWash=doWash; window.doRepair=doRepair; window.doDrive=doDrive;
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);});
-document.getElementById('money').innerText=money;
-</script>
-</body>
-</html>
