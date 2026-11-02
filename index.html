@@ -1,225 +1,602 @@
-using UnityEngine;
-using UnityEngine.EventSystems;
-
-public class MobileJoystick : MonoBehaviour,
-    IDragHandler, IPointerDownHandler, IPointerUpHandler
-{
-    public RectTransform background;
-    public RectTransform handle;
-
-    public Vector2 Direction { get; private set; }
-
-    public void OnPointerDown(PointerEventData e)
-    {
-        OnDrag(e);
-    }
-
-    public void OnDrag(PointerEventData e)
-    {
-        Vector2 pos;
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            background, e.position,
-            e.pressEventCamera, out pos);
-
-        Direction = Vector2.ClampMagnitude(
-            pos / (background.sizeDelta / 2f), 1f);
-
-        handle.anchoredPosition = new Vector2(
-            Direction.x * background.sizeDelta.x / 2f,
-            Direction.y * background.sizeDelta.y / 2f);
-    }
-
-    public void OnPointerUp(PointerEventData e)
-    {
-        Direction = Vector2.zero;
-        handle.anchoredPosition = Vector2.zero;
-    }
-}using UnityEngine;
-
-[RequireComponent(typeof(CharacterController))]
-public class MobilePlayer : MonoBehaviour
-{
-    public MobileJoystick joystick;
-    public Transform cameraTransform;
-
-    public float moveSpeed = 5f;
-    public float sprintSpeed = 8f;
-    public float jumpHeight = 1.5f;
-    public float gravity = -20f;
-
-    private CharacterController controller;
-    private Vector3 velocity;
-
-    public bool sprinting;
-    public bool jumping;
-
-    void Start()
-    {
-        controller = GetComponent<CharacterController>();
-    }
-
-    void Update()
-    {
-        Move();
-    }
-
-    void Move()
-    {
-        Vector2 input = joystick.Direction;
-
-        Vector3 move =
-            transform.right * input.x +
-            transform.forward * input.y;
-
-        float speed = sprinting ? sprintSpeed : moveSpeed;
-
-        controller.Move(
-            move * speed * Time.deltaTime);
-
-        if (controller.isGrounded && velocity.y < 0)
-            velocity.y = -2f;
-
-        if (controller.isGrounded && jumping)
-        {
-            velocity.y =
-                Mathf.Sqrt(jumpHeight * -2f * gravity);
-
-            jumping = false;
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Style Battle Royale</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        velocity.y += gravity * Time.deltaTime;
-
-        controller.Move(
-            velocity * Time.deltaTime);
-    }
-
-    public void JumpButton()
-    {
-        jumping = true;
-    }
-
-    public void SprintButtonDown()
-    {
-        sprinting = true;
-    }
-
-    public void SprintButtonUp()
-    {
-        sprinting = false;
-    }
-}using UnityEngine;
-using UnityEngine.EventSystems;
-
-public class MobileCamera : MonoBehaviour,
-    IDragHandler
-{
-    public Transform player;
-    public float sensitivity = 0.15f;
-
-    private float rotationX;
-
-    public void OnDrag(PointerEventData e)
-    {
-        float x = e.delta.x * sensitivity;
-        float y = e.delta.y * sensitivity;
-
-        player.Rotate(Vector3.up * x);
-
-        rotationX -= y;
-        rotationX = Mathf.Clamp(rotationX, -75f, 75f);
-
-        transform.localRotation =
-            Quaternion.Euler(rotationX, 0, 0);
-    }
-}using UnityEngine;
-
-public class MobileGun : MonoBehaviour
-{
-    public Camera playerCamera;
-
-    public float damage = 25f;
-    public float range = 150f;
-    public float fireRate = 0.2f;
-
-    private float nextFire;
-
-    public void FireButton()
-    {
-        if (Time.time < nextFire)
-            return;
-
-        nextFire = Time.time + fireRate;
-
-        RaycastHit hit;
-
-        if (Physics.Raycast(
-            playerCamera.transform.position,
-            playerCamera.transform.forward,
-            out hit, range))
-        {
-            EnemyHealth enemy =
-                hit.collider.GetComponentInParent<EnemyHealth>();
-
-            if (enemy != null)
-                enemy.TakeDamage(damage);
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
         }
-    }
-}using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
-{
-    public float health = 100f;
-
-    public void TakeDamage(float damage)
-    {
-        health -= damage;
-
-        if (health <= 0)
-        {
-            Destroy(gameObject);
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
-    }
-}using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour
-{
-    public float maxHealth = 100f;
-    public float health = 100f;
-
-    public void TakeDamage(float damage)
-    {
-        health = Mathf.Max(0, health - damage);
-
-        if (health <= 0)
-        {
-            Debug.Log("Player Eliminated!");
+        /* UI overlay */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
-    }
 
-    public void Heal()
-    {
-        health = maxHealth;
-    }
-}using UnityEngine;
+        .interactive {
+            pointer-events: auto;
+        }
 
-public class AdminPanel : MonoBehaviour
-{
-    public MobilePlayer player;
-    public PlayerHealth playerHealth;
+        /* Lobby / Main Menu */
+        #lobby-screen {
+            background: linear-gradient(135deg, #1a0b00 0%, #3a1500 50%, #0d0500 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            z-index: 10;
+        }
 
-    public void IncreaseSpeed()
-    {
-        player.moveSpeed += 1f;
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid #ff6600;
+        }
 
-    public void HealPlayer()
-    {
-        playerHealth.Heal();
-    }
+        .currency-box {
+            display: flex;
+            gap: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+        }
 
-    public void ResetSpeed()
-    {
-        player.moveSpeed = 5f;
-    }
-}
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: linear-gradient(180deg, #ff8800 0%, #cc4400 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 102, 0, 0.4);
+            transition: transform 0.1s, filter 0.2s;
+        }
+
+        .btn:hover {
+            filter: brightness(1.2);
+            transform: scale(1.05);
+        }
+
+        .btn-large {
+            padding: 18px 45px;
+            font-size: 24px;
+            background: linear-gradient(180deg, #ffaa00 0%, #ff3300 100%);
+            box-shadow: 0 0 20px rgba(255, 102, 0, 0.8);
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* Modal Screens */
+        .modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(15, 15, 20, 0.95);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            height: 70%;
+            padding: 25px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+            color: #ffaa00;
+            border-bottom: 2px solid #ff6600;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .card {
+            background: rgba(40, 40, 50, 0.8);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card.active {
+            border: 2px solid #00ffcc;
+            background: rgba(0, 255, 204, 0.1);
+        }
+
+        /* HUD Layer */
+        #hud-screen {
+            display: none;
+        }
+
+        .hud-top {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .bar-container {
+            width: 250px;
+            height: 18px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            width: 100%;
+            transition: width 0.2s;
+        }
+
+        .hp-fill { background: #00ff66; }
+        .ep-fill { background: #ffcc00; }
+
+        .bar-text {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 18px;
+        }
+
+        .hud-top-right {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            text-align: right;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .hud-bottom-right {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .weapon-box {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #ffaa00;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: right;
+        }
+
+        .ammo-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        .gloo-box {
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #00ccff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .scope-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, black 70%);
+            display: none;
+            pointer-events: none;
+        }
+
+        .mode-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #ff6600;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .mode-btn.selected {
+            background: #ff6600;
+            font-weight: bold;
+        }
+    </style>
+    <!-- Three.js library for 3D Graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <!-- 3D Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Lobby UI Layer -->
+    <div id="lobby-screen" class="ui-layer interactive">
+        <div class="header">
+            <h2>FREE FIRE 3D REMAKE</h2>
+            <div class="currency-box">
+                🪙 Gold: <span id="user-gold">100000</span>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <div class="mode-select" style="justify-content: center;">
+                <button class="mode-btn selected" onclick="selectMode('br', this)">BR Ranked</button>
+                <button class="mode-btn" onclick="selectMode('cs', this)">CS Rank (4v4)</button>
+                <button class="mode-btn" onclick="selectMode('1v1', this)">1v1 Gloo Wall Match</button>
+            </div>
+            <button class="btn btn-large" onclick="startGame()">START MATCH</button>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn" onclick="openModal('store-modal')">Character Store</button>
+            <button class="btn" onclick="openModal('weapon-modal')">Weapon Store</button>
+        </div>
+    </div>
+
+    <!-- Character Store Modal -->
+    <div id="store-modal" class="modal interactive">
+        <div class="modal-header">
+            <span>CHARACTER STORE</span>
+            <button class="btn" onclick="closeModal('store-modal')">X</button>
+        </div>
+        <div class="grid-container" id="character-list"></div>
+    </div>
+
+    <!-- Weapon Store Modal -->
+    <div id="weapon-modal" class="modal interactive">
+        <div class="modal-header">
+            <span>WEAPON STORE</span>
+            <button class="btn" onclick="closeModal('weapon-modal')">X</button>
+        </div>
+        <div class="grid-container" id="weapon-list"></div>
+    </div>
+
+    <!-- In-Game HUD -->
+    <div id="hud-screen" class="ui-layer">
+        <div class="crosshair"></div>
+        <div id="scope-overlay" class="scope-overlay"></div>
+
+        <div class="hud-top">
+            <div class="bar-container">
+                <div id="hp-bar" class="bar-fill hp-fill"></div>
+                <div class="bar-text">HP: <span id="hp-val">200</span>/200</div>
+            </div>
+        </div>
+
+        <div class="hud-top-right">
+            <div>Kills: <span id="kill-count" style="color:#00ffcc; font-size: 20px;">0</span></div>
+            <div>Alive: <span id="alive-count" style="color:#ffcc00; font-size: 20px;">10</span></div>
+        </div>
+
+        <div class="hud-bottom-right">
+            <div class="gloo-box">
+                <div>GLOO WALL</div>
+                <div id="gloo-count" style="font-size:22px; color:#00ccff; font-weight:bold;">0</div>
+                <small style="font-size:10px;">[Press G]</small>
+            </div>
+            <div class="weapon-box">
+                <div id="weapon-name" style="color:#ffaa00; font-weight:bold;">AK-47</div>
+                <div class="ammo-text"><span id="ammo-cur">30</span> / <span id="ammo-max">30</span></div>
+                <small style="font-size:10px;">[Press R to Reload]</small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State Variables
+        let gold = 100000;
+        let selectedMode = 'br';
+        let currentCharacter = 'kelly';
+        let currentWeapon = 'ak47';
+        let glooWallsCount = 0;
+        let kills = 0;
+        let aliveEnemies = 0;
+        let gameActive = false;
+
+        // Player Data
+        const characters = {
+            'kelly': { name: 'Kelly', price: 0, speed: 0.18, owned: true, color: 0xffcc00 },
+            'alok': { name: 'DJ Alok', price: 50000, speed: 0.22, owned: false, color: 0x00ccff },
+            'chrono': { name: 'Chrono', price: 75000, speed: 0.20, owned: false, color: 0x9900ff },
+            'hayato': { name: 'Hayato', price: 30000, speed: 0.19, owned: false, color: 0xff3300 }
+        };
+
+        const weapons = {
+            'ak47': { name: 'AK-47', price: 0, damage: 35, ammo: 30, fireRate: 150, owned: true },
+            'mp40': { name: 'MP40 Cobra', price: 40000, damage: 22, ammo: 40, fireRate: 80, owned: false },
+            'm1887': { name: 'M1887 Shotgun', price: 60000, damage: 90, ammo: 2, fireRate: 600, owned: false }
+        };
+
+        // Render & 3D Variables
+        let scene, camera, renderer;
+        let playerGroup, enemies = [], glooWalls = [];
+        let keys = {};
+        let mouseLook = { yaw: 0, pitch: 0 };
+        let playerHp = 200;
+        let ammoCurrent = 30;
+        let lastShootTime = 0;
+
+        function init() {
+            renderStore();
+            setup3D();
+            window.addEventListener('keydown', e => keys[e.code] = true);
+            window.addEventListener('keyup', e => keys[e.code] = false);
+            window.addEventListener('resize', onWindowResize);
+
+            document.addEventListener('mousemove', (e) => {
+                if (document.pointerLockElement === document.body) {
+                    mouseLook.yaw -= e.movementX * 0.002;
+                    mouseLook.pitch -= e.movementY * 0.002;
+                    mouseLook.pitch = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, mouseLook.pitch));
+                }
+            });
+
+            document.addEventListener('mousedown', (e) => {
+                if (gameActive && document.pointerLockElement === document.body) {
+                    if (e.button === 0) shootWeapon();
+                    if (e.button === 2) toggleScope(true);
+                }
+            });
+
+            document.addEventListener('mouseup', (e) => {
+                if (e.button === 2) toggleScope(false);
+            });
+
+            document.addEventListener('contextmenu', e => e.preventDefault());
+        }
+
+        function setup3D() {
+            const canvas = document.getElementById('game-canvas');
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87ceeb);
+            scene.fog = new THREE.FogExp2(0x87ceeb, 0.015);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(50, 100, 50);
+            dirLight.castShadow = true;
+            scene.add(dirLight);
+
+            // Ground
+            const groundGeo = new THREE.PlaneGeometry(300, 300);
+            const groundMat = new THREE.MeshLambertMaterial({ color: 0x2e8b57 });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+        }
+
+        // Store Logic
+        function renderStore() {
+            document.getElementById('user-gold').innerText = gold;
+            
+            // Characters
+            const charContainer = document.getElementById('character-list');
+            charContainer.innerHTML = '';
+            for (let id in characters) {
+                let c = characters[id];
+                let isEquipped = currentCharacter === id;
+                charContainer.innerHTML += `
+                    <div class="card ${isEquipped ? 'active' : ''}">
+                        <h3>${c.name}</h3>
+                        <p>Speed Booster</p>
+                        <p style="color:#ffd700; margin:10px 0;">${c.owned ? 'Owned' : c.price + ' Gold'}</p>
+                        <button class="btn" onclick="buyOrEquipChar('${id}')">
+                            ${isEquipped ? 'Equipped' : (c.owned ? 'Equip' : 'Buy')}
+                        </button>
+                    </div>
+                `;
+            }
+
+            // Weapons
+            const weapContainer = document.getElementById('weapon-list');
+            weapContainer.innerHTML = '';
+            for (let id in weapons) {
+                let w = weapons[id];
+                let isEquipped = currentWeapon === id;
+                weapContainer.innerHTML += `
+                    <div class="card ${isEquipped ? 'active' : ''}">
+                        <h3>${w.name}</h3>
+                        <p>Damage: ${w.damage}</p>
+                        <p style="color:#ffd700; margin:10px 0;">${w.owned ? 'Owned' : w.price + ' Gold'}</p>
+                        <button class="btn" onclick="buyOrEquipWeap('${id}')">
+                            ${isEquipped ? 'Equipped' : (w.owned ? 'Equip' : 'Buy')}
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function buyOrEquipChar(id) {
+            let c = characters[id];
+            if (c.owned) {
+                currentCharacter = id;
+            } else if (gold >= c.price) {
+                gold -= c.price;
+                c.owned = true;
+                currentCharacter = id;
+            }
+            renderStore();
+        }
+
+        function buyOrEquipWeap(id) {
+            let w = weapons[id];
+            if (w.owned) {
+                currentWeapon = id;
+            } else if (gold >= w.price) {
+                gold -= w.price;
+                w.owned = true;
+                currentWeapon = id;
+            }
+            renderStore();
+        }
+
+        function selectMode(mode, btn) {
+            selectedMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Start Match
+        function startGame() {
+            document.getElementById('lobby-screen').style.display = 'none';
+            document.getElementById('hud-screen').style.display = 'block';
+            document.body.requestPointerLock();
+
+            gameActive = true;
+            playerHp = 200;
+            kills = 0;
+            ammoCurrent = weapons[currentWeapon].ammo;
+
+            if (selectedMode === '1v1') {
+                glooWallsCount = 100000; // 1 Lakh Gloo Walls
+                aliveEnemies = 1;
+            } else if (selectedMode === 'cs') {
+                glooWallsCount = 5;
+                aliveEnemies = 4;
+            } else {
+                glooWallsCount = 3;
+                aliveEnemies = 10;
+            }
+
+            updateHUD();
+            buildGameEntities();
+            animate();
+        }
+
+        function buildGameEntities() {
+            // Clear existing
+            if (playerGroup) scene.remove(playerGroup);
+            enemies.forEach(e => scene.remove(e.mesh));
+            glooWalls.forEach(g => scene.remove(g));
+            enemies = []; glooWalls = [];
+
+            // PLAYER - Scaled Down (0.75x)
+            playerGroup = new THREE.Group();
+            let charColor = characters[currentCharacter].color;
+            
+            const bodyGeo = new THREE.CylinderGeometry(0.3, 0.3, 1.2, 8);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: charColor });
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.position.y = 0.6;
+            playerGroup.add(body);
+
+            const headGeo = new THREE.SphereGeometry(0.25, 8, 8);
+            const headMat = new THREE.MeshStandardMaterial({ color: 0xffcc99 });
+            const head = new THREE.Mesh(headGeo, headMat);
+            head.position.y = 1.35;
+            playerGroup.add(head);
+
+            playerGroup.scale.set(0.75, 0.75, 0.75); // User requested smaller player
+            scene.add(playerGroup);
+
+            // ENEMIES - Scaled Up (1.3x) Larger Enemy Bots
+            for (let i = 0; i < aliveEnemies; i++) {
+                let enemyGroup = new THREE.Group();
+
+                const eBodyGeo = new THREE.CylinderGeometry(0.4, 0.4, 1.5, 8);
+                const eBodyMat = new THREE.MeshStandardMaterial({ color: 0xcc0000 });
+                const eBody = new THREE.Mesh(eBodyGeo, eBodyMat);
+                eBody.position.y = 0.75;
+                enemyGroup.add(eBody);
+
+                const eHeadGeo = new THREE.SphereGeometry(0.3, 8, 8);
+                const eHeadMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+                const eHead = new THREE.Mesh(eHeadGeo, eHeadMa
