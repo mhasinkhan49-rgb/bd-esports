@@ -2,453 +2,249 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Battle X - Shooting Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>BD BATTLE - FACTORY MAP LIKE YOUR VIDEO</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#101820;color:white;font-family:Arial,sans-serif}
-header{background:#182b3c;padding:14px;text-align:center}
-h1{margin:5px;color:#ffd54a}
-nav{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding:12px}
-button{background:#e8a72d;border:0;border-radius:7px;padding:11px 14px;font-weight:bold;cursor:pointer}
-button:active{transform:scale(.96)}
-button:disabled{opacity:.45}
-.panel{background:#203448;padding:14px;margin:10px;border-radius:10px}
-.hidden{display:none}
-#game{display:block;width:100%;height:62vh;background:#506b42;border:3px solid #d9a43b;touch-action:none}
-.stats{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px}
-.controls{display:flex;justify-content:space-around;align-items:center;padding:12px;gap:8px}
-.big{font-size:17px;padding:17px}
-#message{text-align:center;color:#ffe46a;min-height:25px}
-.item{display:inline-block;background:#30495f;padding:12px;margin:6px;border-radius:8px;min-width:130px}
-input{padding:10px;border-radius:6px;border:0;max-width:100%}
-.small{font-size:12px;color:#ccc}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0e18;color:#fff;font-family:sans-serif;overflow:hidden}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#start{position:fixed;inset:0;background:radial-gradient(#1e293b,#000);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+.btn{padding:12px 18px;border:none;border-radius:10px;font-weight:900;margin:4px}
+.by{background:#facc15;color:#000}.bg{background:#22c55e;color:#fff}.br{background:#ef4444;color:#fff}.bb{background:#1e293b;color:#fff;border:1px solid #333}
+#top{position:fixed;top:0;left:0;right:0;height:36px;background:rgba(0,0,0,0.9);display:none;justify-content:space-between;align-items:center;padding:0 8px;font-size:11px;z-index:100;border-bottom:2px solid #facc15}
+#lobby{position:fixed;top:36px;left:0;right:0;bottom:0;background:#0f172a;display:none;overflow-y:auto;padding:12px;z-index:80;padding-bottom:70px}
+.mapBox{background:linear-gradient(90deg,#1e293b,#0f172a);border:2px solid #334155;border-radius:14px;padding:12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}
+.mapBox.on{border-color:#facc15;box-shadow:0 0 15px rgba(250,204,21,0.4)}
+#game{position:fixed;top:36px;left:0;right:0;bottom:0;background:#5a6a7a;display:none;z-index:70;overflow:hidden}
+#world{position:absolute;width:2400px;height:2400px;background:#8a9aaa;left:0;top:0}
+.building{position:absolute;background:#3a4a5a;border:2px solid #2a3a4a;box-shadow:inset 0 0 20px rgba(0,0,0,0.5)}
+.stair{position:absolute;background:linear-gradient(#facc15,#eab308);border:2px solid #000;display:flex;flex-direction:column;gap:3px;padding:4px}
+.stair div{height:8px;background:#000;opacity:0.3}
+.konoha{position:absolute;width:60px;height:60px;border:3px solid #ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;color:#ef4444;font-weight:900;opacity:0.8}
+.konoha:after{content:"";position:absolute;width:80%;height:80%;border:3px solid #ef4444;border-radius:50%;border-top-color:transparent;transform:rotate(-20deg)}
+.p{position:absolute;width:32px;height:32px;border-radius:50%;border:2px solid #000;display:flex;align-items:center;justify-content:center;z-index:10}
+#player{background:#fff;box-shadow:0 0 10px #fff}
+.enemy{background:#ff4444}
+.bul{position:absolute;width:8px;height:8px;background:yellow;border-radius:50%;z-index:5}
+.gloo{position:absolute;width:80px;height:90px;background:rgba(34,197,94,0.6);border:3px solid rgba(255,255,255,0.8);border-radius:12px;backdrop-filter:blur(2px);box-shadow:0 0 20px rgba(34,197,94,0.5);z-index:6}
+#joy{position:fixed;bottom:15px;left:15px;width:110px;height:110px;background:rgba(255,255,255,0.15);border-radius:50%;border:2px solid rgba(255,255,255,0.4);z-index:90;display:none;touch-action:none}
+#stick{width:44px;height:44px;background:#facc15;border-radius:50%;position:absolute;left:33px;top:33px;box-shadow:0 0 10px #facc15}
+#fire{position:fixed;bottom:18px;right:18px;width:75px;height:75px;background:radial-gradient(#ef4444,#991b1b);border-radius:50%;border:3px solid #fff;z-index:90;display:none;align-items:center;justify-content:center;font-size:28px}
+#glooBtn{position:fixed;bottom:100px;right:20px;width:62px;height:62px;background:radial-gradient(#22c55e,#15803d);border-radius:50%;border:3px solid #fff;z-index:90;display:none;align-items:center;justify-content:center;font-size:24px}
+#scopeBtn{position:fixed;bottom:170px;right:20px;width:52px;height:52px;background:#1e293b;border-radius:50%;border:2px solid #fff;z-index:90;display:none;align-items:center;justify-content:center;font-size:18px}
+#ctrl{position:fixed;bottom:230px;right:10px;z-index:90;display:none;flex-direction:column;gap:5px}
+.cB{padding:6px 8px;background:#111827;border:1px solid #444;color:#fff;border-radius:6px;font-size:10px;font-weight:900}
+#buyStore{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:120;display:none;padding:0;overflow:hidden}
+.buyHeader{background:#ff7b00;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;font-weight:900;color:#000}
+.buyGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px;height:70%;overflow-y:auto}
+.buyItem{background:#1a2535;border:1px solid #2a3a4a;border-radius:6px;padding:6px;display:flex;gap:6px;align-items:center}
+.buyItem.on{border-color:#facc15;background:#2a3a15}
+.buyLeft{width:55px;height:30px;background:#0f172a;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.buyRight{flex:1;font-size:10px}
+.buyPrice{font-size:11px;color:#facc15;font-weight:900}
+#msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;color:#000;padding:12px 18px;border-radius:12px;font-weight:900;z-index:200;display:none;text-align:center;max-width:280px}
+#tabs{position:fixed;bottom:0;left:0;right:0;background:#000;display:none;z-index:85;border-top:2px solid #facc15;flex-direction:row}
+.tab{flex:1;padding:10px 2px;text-align:center;font-size:10px;font-weight:900;opacity:0.6}
+.tab.on{opacity:1;background:#1e293b;color:#facc15}
+.emoteWheel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:260px;height:260px;background:rgba(0,0,0,0.7);border-radius:50%;z-index:130;display:none;align-items:center;justify-content:center}
+.emoteOpt{position:absolute;width:48px;height:48px;background:#1e293b;border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
 </style>
 </head>
 <body>
 
-<header>
-<h1>⚔ BATTLE X</h1>
-<div>Ultimate Shooting Battle Game</div>
-</header>
-
-<div class="stats panel">
-<div>🪙 Coins: <b id="coins">5000</b></div>
-<div>⭐ Level: <b id="level">1</b>/100</div>
-<div>SP: <b id="xp">0</b></div>
-<div>❤️ HP: <b id="hp">100</b></div>
+<div id="start">
+<h1 style="color:#facc15;font-size:36px">🔥 FACTORY - NARUTO MAP</h1>
+<p style="color:#fff;font-size:12px;margin:8px">তোমার ভিডিওর মতো - Factory + Konoha চিহ্ন + Buy Store</p>
+<input id="nameIn" placeholder="নাম লিখো" style="padding:10px;width:260px;border-radius:8px;border:none;text-align:center;font-weight:900;margin:8px">
+<button class="btn by" style="width:280px;font-size:18px;padding:15px" onclick="enterGame()">▶️ START - TRAINING</button>
+<p style="font-size:11px;color:#aaa;margin-top:6px">START চাপলেই তোমার ভিডিওর মতো Factory তে ঢুকবা<br>MP5, M4A1, Green Gloo Wall সব আছে</p>
 </div>
 
-<nav>
-<button onclick="show('home')">HOME</button>
-<button onclick="show('gamePanel')">GAME</button>
-<button onclick="show('characters')">CHARACTER STORE</button>
-<button onclick="show('dress')">DRESS UP</button>
-<button onclick="show('skins')">GUN SKINS</button>
-<button onclick="show('profile')">PROFILE</button>
-</nav>
-
-<section id="home" class="panel">
-<h2>Welcome to Battle X</h2>
-<p>তোমার যুদ্ধ শুরু করো!</p>
-<button class="big" onclick="startGame('training')">▶ START TRAINING</button>
-<button class="big" onclick="startGame('battle')">⚔ BATTLE MATCH</button>
-<button class="big" onclick="startGame('1v1')">🔥 1 VS 1 MATCH</button>
-<div id="message">Ready for Battle!</div>
-</section>
-
-<section id="gamePanel" class="panel hidden">
-<div class="stats">
-<span id="mode">Training</span>
-<span>Enemies: <b id="enemyCount">0</b></span>
-<span>Gun: <b id="gun">M4A1</b></span>
+<div id="top">
+<div>👤 <span id="pName">Player</span> | LV <span id="pLv">1</span> | 💰 <span id="pMoney">3400</span> | 🧊 <span id="pGloo">3</span></div>
+<div>🎯 <span id="alive">0</span> ALIVE | 🔫 <span id="ammo">41/374</span> | <span id="gunName">MP5</span></div>
 </div>
-<canvas id="game"></canvas>
-<div class="controls">
-<button class="big" id="leftFire">◀</button>
-<button class="big" id="fire">🔥 FIRE</button>
-<button class="big" id="rightFire">▶</button>
-<button class="big" onclick="placeWall()">🛡 GLOO</button>
+
+<div id="lobby">
+<div class="mapBox on"><div><b>🏭 FACTORY - NARUTO (তোমার ভিডিওর মতো)</b><br><small>Buy Store, MP5, Konoha Symbol, Yellow Stairs</small></div><button class="btn by" onclick="startFactory()">PLAY</button></div>
+<div class="mapBox"><div><b>⚔️ 1v1 - 2 PLAYER ONLY</b><br><small>Unlimited Green Gloo - তোমার ভিডিওর মতো</small></div><button class="btn br" onclick="start1v1()">1v1 PLAY</button></div>
+<div class="mapBox"><div><b>🔥 BR - 10 ENEMY</b><br><small>Factory তে 10 জনকে খুঁজে মারো</small></div><button class="btn bg" onclick="startBR()">BR PLAY</button></div>
+<div style="background:#111827;padding:8px;border-radius:8px;margin:10px 0;font-size:11px">
+<b>তোমার ভিডিওর Store:</b> MP5 800, AUG 1200, M4A1 1000, AWM 1500 - 3400 টাকা নিয়ে শুরু
 </div>
-<div class="controls">
-<button onclick="switchGun()">🔫 CHANGE GUN</button>
-<button onclick="show('home')">EXIT</button>
 </div>
-<p class="small">PC: WASD / Arrow Keys = Move, Space = Fire, G = Gloo Wall, Q = Gun Change. মোবাইলে Joystick ব্যবহার করো।</p>
-<div style="text-align:center">
-<button id="joy" style="width:100px;height:65px;border-radius:50%;background:#607d8b;color:white">JOYSTICK</button>
+
+<div id="game">
+<div id="world">
+<!-- Factory Buildings like video -->
+<div class="building" style="left:100px;top:100px;width:900px;height:700px"></div>
+<div class="building" style="left:1400px;top:100px;width:900px;height:700px"></div>
+<div class="building" style="left:100px;top:1600px;width:900px;height:700px"></div>
+<div class="building" style="left:1400px;top:1600px;width:900px;height:700px"></div>
+<!-- Yellow Stairs like video -->
+<div class="stair" style="left:1050px;top:400px;width:120px;height:200px"><div></div><div></div><div></div><div></div><div></div></div>
+<div class="stair" style="left:1250px;top:400px;width:120px;height:200px"><div></div><div></div><div></div><div></div><div></div></div>
+<div class="stair" style="left:1050px;top:1800px;width:120px;height:200px"><div></div><div></div><div></div><div></div><div></div></div>
+<!-- Konoha Symbols like video -->
+<div class="konoha" style="left:300px;top:400px">🌀</div>
+<div class="konoha" style="left:700px;top:400px">🌀</div>
+<div class="konoha" style="left:1600px;top:400px">🌀</div>
+<div class="konoha" style="left:2000px;top:400px">🌀</div>
+<div id="player" class="p">🧑</div>
 </div>
-</section>
+</div>
 
-<section id="characters" class="panel hidden">
-<h2>👤 Character Store</h2>
-<div id="characterList"></div>
-</section>
+<div id="joy"><div id="stick"></div></div>
+<div id="fire" onclick="fireGun()">🔥</div>
+<div id="glooBtn" onclick="placeGloo()">🧊</div>
+<div id="scopeBtn" onclick="toggleScope()">🎯</div>
+<div id="ctrl">
+<button class="cB" onclick="openBuy()">🛒 Buy (B)</button>
+<button class="cB" onclick="showEmote()">💃 Emote</button>
+<button class="cB" onclick="switchGun()">🔫 Switch 2 Guns</button>
+<button class="cB" style="background:#ef4444" onclick="backToLobby()">🚪 Exit</button>
+</div>
 
-<section id="dress" class="panel hidden">
-<h2>👕 Dress Up Store</h2>
-<div id="dressList"></div>
-</section>
+<!-- Buy Store like video 0:03 -->
+<div id="buyStore">
+<div class="buyHeader"><span>🔫 ক্রয়: সরঞ্জামাদি - 00:29</span><span id="buyMoney">💰 3400</span><button class="btn bb" style="padding:4px 8px" onclick="document.getElementById('buyStore').style.display='none'">X</button></div>
+<div class="buyGrid" id="buyGrid"></div>
+<div style="padding:8px;background:#111827;display:flex;gap:6px">
+<button class="btn by" style="flex:1" onclick="buySelected()">কিনুন</button>
+<button class="btn bb" style="flex:1" onclick="document.getElementById('buyStore').style.display='none'">বন্ধ করুন</button>
+</div>
+</div>
 
-<section id="skins" class="panel hidden">
-<h2>🔫 Gun Skin Store</h2>
-<div id="skinList"></div>
-</section>
+<!-- Emote Wheel like video 0:19 -->
+<div class="emoteWheel" id="emoteWheel" onclick="this.style.display='none'">
+<div class="emoteOpt" style="left:50%;top:10%;transform:translate(-50%,-50%)" onclick="doEmote('🕺')">🕺</div>
+<div class="emoteOpt" style="left:85%;top:25%" onclick="doEmote('💃')">💃</div>
+<div class="emoteOpt" style="left:90%;top:60%" onclick="doEmote('🎉')">🎉</div>
+<div class="emoteOpt" style="left:50%;top:90%;transform:translate(-50%,-50%)" onclick="doEmote('😂')">😂</div>
+<div class="emoteOpt" style="left:15%;top:60%" onclick="doEmote('👏')">👏</div>
+<div class="emoteOpt" style="left:10%;top:25%" onclick="doEmote('🔥')">🔥</div>
+<div style="color:#fff;font-weight:900">Emote Wheel</div>
+</div>
 
-<section id="profile" class="panel hidden">
-<h2>👑 Player Profile</h2>
-<p>Player Name:</p>
-<input id="playerName" placeholder="তোমার নাম লিখো">
-<button onclick="saveName()">SAVE NAME</button>
-<p id="profileName"></p>
-<p>Level: <b id="profileLevel">1</b>/100</p>
-<p>Experience: <b id="profileXP">0</b> SP</p>
-<p>প্রতি ৫০০০ SP-তে ১ লেভেল। ১০,০০০ SP-তে ২ লেভেল।</p>
-<p>Owned Characters: <span id="ownedCount"></span></p>
-</section>
+<div id="tabs">
+<div class="tab on" onclick="backToLobby()">🎮 Factory</div>
+<div class="tab" onclick="openBuy()">🛒 Buy Store</div>
+<div class="tab" onclick="showEmote()">💃 Emote</div>
+<div class="tab" onclick="start1v1()">⚔️ 1v1</div>
+</div>
+
+<div id="msg"></div>
 
 <script>
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
+let playerName='Player', money=3400, glooCount=3, ammo=41, maxAmmo=374, gun='MP5', level=1, xp=0;
+let playerX=1200, playerY=1200, joyX=0, joyY=0, enemies=[], alive=0, playing=false, mode='', selectedBuy=null;
 
-let coins=5000,xp=0,level=1;
-let hp=100,gameRunning=false,mode="training";
-let player={x:0,y:0,r:13,speed:3};
-let enemies=[],walls=[],bullets=[];
-let gunIndex=0,fireHeld=false,keys={};
-let joyX=0,joyY=0,joyActive=false;
-let rewarded=false,lastShot=0;
-let ownedCharacters=["Jack"];
-let ownedDress=[];
-let ownedSkins=[];
-let equippedCharacter="Jack";
-let equippedSkin="";
-let equippedDress=[];
-let playerName="Player";
-
-const guns=["M4A1","UMP","Desert Eagle","Mini Uzi"];
-
-const characters=[
-["Jack",500],["Jackie",800],["Jessica",1000],
-["Akkas",1200],["Karim",1500],["Rafiq",1800],
-["Shadow",2500],["Hunter",3000]
+let shop=[
+ {id:'G18',name:'G18',price:300,emoji:'🔫',ammo:'107',desc:'পিস্তল'},
+ {id:'MP5',name:'MP5',price:800,emoji:'🔫',ammo:'41/374',desc:'SMG - তোমার ভিডিওতে কিনছো'},
+ {id:'AUG',name:'AUG',price:1200,emoji:'🔫',ammo:'30/200',desc:'Assault'},
+ {id:'M4A1',name:'M4A1',price:1000,emoji:'🔫',ammo:'41/374',desc:'তোমার ভিডিওর মতো'},
+ {id:'M1014',name:'M1014',price:1200,emoji:'🔫',ammo:'6/30',desc:'Shotgun'},
+ {id:'M1887',name:'M1887',price:1500,emoji:'🔫',ammo:'2/20',desc:'One Shot'},
+ {id:'AWM',name:'AWM',price:1500,emoji:'🎯',ammo:'5/30',desc:'Sniper'},
+ {id:'Gloo',name:'Gloo Wall',price:300,emoji:'🧊',ammo:'3',desc:'Green Gloo - ভিডিওর মতো'},
+ {id:'Medkit',name:'Medkit',price:200,emoji:'💊',ammo:'1',desc:'HP'},
 ];
 
-const dresses=[
-["Red Shirt",300],["Black Shirt",400],
-["Blue Shirt",450],["Combat Pant",500],
-["Black Pant",550],["Sunglasses",350],
-["Golden Glasses",600],["Army Outfit",900]
-];
+function msg(t){let m=document.getElementById('msg');m.innerText=t;m.style.display='block';setTimeout(()=>m.style.display='none',2200);}
+function upd(){document.getElementById('pName').innerText=playerName;document.getElementById('pMoney').innerText=money;document.getElementById('buyMoney').innerText='💰 '+money;document.getElementById('pGloo').innerText=mode=='1v1'?'∞':glooCount;document.getElementById('alive').innerText=alive;document.getElementById('ammo').innerText=ammo+'/'+maxAmmo;document.getElementById('gunName').innerText=gun;document.getElementById('pLv').innerText=level;}
 
-const skins=[
-["MB40 Skin",500],["UMP Skin",600],
-["Ximate Skin",700],["Desert Eagle Skin",800],
-["AK47 Skin",900],["AWM Skin",1000],
-["Katana Skin",1200],["Pan Skin",500],
-["Golden Mini Uzi",1500]
-];
-
-function load(){
-try{
-const d=JSON.parse(localStorage.getItem("battlex")||"{}");
-coins=d.coins??5000;
-xp=d.xp??0;
-level=d.level??1;
-ownedCharacters=d.ownedCharacters||["Jack"];
-ownedDress=d.ownedDress||[];
-ownedSkins=d.ownedSkins||[];
-equippedCharacter=d.equippedCharacter||"Jack";
-equippedSkin=d.equippedSkin||"";
-equippedDress=d.equippedDress||[];
-playerName=d.playerName||"Player";
-}catch(e){}
-updateUI();
+function enterGame(){
+ let v=document.getElementById('nameIn').value; if(v) playerName=v;
+ document.getElementById('start').style.display='none';
+ document.getElementById('top').style.display='flex';
+ document.getElementById('tabs').style.display='flex';
+ document.getElementById('lobby').style.display='block';
+ upd(); msg('✅ Factory Map এ স্বাগতম! তোমার ভিডিওর মতো!');
 }
-
-function save(){
-localStorage.setItem("battlex",JSON.stringify({
-coins,xp,level,ownedCharacters,ownedDress,ownedSkins,
-equippedCharacter,equippedSkin,equippedDress,playerName
-}));
+function startFactory(){document.getElementById('lobby').style.display='none'; openGame('factory');}
+function start1v1(){document.getElementById('lobby').style.display='none'; openGame('1v1');}
+function startBR(){document.getElementById('lobby').style.display='none'; openGame('br');}
+function backToLobby(){
+ playing=false;
+ document.getElementById('game').style.display='none';
+ document.getElementById('joy').style.display='none';
+ document.getElementById('fire').style.display='none';
+ document.getElementById('glooBtn').style.display='none';
+ document.getElementById('scopeBtn').style.display='none';
+ document.getElementById('ctrl').style.display='none';
+ document.getElementById('lobby').style.display='block';
+ document.getElementById('tabs').style.display='flex';
+ document.getElementById('top').style.display='flex';
+ if(mode!='training'){money+=500; msg('Match শেষ! 500 টাকা পাইছো!');}
+ upd();
 }
-
-function updateUI(){
-document.getElementById("coins").textContent=coins;
-document.getElementById("xp").textContent=xp;
-document.getElementById("level").textContent=level;
-document.getElementById("hp").textContent=hp;
-document.getElementById("profileLevel").textContent=level;
-document.getElementById("profileXP").textContent=xp;
-document.getElementById("ownedCount").textContent=ownedCharacters.length;
-document.getElementById("profileName").textContent="Name: "+playerName;
-document.getElementById("playerName").value=playerName;
+function openGame(m){
+ mode=m; playing=true; playerX=1200; playerY=1200; ammo=41; maxAmmo=374; gun='MP5'; money=m=='factory'?3400:money;
+ if(m=='br') alive=10; else if(m=='1v1') alive=1; else alive=2;
+ document.getElementById('game').style.display='block';
+ document.getElementById('joy').style.display='block';
+ document.getElementById('fire').style.display='flex';
+ document.getElementById('glooBtn').style.display='flex';
+ document.getElementById('scopeBtn').style.display='flex';
+ document.getElementById('ctrl').style.display='flex';
+ document.getElementById('top').style.display='flex';
+ document.getElementById('tabs').style.display='none';
+ document.getElementById('player').style.left=playerX+'px';
+ document.getElementById('player').style.top=playerY+'px';
+ document.getElementById('world').style.transform=`translate(${-playerX+innerWidth/2}px,${-playerY+innerHeight/2}px)`;
+ spawn(m); upd(); loop();
+ if(m=='factory') setTimeout(openBuy,800);
 }
-
-function show(id){
-document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
-if(id==="characters")renderStore(characters,"characterList","character");
-if(id==="dress")renderStore(dresses,"dressList","dress");
-if(id==="skins")renderStore(skins,"skinList","skin");
+function spawn(m){
+ let w=document.getElementById('world'); w.querySelectorAll('.enemy').forEach(e=>e.remove()); w.querySelectorAll('.gloo').forEach(e=>e.remove()); w.querySelectorAll('.bul').forEach(e=>e.remove());
+ enemies=[]; let c=m=='br'?10:m=='1v1'?1:2;
+ for(let i=0;i<c;i++){let e=document.createElement('div');e.className='p enemy';e.innerHTML='💀';e.style.left=(Math.random()*2000+200)+'px';e.style.top=(Math.random()*2000+200)+'px';e.dataset.hp=100;w.appendChild(e);enemies.push(e);}
 }
-
-function saveName(){
-let n=document.getElementById("playerName").value.trim();
-if(n)playerName=n;
-save();updateUI();
-}
-
-function renderStore(items,id,type){
-let html="";
-items.forEach(([name,price])=>{
-let owned=type==="character"?ownedCharacters.includes(name):
-type==="dress"?ownedDress.includes(name):ownedSkins.includes(name);
-let equipped=type==="character"?equippedCharacter===name:
-type==="dress"?equippedDress.includes(name):equippedSkin===name;
-
-html+=`<div class="item">
-<h3>${name}</h3>
-<p>Price: ${price} Coins</p>
-${owned?
-`<button onclick="equip('${type}','${name}')">${equipped?"EQUIPPED":"EQUIP"}</button>`:
-`<button onclick="buy('${type}','${name}',${price})">BUY</button>`}
-</div>`;
-});
-document.getElementById(id).innerHTML=html;
-}
-
-function buy(type,name,price){
-if(coins<price){alert("Not enough coins!");return;}
-coins-=price;
-if(type==="character")ownedCharacters.push(name);
-if(type==="dress")ownedDress.push(name);
-if(type==="skin")ownedSkins.push(name);
-save();updateUI();
-renderStore(type==="character"?characters:type==="dress"?dresses:skins,
-type==="character"?"characterList":type==="dress"?"dressList":"skinList",type);
-}
-
-function equip(type,name){
-if(type==="character")equippedCharacter=name;
-if(type==="skin")equippedSkin=name;
-if(type==="dress"){
-if(equippedDress.includes(name))equippedDress=equippedDress.filter(x=>x!==name);
-else equippedDress.push(name);
-}
-save();
-renderStore(type==="character"?characters:type==="dress"?dresses:skins,
-type==="character"?"characterList":type==="dress"?"dressList":"skinList",type);
-}
-
-function resize(){
-let r=canvas.getBoundingClientRect();
-canvas.width=r.width*devicePixelRatio;
-canvas.height=r.height*devicePixelRatio;
-ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-}
-window.addEventListener("resize",resize);
-resize();
-
-function startGame(m){
-mode=m;
-hp=100;
-player.x=canvas.clientWidth/2;
-player.y=canvas.clientHeight/2;
-enemies=[];
-walls=[];
-bullets=[];
-rewarded=false;
-gameRunning=true;
-
-let count=m==="battle"?10:m==="1v1"?1:0;
-for(let i=0;i<count;i++){
-let a=Math.random()*Math.PI*2;
-let distance=130+Math.random()*160;
-enemies.push({
-x:Math.max(20,Math.min(canvas.clientWidth-20,player.x+Math.cos(a)*distance)),
-y:Math.max(20,Math.min(canvas.clientHeight-20,player.y+Math.sin(a)*distance)),
-r:12,hp:100,speed:0.65+Math.random()*.35,
-lastAttack:0
-});
-}
-document.getElementById("mode").textContent=m.toUpperCase();
-document.getElementById("enemyCount").textContent=enemies.length;
-document.getElementById("gun").textContent=guns[gunIndex];
-show("gamePanel");
-requestAnimationFrame(loop);
-}
-
-function switchGun(){
-gunIndex=(gunIndex+1)%guns.length;
-document.getElementById("gun").textContent=guns[gunIndex];
-}
-
-function placeWall(){
-if(!gameRunning)return;
-let dx=joyX||0,dy=joyY||0;
-walls.push({
-x:player.x+(dx?dx*35:0),
-y:player.y+(dy?dy*35:-35),
-w:48,h:12
-});
-}
-
-function shoot(){
-if(!gameRunning)return;
-let now=Date.now();
-if(now-lastShot<180)return;
-lastShot=now;
-if(!enemies.length)return;
-let target=enemies.reduce((a,b)=>
-Math.hypot(a.x-player.x,a.y-player.y)<
-Math.hypot(b.x-player.x,b.y-player.y)?a:b);
-let angle=Math.atan2(target.y-player.y,target.x-player.x);
-let speed=gunIndex===2?12:8;
-bullets.push({
-x:player.x,y:player.y,
-vx:Math.cos(angle)*speed,
-vy:Math.sin(angle)*speed,
-damage:gunIndex===2?65:gunIndex===3?12:25
-});
-}
-
-function movePlayer(){
-let dx=0,dy=0;
-if(keys["w"]||keys["ArrowUp"])dy--;
-if(keys["s"]||keys["ArrowDown"])dy++;
-if(keys["a"]||keys["ArrowLeft"])dx--;
-if(keys["d"]||keys["ArrowRight"])dx++;
-dx+=joyX;dy+=joyY;
-let l=Math.hypot(dx,dy)||1;
-player.x+=dx/l*player.speed;
-player.y+=dy/l*player.speed;
-player.x=Math.max(12,Math.min(canvas.clientWidth-12,player.x));
-player.y=Math.max(12,Math.min(canvas.clientHeight-12,player.y));
-}
-
 function loop(){
-if(!gameRunning)return;
-movePlayer();
-if(fireHeld||keys[" "])shoot();
-
-let w=canvas.clientWidth,h=canvas.clientHeight;
-ctx.clearRect(0,0,w,h);
-ctx.fillStyle="#587a43";
-ctx.fillRect(0,0,w,h);
-
-// Ground decoration
-ctx.strokeStyle="rgba(255,255,255,.08)";
-for(let x=0;x<w;x+=45){
-ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();
+ if(!playing) return; requestAnimationFrame(loop);
+ if(joyX||joyY){playerX+=joyX*6; playerY+=joyY*6; playerX=Math.max(100,Math.min(2300,playerX)); playerY=Math.max(100,Math.min(2300,playerY)); document.getElementById('player').style.left=playerX+'px'; document.getElementById('player').style.top=playerY+'px'; let wx=-playerX+innerWidth/2, wy=-playerY+innerHeight/2; document.getElementById('world').style.transform=`translate(${wx}px,${wy}px)`;}
+ enemies.forEach(en=>{let ex=parseInt(en.style.left),ey=parseInt(en.style.top);let ang=Math.atan2(playerY-ey,playerX-ex);en.style.left=(ex+Math.cos(ang)*1.2)+'px';en.style.top=(ey+Math.sin(ang)*1.2)+'px';});
 }
-for(let y=0;y<h;y+=45){
-ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+function fireGun(){
+ if(!playing) return; if(ammo<=0){msg('Reload!'); ammo=41; upd(); return;} ammo--; upd();
+ let w=document.getElementById('world'); let b=document.createElement('div');b.className='bul';b.style.left=playerX+12+'px';b.style.top=playerY+12+'px';w.appendChild(b);
+ let dx=joyX||0, dy=joyY||-1; let len=Math.hypot(dx,dy)||1; dx/=len; dy/=len; let d=0;
+ let it=setInterval(()=>{d+=18;b.style.left=playerX+12+dx*d+'px';b.style.top=playerY+12+dy*d+'px';
+  enemies.forEach((en,i)=>{if(Math.hypot(parseInt(b.style.left)-parseInt(en.style.left),parseInt(b.style.top)-parseInt(en.style.top))<24){en.dataset.hp-=35;en.style.transform='scale(1.5)';setTimeout(()=>en.style.transform='scale(1)',100);if(en.dataset.hp<=0){en.remove();enemies.splice(i,1);alive--;upd();msg('Knock! বাকি '+alive);if(alive<=0){msg('🏆 BOOYAH! Factory Clear!');setTimeout(backToLobby,1200);}}b.remove();clearInterval(it);}});
+  if(d>500){b.remove();clearInterval(it);}
+ },16);
 }
-
-// Gloo walls
-walls.forEach(v=>{
-ctx.fillStyle="#55ddeb";
-ctx.fillRect(v.x-v.w/2,v.y-v.h/2,v.w,v.h);
-});
-
-// Bullets
-bullets.forEach(b=>{
-b.x+=b.vx;b.y+=b.vy;
-ctx.fillStyle="#ffeb3b";
-ctx.beginPath();ctx.arc(b.x,b.y,4,0,Math.PI*2);ctx.fill();
-enemies.forEach(e=>{
-if(Math.hypot(e.x-b.x,e.y-b.y)<e.r+5){
-e.hp-=b.damage;b.x=-999;
+function placeGloo(){
+ if(!playing) return; if(mode!='1v1' && glooCount<=0){msg('Gloo শেষ! Buy Store থেকে কিনো'); return;}
+ if(mode!='1v1') glooCount--;
+ let w=document.getElementById('world'); let g=document.createElement('div');g.className='gloo';g.style.left=(playerX+ (joyX*60||40))+'px';g.style.top=(playerY+(joyY*60||0))+'px';w.appendChild(g); upd(); msg('🧊 Green Gloo Wall! '+(mode=='1v1'?'Unlimited':'বাকি '+glooCount)); setTimeout(()=>g.remove(), mode=='1v1'?15000:7000);
 }
-});
-});
-bullets=bullets.filter(b=>b.x>0&&b.x<w&&b.y>0&&b.y<h);
-
-enemies.forEach(e=>{
-let a=Math.atan2(player.y-e.y,player.x-e.x);
-let dist=Math.hypot(player.x-e.x,player.y-e.y);
-if(dist>24){
-let nx=e.x+Math.cos(a)*e.speed;
-let ny=e.y+Math.sin(a)*e.speed;
-let blocked=walls.some(v=>Math.abs(nx-v.x)<v.w/2+10&&Math.abs(ny-v.y)<v.h/2+10);
-if(!blocked){e.x=nx;e.y=ny;}
+function openBuy(){
+ document.getElementById('buyStore').style.display='block';
+ let h=''; shop.forEach((it,i)=>{let sel=selectedBuy==i?'on':''; h+=`<div class="buyItem ${sel}" onclick="selectBuy(${i})"><div class="buyLeft">${it.emoji}</div><div class="buyRight"><b>${it.name}</b><br>${it.desc}<br><span class="buyPrice">$ ${it.price} | ${it.ammo}</span></div></div>`;});
+ document.getElementById('buyGrid').innerHTML=h;
 }
-if(dist<30&&Date.now()-e.lastAttack>800){
-hp=Math.max(0,hp-5);
-e.lastAttack=Date.now();
+function selectBuy(i){selectedBuy=i; openBuy(); let it=shop[i]; document.getElementById('buyGrid').children[i].scrollIntoView({block:'nearest'}); msg(it.name+' Select করছো - '+it.price+' টাকা');}
+function buySelected(){
+ if(selectedBuy===null){msg('একটা Gun Select করো!'); return;}
+ let it=shop[selectedBuy]; if(money<it.price){msg('টাকা নাই! $'+it.price+' লাগবে'); return;}
+ money-=it.price;
+ if(it.id=='Gloo'){glooCount+=3; msg('🧊 3 টা Gloo Wall কিনছো!');}
+ else if(it.id=='Medkit'){msg('💊 Medkit কিনছো!');}
+ else {gun=it.name; ammo=parseInt(it.ammo.split('/')[0])||41; maxAmmo=parseInt(it.ammo.split('/')[1])||374; msg('🔫 '+it.name+' কিনছো! Ammo '+it.ammo);}
+ upd(); document.getElementById('buyStore').style.display='none';
 }
-ctx.fillStyle="#e53935";
-ctx.beginPath();ctx.arc(e.x,e.y,e.r,0,Math.PI*2);ctx.fill();
-ctx.fillStyle="white";
-ctx.fillRect(e.x-13,e.y-20,26,4);
-ctx.fillStyle="#35e66d";
-ctx.fillRect(e.x-13,e.y-20,26*Math.max(0,e.hp/100),4);
-});
+function showEmote(){document.getElementById('emoteWheel').style.display='flex';}
+function doEmote(e){let p=document.getElementById('player');p.innerHTML=e;setTimeout(()=>p.innerHTML='🧑',1200);document.getElementById('emoteWheel').style.display='none';msg('Emote: '+e);}
+function switchGun(){gun=gun=='MP5'?'M1887':'MP5'; ammo=gun=='MP5'?41:2; maxAmmo=gun=='MP5'?374:20; upd(); msg('🔫 Gun Switch: '+gun+' - 2 টা গান আছে');}
+function toggleScope(){let p=document.getElementById('player'); p.style.transform=p.style.transform=='scale(1.8)'?'scale(1)':'scale(1.8)'; msg('🎯 Scope ON/OFF - তোমার ভিডিওর মতো Scope');}
 
-enemies=enemies.filter(e=>e.hp>0);
-document.getElementById("enemyCount").textContent=enemies.length;
-
-// Player
-ctx.fillStyle="#ffcf45";
-ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fill();
-ctx.fillStyle="white";
-ctx.fillText(equippedCharacter,player.x-20,player.y-20);
-
-updateUI();
-
-if(enemies.length===0&&!rewarded&&mode!=="training"){
-rewarded=true;
-xp+=10000;
-coins+=1000;
-let old=level;
-level=Math.min(100,1+Math.floor(xp/5000));
-save();updateUI();
-alert("🏆 MATCH WIN! +10000 SP +1000 Coins! Level "+old+" → "+level);
-gameRunning=false;
-show("home");
-return;
-}
-if(hp<=0){
-gameRunning=false;
-alert("GAME OVER! Try Again.");
-show("home");
-return;
-}
-requestAnimationFrame(loop);
-}
-
-document.addEventListener("keydown",e=>{
-keys[e.key]=true;
-if(e.key.toLowerCase()==="g")placeWall();
-if(e.key.toLowerCase()==="q")switchGun();
-});
-document.addEventListener("keyup",e=>keys[e.key]=false);
-
-document.getElementById("fire").onpointerdown=e=>{fireHeld=true;shoot()};
-document.getElementById("fire").onpointerup=()=>fireHeld=false;
-document.getElementById("fire").onpointerleave=()=>fireHeld=false;
-
-document.getElementById("leftFire").onpointerdown=()=>joyX=-1;
-document.getElementById("leftFire").onpointerup=()=>joyX=0;
-document.getElementById("rightFire").onpointerdown=()=>joyX=1;
-document.getElementById("rightFire").onpointerup=()=>joyX=0;
-
-let joy=document.getElementById("joy");
-joy.onpointerdown=e=>{
-joyActive=true;joy.setPointerCapture(e.pointerId);
-};
-joy.onpointermove=e=>{
-if(!joyActive)return;
-let r=joy.getBoundingClientRect();
-joyX=Math.max(-1,Math.min(1,(e.clientX-r.left-r.width/2)/(r.width/2)));
-joyY=Math.max(-1,Math.min(1,(e.clientY-r.top-r.height/2)/(r.height/2)));
-};
-joy.onpointerup=()=>{joyActive=false;joyX=0;joyY=0};
-joy.onpointercancel=()=>{joyActive=false;joyX=0;joyY=0};
-
-load();
-show("home");
+// Joystick - only joy has touch-action:none
+let joy=document.getElementById('joy'), stick=document.getElementById('stick');
+joy.addEventListener('touchstart', e=>{e.preventDefault();},{passive:false});
+joy.addEventListener('touchmove', e=>{e.preventDefault();let r=joy.getBoundingClientRect();let t=e.touches[0];let x=t.clientX-(r.left+55),y=t.clientY-(r.top+55);let d=Math.hypot(x,y);if(d>50){x=x/d*50;y=y/d*50}stick.style.left=(33+x)+'px';stick.style.top=(33+y)+'px';joyX=x/50;joyY=y/50;},{passive:false});
+joy.addEventListener('touchend', e=>{e.preventDefault();stick.style.left='33px';stick.style.top='33px';joyX=0;joyY=0;},{passive:false});
 </script>
 </body>
 </html>
