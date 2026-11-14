@@ -1,313 +1,218 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Free online PDF tools: create PDFs from text and images, merge, split, rotate and convert PDF pages to images.">
-<meta name="keywords" content="PDF tools, PDF maker, image to PDF, merge PDF, split PDF, PDF converter">
-<meta name="theme-color" content="#5546d7">
-<title>PDF Master — Free Online PDF Tools</title>
+<title>MY CHOICE - Daraz Style</title>
 <style>
-:root{--primary:#5546d7;--ink:#20243a;--muted:#687086;--bg:#f6f7fc;--line:#e8eaf2;--white:#fff}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(5%,calc((100% - 1120px)/2));position:sticky;top:0;z-index:5}
-.brand{font-size:23px;font-weight:800;color:var(--primary);text-decoration:none}
-nav{display:flex;gap:24px}
-nav a{color:#42485c;text-decoration:none;font-size:14px}
-.hero{text-align:center;padding:65px 18px 48px;background:linear-gradient(135deg,#eeedff,#f8f8ff)}
-.hero h1{font-size:clamp(30px,5vw,46px);margin:0 0 14px;letter-spacing:-1.2px}
-.hero p{color:var(--muted);line-height:1.7;max-width:650px;margin:auto}
-.search{width:min(480px,100%);margin:25px auto 0}
-.search input{width:100%;padding:15px 17px;border:1px solid #dedcf7;border-radius:12px;font-size:15px;outline-color:var(--primary)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 18px}
-.ad{max-width:900px;min-height:90px;margin:24px auto;background:#fff;border:1px dashed #c9cbd5;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#9399a8;font-size:12px}
-.section-heading{text-align:center;margin:38px 0 23px}
-.section-heading h2{font-size:26px;margin:0 0 8px}
-.section-heading p{color:var(--muted);font-size:14px}
-.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.tool{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;text-align:left;cursor:pointer;transition:.2s;color:inherit}
-.tool:hover{transform:translateY(-3px);border-color:#aaa2f1;box-shadow:0 10px 25px #30208010}
-.tool .ico{font-size:29px}
-.tool h3{font-size:16px;margin:13px 0 7px}
-.tool p{font-size:13px;color:var(--muted);line-height:1.5;margin:0}
-.panel{display:none;background:#fff;border:1px solid var(--line);border-radius:16px;padding:25px;margin:28px 0;box-shadow:0 8px 30px #20243a08}
-.panel h2{margin:0 0 8px}
-.panel .hint{color:var(--muted);font-size:13px;margin-bottom:17px}
-.field{display:block;width:100%;padding:13px;margin:10px 0;border:1px solid #dfe1ea;border-radius:9px;font:inherit;background:#fff}
-textarea.field{min-height:150px;resize:vertical}
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-block;border:0;border-radius:9px;padding:12px 19px;background:var(--primary);color:white;font-weight:700;cursor:pointer;text-decoration:none}
-.btn:disabled{opacity:.55;cursor:wait}
-.btn.light{background:#eeedff;color:#493bbd}
-.status{min-height:22px;margin-top:15px;font-size:14px;color:#493bbd;overflow-wrap:anywhere}
-.download{display:none;margin-top:12px}
-.info{max-width:760px;margin:55px auto;text-align:center;line-height:1.8}
-.info p{color:var(--muted);font-size:14px}
-footer{margin-top:55px;background:#20243a;color:#fff;text-align:center;padding:35px 15px;line-height:2}
-footer a{color:#d2ceff;margin:0 8px;text-decoration:none}
-.small{font-size:12px;color:#aeb3c2}
-@media(max-width:620px){header{height:62px}nav{gap:12px}nav a{font-size:12px}.brand{font-size:19px}.panel{padding:17px}}
+*{box-sizing:border-box;font-family:Hind Siliguri,Arial} body{margin:0;background:#f5f5f5;padding-bottom:90px}
+.top{position:sticky;top:0;z-index:20;background:#fff;padding:10px}
+.search{display:flex;gap:6px;border:3px solid #f85606;border-radius:12px;overflow:hidden;background:#fff}
+.search input{flex:1;border:0;padding:14px;outline:none;font-size:16px}
+.search .cam{font-size:28px;padding:8px}
+.search button{background:#f85606;color:#fff;border:0;padding:0 22px;font-weight:bold;font-size:16px}
+.tabs{display:flex;gap:14px;overflow:auto;padding:12px 8px;background:#fff;white-space:nowrap;font-weight:bold;font-size:16px}
+.tabs span{padding:8px 10px} .tabs .on{color:#f85606;border-bottom:4px solid #f85606}
+.banner{background:linear-gradient(90deg,#7c3aed,#f85606);color:#fff;padding:16px;text-align:center;border-radius:12px;margin:8px}
+.banner b{font-size:20px}
+.section{background:#fff;margin:8px 0;padding:12px}
+.secHead{display:flex;justify-content:space-between;align-items:center}
+.secHead b{font-size:19px} .secHead span{color:#7c3aed;font-size:14px;font-weight:bold}
+.flash{display:flex;gap:10px;overflow:auto}
+.flash .f{width:32%;flex-shrink:0}
+.flash img,.grid img{width:100%;height:140px;object-fit:cover;border-radius:10px}
+.price{color:#f85606;font-weight:bold;font-size:18px} .off{color:#f85606;background:#ffe1d2;padding:3px 6px;border-radius:6px;font-size:12px;font-weight:bold;margin-left:5px}
+.rank{display:flex;gap:10px;overflow:auto}
+.rank .r{width:140px;flex-shrink:0;background:#fff7ed;border-radius:12px;padding:8px;text-align:center;position:relative}
+.rank .r img{height:100px}
+.rank .num{position:absolute;top:35px;left:8px;background:gold;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:bold;border:2px solid red}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border-radius:12px;padding:10px;position:relative}
+.card .tag{position:absolute;bottom:110px;left:0;display:flex;font-size:11px;font-weight:bold;color:#fff}
+.tag span{padding:4px 6px} .tag .g{background:#0a8a5a} .tag .p{background:#ff005c}
+.rate{font-size:13px;color:#666;margin:4px 0}
+button{cursor:pointer;touch-action:manipulation}
+/* বড় বাটন */
+.buy{width:100%;padding:14px;border:0;border-radius:12px;font-weight:bold;font-size:17px;background:#ffb800;margin-top:6px}
+.add{width:100%;padding:14px;border:0;border-radius:12px;font-weight:bold;font-size:17px;background:#f85606;color:#fff;margin-top:6px}
+.bigBtn{width:100%;padding:16px;border:0;border-radius:12px;font-weight:bold;font-size:18px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px 0;border-top:2px solid #ddd;z-index:30}
+.bottom div{text-align:center;font-size:14px;padding:6px 10px;border-radius:10px}
+.bottom .active{color:#f85606;font-weight:bold}
+.modal{position:fixed;inset:0;background:#0008;display:none;z-index:100;align-items:flex-end}
+.modal.open{display:flex}
+.sheet{background:#fff;width:100%;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:14px}
+.detailImg{width:100%;height:280px;object-fit:cover;border-radius:12px}
+.checkRow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee}
+.payOpt{border:2px solid #ddd;padding:14px;border-radius:12px;margin:8px 0;display:flex;gap:10px;align-items:center;font-size:16px}
+.payOpt.sel{border-color:#f85606;background:#fff7ed}
+input,select,textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;margin:6px 0;font-size:16px}
+.admin{background:#111;color:#fff;padding:14px;border-radius:14px;margin:10px}
+.admin input{background:#222;color:#fff}
+.hidden{display:none}
+.bkashBox{background:#ffe4e6;border:2px dashed #e11d48;padding:14px;border-radius:14px;margin:10px 0;text-align:center}
+.bkashBox b{color:#be123c;font-size:22px}
 </style>
 </head>
 <body>
-<header>
-<a class="brand" href="#">📄 PDF Master</a>
-<nav><a href="#">Home</a><a href="#tools">PDF Tools</a><a href="#about">About</a></nav>
-</header>
 
-<section class="hero">
-<h1>All Your PDF Tools in One Place</h1>
-<p>Create and manage PDF files online. Simple tools for everyday document tasks, with no account required.</p>
-<div class="search"><input id="search" type="search" placeholder="Search tools..." aria-label="Search PDF tools"></div>
-</section>
-
-<div class="wrap"><div class="ad">Advertisement space — add your approved ad code here</div></div>
-
-<main class="wrap">
-<section id="tools">
-<div class="section-heading"><h2>Explore PDF Tools</h2><p>Choose a tool to get started.</p></div>
-<div class="tools" id="toolGrid">
-<button class="tool" data-name="image to pdf convert photos pictures" onclick="openTool('image')"><span class="ico">🖼️</span><h3>Image to PDF</h3><p>Turn JPG and PNG images into a PDF file.</p></button>
-<button class="tool" data-name="text to pdf create document" onclick="openTool('text')"><span class="ico">📝</span><h3>Text to PDF</h3><p>Create a PDF document from typed text.</p></button>
-<button class="tool" data-name="merge combine join pdf" onclick="openTool('merge')"><span class="ico">📚</span><h3>Merge PDF</h3><p>Combine multiple PDF files into one.</p></button>
-<button class="tool" data-name="split extract pages pdf" onclick="openTool('split')"><span class="ico">✂️</span><h3>Split PDF</h3><p>Extract selected pages from a PDF.</p></button>
-<button class="tool" data-name="rotate turn pdf" onclick="openTool('rotate')"><span class="ico">🔄</span><h3>Rotate PDF</h3><p>Rotate every page in a PDF.</p></button>
-<button class="tool" data-name="pdf to images png convert" onclick="openTool('images')"><span class="ico">🎨</span><h3>PDF to Images</h3><p>Export each PDF page as a PNG image.</p></button>
+<div class="top">
+<div class="search"><input id="searchBox" placeholder="খুঁজো... T800, ঘড়ি, জুতা" onkeyup="render()"><span class="cam">📷</span><button onclick="render()">Search</button></div>
 </div>
-</section>
 
-<div class="ad">Advertisement space</div>
-
-<section class="panel" id="workspace" aria-live="polite">
-<h2 id="toolTitle">PDF Tool</h2>
-<p class="hint" id="toolHint"></p>
-<div id="toolFields"></div>
-<div class="actions">
-<button class="btn" id="runBtn" onclick="processTool()">Process</button>
-<button class="btn light" onclick="closeTool()">Close</button>
+<div class="tabs">
+<span class="on" onclick="setTab(this)">🔥 For You</span><span onclick="setTab(this)">🧡 Mega Deals</span><span onclick="setTab(this)">🎟️ Voucher Max</span><span onclick="setTab(this)">🚚 Fast Delivery</span><span onclick="setTab(this)">⚡ Flash Sale</span>
 </div>
-<div class="status" id="status"></div>
-<a class="btn download" id="download" download>Download result</a>
-</section>
 
-<section class="info" id="about">
-<h2>Why use PDF Master?</h2>
-<p>Free and easy-to-use PDF utilities. Files are processed in your browser for the tools on this demo page. Your files are not uploaded to a PDF processing server by this website.</p>
-</section>
-</main>
+<div class="banner"><b>MY CHOICE - 11.11 Super Offer</b><br>UP TO 80% OFF | বিকাশ: 01756596482 <br><span id="timer" style="background:#fff;color:#f85606;padding:4px 10px;border-radius:10px;font-weight:bold;display:inline-block;margin-top:6px">End in 08:02:09</span></div>
 
-<footer>
-<h2>📄 PDF Master</h2>
-<p>Simple online PDF tools for everyone.</p>
-<p><a href="#about">About</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></p>
-<p class="small">© <span id="year"></span> PDF Master. All rights reserved.</p>
-</footer>
+<div class="section">
+<div class="secHead"><b>Flash ⚡ Sale</b><span>Shop More ></span></div>
+<div class="flash" id="flashRow"></div>
+</div>
+
+<div class="section">
+<div class="secHead"><b>Top <span style="color:#f85606">Ranking</span></b><span>Discover More ></span></div>
+<div class="rank">
+<div class="r"><span class="num">1</span><b>Over-the-Ear Headphones</b><br><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300"><br>⭐ 4.8</div>
+<div class="r"><span class="num">1</span><b>Feature Phones</b><br><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"><br>⭐ 4.5</div>
+<div class="r"><span class="num">1</span><b>Oil & Ghee</b><br><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300"><br>⭐ 4.9</div>
+<div class="r"><span class="num">1</span><b>Chips & Snacks</b><br><img src="https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300"><br>⭐ 4.7</div>
+</div>
+</div>
+
+<div class="section">
+<div class="secHead"><b>For You</b><span id="totalP"></span></div>
+<div class="grid" id="grid"></div>
+</div>
+
+<div style="padding:10px">
+<div class="admin">
+<h3>🔐 Admin Panel - শুধু তুমি (পাসওয়ার্ড: 1234)</h3>
+<input id="adminPass" type="password" placeholder="পাসওয়ার্ড দাও">
+<button onclick="loginAdmin()" class="bigBtn" style="background:#facc15">🔓 Admin এ ঢুকো</button>
+<div id="adminForm" class="hidden">
+<input id="pName" placeholder="প্রোডাক্ট নাম - যেমন: T800 Ultra Watch">
+<input id="pImg" placeholder="ছবির লিংক">
+<input id="pPrice" type="number" placeholder="দাম - 459">
+<input id="pOld" type="number" placeholder="আগের দাম - 1200">
+<button onclick="addProduct()" class="bigBtn" style="background:#22c55e;color:#fff">➕ প্রোডাক্ট যোগ করো</button>
+<hr>
+<h4>📦 অর্ডার লিস্ট</h4><div id="orderList">এখনো অর্ডার নাই</div>
+</div>
+</div>
+</div>
+
+<div class="bottom">
+<div class="active" onclick="showPage('home')">🏠<br>Home</div>
+<div onclick="showPage('msg')">💬<br>Messages</div>
+<div onclick="showPage('offer')" style="background:#ffb800;border-radius:50%;width:58px;height:58px;margin-top:-26px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px">UP TO<br>50% OFF</div>
+<div onclick="openCart()">🛒<br>Cart <span id="cartCount">0</span></div>
+<div onclick="showPage('account')">👤<br>Account</div>
+</div>
+
+<div class="modal" id="detailModal"><div class="sheet"><div id="detailBox"></div><button onclick="closeModal('detailModal')" class="bigBtn" style="background:#111;color:#fff;margin-top:10px">বন্ধ করো</button></div></div>
+<div class="modal" id="cartModal"><div class="sheet"><div id="cartBox"></div><button onclick="closeModal('cartModal')" class="bigBtn" style="background:#111;color:#fff;margin-top:10px">বন্ধ করো</button></div></div>
 
 <script>
-'use strict';
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+let products=[
+{name:"T900 Ultra 2 Full Touch Watch",price:459,old:1200,rating:"4.7 (254)",sold:"1.4k Sold",img:"https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500"},
+{name:"BOYA BY M1 Microphone",price:361,old:500,rating:"4.5 (2)",sold:"200 Sold",img:"https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500"},
+{name:"Mobile Gaming Headphone",price:245,old:1200,rating:"4.1 (539)",sold:"2.1k Sold",img:"https://images.unsplash.com/photo-1599669454699-248893623440?w=500"},
+{name:"New Men Kids Soccer Shoes",price:459,old:700,rating:"4.3 (12)",sold:"50 Sold",img:"https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=500"},
+{name:"New Women Watch - Pink",price:102,old:580,rating:"4.8 (90)",sold:"500 Sold",img:"https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500"},
+{name:"Cute Cat Ear Wireless Headphones",price:383,old:900,rating:"4.9 (120)",sold:"800 Sold",img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"},
+{name:"Premium Sunglass - Spot",price:229,old:400,rating:"4.5 (6)",sold:"45 Sold",img:"https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500"},
+{name:"M25 Bluetooth Earbuds",price:370,old:800,rating:"4.5 (211)",sold:"932 Sold",img:"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500"},
+];
+let cart=[]; let orders=[]; let adminPass="1234"; let selectedPay='Cash on Delivery';
+let bkashNum="01756596482";
 
-let currentTool = '';
-let downloadURL = '';
-
-document.getElementById('year').textContent = new Date().getFullYear();
-document.getElementById('search').addEventListener('input', function () {
-  const query = this.value.trim().toLowerCase();
-  document.querySelectorAll('.tool').forEach(card => {
-    card.hidden = !card.dataset.name.includes(query);
-  });
-});
-
-const configs = {
-  image: {title:'Image to PDF', hint:'Select one or more JPG or PNG images.', fields:'<input class="field" id="files" type="file" accept="image/jpeg,image/png" multiple>'},
-  text: {title:'Text to PDF', hint:'Type or paste the text you want in your PDF.', fields:'<textarea class="field" id="content" placeholder="Write your text here..."></textarea>'},
-  merge: {title:'Merge PDF', hint:'Choose two or more PDF files. Files are combined in the order selected.', fields:'<input class="field" id="files" type="file" accept="application/pdf,.pdf" multiple>'},
-  split: {title:'Split PDF', hint:'Choose a PDF and enter pages such as 1-3,5. Page numbers start at 1.', fields:'<input class="field" id="files" type="file" accept="application/pdf,.pdf"><input class="field" id="range" placeholder="Example: 1-3,5">'},
-  rotate: {title:'Rotate PDF', hint:'Choose a PDF and select the rotation angle.', fields:'<input class="field" id="files" type="file" accept="application/pdf,.pdf"><select class="field" id="angle"><option value="90">90 degrees clockwise</option><option value="180">180 degrees</option><option value="270">270 degrees clockwise</option></select>'},
-  images: {title:'PDF to Images', hint:'Each page will be downloaded as a separate PNG file.', fields:'<input class="field" id="files" type="file" accept="application/pdf,.pdf">'}
-};
-
-function openTool(name) {
-  currentTool = name;
-  const config = configs[name];
-  document.getElementById('toolTitle').textContent = config.title;
-  document.getElementById('toolHint').textContent = config.hint;
-  document.getElementById('toolFields').innerHTML = config.fields;
-  document.getElementById('runBtn').textContent = name === 'images' ? 'Convert to PNG' : 'Process';
-  document.getElementById('runBtn').disabled = false;
-  document.getElementById('status').textContent = '';
-  document.getElementById('download').style.display = 'none';
-  document.getElementById('workspace').style.display = 'block';
-  document.getElementById('workspace').scrollIntoView({behavior:'smooth'});
+function calcOff(p){ return Math.round((1-p.price/p.old)*100); }
+function render(){
+ let q=document.getElementById('searchBox').value.toLowerCase();
+ let list=products.filter(p=>p.name.toLowerCase().includes(q));
+ document.getElementById('totalP').innerText=list.length+" টা প্রোডাক্ট";
+ document.getElementById('flashRow').innerHTML=products.slice(0,3).map((p)=>{ let idx=products.indexOf(p); return `<div class="f" onclick="openDetail(${idx})"><img src="${p.img}"><div><span class="price">৳${p.price}</span><span class="off">-${calcOff(p)}%</span></div><button class="add" onclick="event.stopPropagation();addCart(${idx})">🛒 Add</button></div>`}).join("");
+ document.getElementById('grid').innerHTML=list.map((p)=>{
+  let idx=products.indexOf(p);
+  return `<div class="card" onclick="openDetail(${idx})">
+  <img src="${p.img}">
+  <div class="tag"><span class="g">FREE DELIVERY</span><span class="p">VOUCHER MAX</span></div>
+  <div style="font-weight:bold;margin-top:6px"><b>11.11</b> ${p.name}</div>
+  <div><span class="price">৳${p.price}</span><span class="off">-${calcOff(p)}%</span></div>
+  <div style="font-size:12px;background:#fff7ed;display:inline-block;padding:3px 6px;border-radius:6px">Coins save ৳${Math.floor(p.price/100)}</div>
+  <div class="rate">⭐ ${p.rating} | ${p.sold}</div>
+  <button class="buy" onclick="event.stopPropagation();buyNow(${idx})">⚡ Buy Now</button>
+  <button class="add" onclick="event.stopPropagation();addCart(${idx})">🛒 Add to Cart</button>
+  </div>`}).join("");
+ document.getElementById('cartCount').innerText=cart.length;
 }
-
-function closeTool() {
-  document.getElementById('workspace').style.display = 'none';
+function setTab(el){ document.querySelectorAll('.tabs span').forEach(s=>s.classList.remove('on')); el.classList.add('on'); render(); }
+function openDetail(i){ let p=products[i]; document.getElementById('detailBox').innerHTML=`
+<img class="detailImg" src="${p.img}">
+<div style="background:#7c3aed;color:#fff;padding:12px;border-radius:10px;display:flex;justify-content:space-between"><div><div style="font-size:13px">৳241 off with Promo</div><b style="font-size:26px">৳ ${p.price}</b> <span style="text-decoration:line-through;opacity:.7">৳${p.old}</span></div><div style="text-align:right"><b>11.11 SALE</b><br><small>End in 8 days</small></div></div>
+<p style="background:#ffe4e6;display:inline-block;padding:5px 9px;border-radius:6px;font-size:13px;color:#e11d48;font-weight:bold">Extra 10% OFF</p>
+<h3>${p.name}</h3>
+<p>⭐ ${p.rating} | ${p.sold} &nbsp; ❤️</p>
+<p>✅ 14 days easy return<br>📦 Guaranteed by 18-20 Nov<br>🎨 Color: Multicolor</p>
+<div class="bkashBox">💸 বিকাশে ডেলিভারি চার্জ পাঠাও<br><b>${bkashNum}</b><br><button onclick="copyBkash()" class="bigBtn" style="background:#e11d48;color:#fff;margin-top:8px">📋 নাম্বার কপি করো</button><br><small>Send Money করবা, তারপর TrxID দিবা</small></div>
+<div style="display:flex;gap:10px"><button onclick="buyNow(${i});closeModal('detailModal')" class="bigBtn" style="flex:1;background:#ffb800">⚡ Buy Now<br>৳ ${p.price}</button><button onclick="addCart(${i});closeModal('detailModal')" class="bigBtn" style="flex:1;background:#f85606;color:#fff">🛒 Add to Cart</button></div>
+`; document.getElementById('detailModal').classList.add('open'); }
+function copyBkash(){ navigator.clipboard.writeText(bkashNum); alert("বিকাশ নাম্বার কপি হয়ে গেছে: "+bkashNum); }
+function addCart(i){ cart.push(products[i]); render(); alert("✅ Cart এ যোগ হয়ে গেছে!"); }
+function buyNow(i){ cart=[products[i]]; render(); openCart(); }
+function openCart(){
+ let sub=cart.reduce((a,b)=>a+b.price,0);
+ let disc=Math.round(sub*0.15); let ship=cart.length?80:0; let platform=5; let codFee=20;
+ let total=sub - disc + ship + 25 + platform + codFee;
+ if(cart.length==0) total=0;
+ document.getElementById('cartBox').innerHTML=`
+ <h3>🛒 Checkout - ${cart.length} টা জিনিস</h3>
+ ${cart.length==0?"<p>Cart খালি। প্রোডাক্ট Add করো।</p>":cart.map((p,idx)=>`<div style="display:flex;gap:10px;border:1px solid #eee;padding:10px;border-radius:12px;margin:6px 0"><img src="${p.img}" style="width:75px;height:75px;border-radius:10px;object-fit:cover"><div style="flex:1"><b>My Choice</b><br>${p.name}<br><b>৳${p.price}</b> <span style="text-decoration:line-through;color:#999">৳${p.old}</span></div><button onclick="removeCart(${idx})" style="background:red;color:#fff;border:0;padding:10px 14px;border-radius:10px;font-size:16px">X</button></div>`).join("")}
+ <h4>Payment Methods</h4>
+ ${['Cash on Delivery','Credit/Debit Card','Save bKash Account','Nagad'].map(m=>`<div class="payOpt ${selectedPay==m?'sel':''}" onclick="selectPay('${m}')"><input type="radio" ${selectedPay==m?'checked':''} style="width:auto"> <b>${m}</b> <span style="font-size:13px;color:#666">${m=='Save bKash Account'?'বিকাশ: '+bkashNum:''}</span></div>`).join("")}
+ <div class="bkashBox">💸 <b>বিকাশ Send Money: ${bkashNum}</b><br><button onclick="copyBkash()" class="bigBtn" style="background:#e11d48;color:#fff;margin-top:8px">📋 কপি করো</button><br><small>আগে ডেলিভারি চার্জ পাঠাও, তাইলেই অর্ডার কনফার্ম হবে</small></div>
+ <input id="cName" placeholder="তোমার নাম *">
+ <input id="cPhone" placeholder="মোবাইল নাম্বার *">
+ <textarea id="cAddr" placeholder="ঠিকানা - গ্রাম, থানা, জেলা *"></textarea>
+ <input id="trxId" placeholder="বিকাশ TrxID দাও - যেমন: 9H7X...">
+ <h4>Order Summary</h4>
+ <div class="checkRow"><span>Merchandise Subtotal</span><b>৳ ${sub}</b></div>
+ <div class="checkRow"><span>Discount</span><b style="color:#f85606">-৳ ${disc}</b></div>
+ <div class="checkRow"><span>Shipping Fee Total</span><b>৳ ${ship}</b></div>
+ <div class="checkRow"><span>Other Fees</span><b>৳ 25</b></div>
+ <div class="checkRow"><span>Platform Fee</span><b>৳ ${platform}</b></div>
+ <div class="checkRow"><span>Cash Payment Fee</span><b>৳ ${codFee}</b></div>
+ <div class="checkRow" style="font-size:19px"><span><b>Total</b></span><b>৳ ${total}</b></div>
+ <button onclick="placeOrder(${total})" class="bigBtn" style="background:#f85606;color:#fff;font-size:20px;padding:18px">🛒 Place Order &nbsp; ৳ ${total}</button>
+ `;
+ document.getElementById('cartModal').classList.add('open');
 }
-
-function setStatus(message) {
-  document.getElementById('status').textContent = message;
+function selectPay(m){ selectedPay=m; openCart(); }
+function removeCart(i){ cart.splice(i,1); render(); openCart(); }
+function placeOrder(total){
+ let name=document.getElementById('cName').value; let phone=document.getElementById('cPhone').value; let addr=document.getElementById('cAddr').value; let trx=document.getElementById('trxId').value;
+ if(!name||!phone||!addr){ alert("নাম, মোবাইল, ঠিকানা দাও!"); return; }
+ let o={id:Date.now(),name:name,phone:phone,addr:addr,trx:trx,items:cart.map(c=>c.name).join(", "),total:total,pay:selectedPay,status:"নতুন"};
+ orders.unshift(o); cart=[]; render(); renderOrders(); closeModal('cartModal'); alert("✅ অর্ডার হয়ে গেছে! ID: "+o.id+" - আমরা কল দিবো।");
 }
-
-function selectedFiles() {
-  return document.getElementById('files')?.files;
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function showPage(p){ if(p=='home') window.scrollTo({top:0,behavior:'smooth'}); if(p=='msg') alert("Messages: কাস্টমার জিজ্ঞেস করছে: দাম কত? বিকাশ নাম্বার কোনটা?"); if(p=='account') alert("Account: My Choice - বিকাশ: "+bkashNum); if(p=='offer') alert("50% OFF অফার চলতেছে!"); }
+function loginAdmin(){ if(document.getElementById('adminPass').value==adminPass){ document.getElementById('adminForm').classList.remove('hidden'); alert("✅ Admin এ ঢুকে গেছো!"); } else alert("ভুল পাসওয়ার্ড!"); }
+function addProduct(){
+ let name=document.getElementById('pName').value;
+ let img=document.getElementById('pImg').value || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500";
+ let price=parseInt(document.getElementById('pPrice').value) || 0;
+ let old=parseInt(document.getElementById('pOld').value) || price*2;
+ if(!name || !price){ alert("নাম আর দাম দাও"); return; }
+ products.unshift({name:name,img:img,price:price,old:old,rating:"4.8 (10)",sold:"100 Sold"});
+ render(); alert("✅ প্রোডাক্ট যোগ হয়ে গেছে!");
 }
-
-function saveBlob(blob, filename) {
-  if (downloadURL) URL.revokeObjectURL(downloadURL);
-  downloadURL = URL.createObjectURL(blob);
-  const link = document.getElementById('download');
-  link.href = downloadURL;
-  link.download = filename;
-  link.textContent = '⬇ Download ' + filename;
-  link.style.display = 'inline-block';
-}
-
-function parsePageRange(value, total) {
-  const pages = new Set();
-  if (!value.trim()) throw new Error('Enter a page range.');
-  for (const part of value.split(',')) {
-    const match = part.trim().match(/^(\d+)(?:\s*-\s*(\d+))?$/);
-    if (!match) throw new Error('Invalid page range. Example: 1-3,5');
-    const start = Number(match[1]);
-    const end = Number(match[2] || match[1]);
-    if (start < 1 || end < start || end > total) {
-      throw new Error('Page numbers must be between 1 and ' + total + '.');
-    }
-    for (let page = start; page <= end; page++) pages.add(page - 1);
-  }
-  return [...pages];
-}
-
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error('Could not read one of the images.'));
-    image.src = src;
-  });
-}
-
-function readAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error('Could not read the selected file.'));
-    reader.readAsDataURL(file);
-  });
-}
-
-async function processTool() {
-  const button = document.getElementById('runBtn');
-  button.disabled = true;
-  document.getElementById('download').style.display = 'none';
-  setStatus('Processing your file. Please wait...');
-
-  try {
-    const {PDFDocument, degrees} = PDFLib;
-    const files = selectedFiles();
-    let blob;
-
-    if (currentTool === 'text') {
-      const text = document.getElementById('content').value.trim();
-      if (!text) throw new Error('Please enter some text.');
-      const {jsPDF} = window.jspdf;
-      const pdf = new jsPDF();
-      const lines = pdf.splitTextToSize(text, 180);
-      let y = 20;
-      for (const line of lines) {
-        if (y > 280) { pdf.addPage(); y = 20; }
-        pdf.text(line, 15, y);
-        y += 7;
-      }
-      blob = pdf.output('blob');
-      saveBlob(blob, 'text-document.pdf');
-    } else {
-      if (!files || files.length === 0) throw new Error('Please select a file first.');
-
-      if (currentTool === 'image') {
-        const {jsPDF} = window.jspdf;
-        const pdf = new jsPDF();
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          if (!['image/jpeg','image/png'].includes(file.type)) {
-            throw new Error('Only JPG and PNG images are supported.');
-          }
-          const data = await readAsDataURL(file);
-          const img = await loadImage(data);
-          if (i > 0) pdf.addPage();
-          const pageW = pdf.internal.pageSize.getWidth();
-          const pageH = pdf.internal.pageSize.getHeight();
-          const scale = Math.min((pageW - 20) / img.width, (pageH - 20) / img.height);
-          const width = img.width * scale, height = img.height * scale;
-          pdf.addImage(data, file.type === 'image/png' ? 'PNG' : 'JPEG',
-            (pageW-width)/2, (pageH-height)/2, width, height);
-        }
-        blob = pdf.output('blob');
-        saveBlob(blob, 'images-to-pdf.pdf');
-      }
-
-      if (currentTool === 'merge') {
-        if (files.length < 2) throw new Error('Select at least two PDF files.');
-        const merged = await PDFDocument.create();
-        for (const file of files) {
-          const doc = await PDFDocument.load(await file.arrayBuffer());
-          const pages = await merged.copyPages(doc, doc.getPageIndices());
-          pages.forEach(page => merged.addPage(page));
-        }
-        blob = new Blob([await merged.save()], {type:'application/pdf'});
-        saveBlob(blob, 'merged.pdf');
-      }
-
-      if (currentTool === 'split') {
-        const doc = await PDFDocument.load(await files[0].arrayBuffer());
-        const indexes = parsePageRange(document.getElementById('range').value, doc.getPageCount());
-        const output = await PDFDocument.create();
-        const pages = await output.copyPages(doc, indexes);
-        pages.forEach(page => output.addPage(page));
-        blob = new Blob([await output.save()], {type:'application/pdf'});
-        saveBlob(blob, 'split-pages.pdf');
-      }
-
-      if (currentTool === 'rotate') {
-        const doc = await PDFDocument.load(await files[0].arrayBuffer());
-        const angle = Number(document.getElementById('angle').value);
-        doc.getPages().forEach(page => {
-          page.setRotation(degrees((page.getRotation().angle + angle) % 360));
-        });
-        blob = new Blob([await doc.save()], {type:'application/pdf'});
-        saveBlob(blob, 'rotated.pdf');
-      }
-
-      if (currentTool === 'images') {
-        const pdf = await pdfjsLib.getDocument({data:await files[0].arrayBuffer()}).promise;
-        if (pdf.numPages > 30) throw new Error('For this demo, convert up to 30 pages at a time.');
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({scale:1.5});
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          await page.render({canvasContext:canvas.getContext('2d'), viewport}).promise;
-          const link = document.createElement('a');
-          link.href = canvas.toDataURL('image/png');
-          link.download = 'pdf-page-' + i + '.png';
-          link.click();
-        }
-        setStatus(pdf.numPages + ' PNG page(s) downloaded separately.');
-      }
-    }
-
-    if (currentTool !== 'images') setStatus('Success! Your file is ready to download.');
-  } catch (error) {
-    setStatus('Error: ' + error.message);
-  } finally {
-    button.disabled = false;
-  }
-}
+function renderOrders(){ if(orders.length==0) return; document.getElementById('orderList').innerHTML=orders.map(o=>`<div style="background:#222;padding:12px;border-radius:10px;margin:8px 0"><b>🆔 ${o.id}</b> - ${o.status}<br>👤 ${o.name} | 📞 ${o.phone}<br>📍 ${o.addr}<br>🛍️ ${o.items}<br>💸 মোট: ${o.total}৳ | Pay: ${o.pay} | Trx: ${o.trx || 'COD'}<br><button onclick="confirmOrder(${o.id})" class="bigBtn" style="background:#22c55e;margin-top:8px">✅ কনফার্ম করো</button></div>`).join(""); }
+function confirmOrder(id){ let o=orders.find(x=>x.id==id); if(o){ o.status="✅ কনফার্ম - বিকাশ চেক হইছে"; renderOrders(); alert("অর্ডার কনফার্ম! বিকাশ অ্যাপে TrxID চেক করো: "+o.trx); } }
+let sec=8*3600+2*60+9; setInterval(()=>{ sec--; let h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60; let el=document.getElementById('timer'); if(el) el.innerText=`End in ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; },1000);
+render();
 </script>
 </body>
 </html>
